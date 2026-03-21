@@ -19,17 +19,17 @@ const userTypes = ref<PageFeatureProps[]>([
   {
     title: 'INDIVIDUALS',
     description: 'RovelSub Point is the perfect choice for individuals, whether you need to buy data, recharge airtime, or pay bills, our platform makes transactions fast, secure, and stress-free.',
-    icon: '/images/icons/user-profile.svg',
+    icon: '/images/landing-page/user-profile.svg',
   },
   {
     title: 'ORGANIZATIONS',
     description: 'RovelSub Point is the perfect choice for organizations, whether managing bulk payments, staff utilities, or business subscriptions, our platform ensures transactions are efficient, reliable, and seamless.',
-    icon: '/images/icons/organization.svg',
+    icon: '/images/landing-page/organization.svg',
   },
   {
     title: 'ROVELSUB AGENT',
     description: 'RovelSub Express is the perfect choice for individuals, whether you need to renew subscriptions, recharge your phone, or pay bills, our platform makes transactions quick and hassle-free.',
-    icon: '/images/icons/support-agent.svg',
+    icon: '/images/landing-page/support-agent.svg',
   },
 ])
 
@@ -201,7 +201,7 @@ const imgList = ref([
           <div class="relative size-fit">
             <!-- Polygon anchored to this wrapper -->
             <span class="absolute top-10 left-8">
-              <NuxtImg src="/images/landing-page/polygondblue.svg" class="w-5 h-5" />
+              <NuxtImg src="/images/landing-page/lightbluediamond.svg" class="w-5 h-5" />
             </span>
 
             <!-- Background image -->

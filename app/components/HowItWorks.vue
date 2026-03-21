@@ -9,7 +9,7 @@
     :ui="{ container: 'py-12 sm:py-18 lg:py-24', title: 'text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold', headline: 'text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }"
   >
     <span class="absolute top-17 md:top-30 left-35 md:left-100">
-      <NuxtImg src="/images/landing-page/polygon 7.svg" class="w-5 h-5 md:h-8 md:w-8" />
+      <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
     </span>
     <div
       class="grid grid-cols-1 gap-y-6 md:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] md:grid-rows-[auto_auto_auto_auto]"

@@ -9,7 +9,7 @@
         <h4 class="flex gap-3 items-center text-left font-bold  size-fit text-[#1177FE] text-[12px] sm:text-[18px]">
           CHOOSE US
           <span class="size-fit">
-            <NuxtImg src="/images/landing-page/polygon 7.svg" class="w-5 h-5" />
+            <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5" />
           </span>
         </h4>
         <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-extrabold">

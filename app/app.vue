@@ -11,8 +11,8 @@ useHead({
   },
 })
 
-const title = 'Nuxt Starter Template'
-const description = 'A production-ready starter template powered by Nuxt UI. Build beautiful, accessible, and performant applications in minutes, not hours.'
+const title = 'RovelSub Point'
+const description = 'Access airtime, data, subscriptions, and pay bills in one platform.'
 
 useSeoMeta({
   title,

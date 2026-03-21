@@ -40,7 +40,7 @@ const items = ref<AccordionItem[]>([
 <template>
   <section id="faqs" class="bg-[#F2FBFF] font-poppins relative">
     <span class="absolute top-17 md:top-28 right-10 sm:right-15">
-      <NuxtImg src="/images/landing-page/polygon 7.svg" class="w-5 h-5 md:h-8 md:w-8" />
+      <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
     </span>
     <UPageSection
       headline="EXPLORE ANSWERS TO FREQUENTLY ASKED QUESTIONS"
