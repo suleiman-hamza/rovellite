@@ -1,15 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  app: {
-    head: {
-      title: 'RovelSub-Point',
-      meta: [
-        { name: 'description', content: 'RovelSub Point Utility Application' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
-    },
-  },
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
@@ -17,7 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/image',
   ],
-// configuration for components in pages folders
+  // configuration for components in pages folders
   pages: {
     pattern: ['**/*.vue', '!**/components/**'],
   },
@@ -31,13 +21,23 @@ export default defineNuxtConfig({
     },
   ],
   devtools: {
-    enabled: true
+    enabled: true,
+  },
+  app: {
+    head: {
+      title: 'RovelSub-Point',
+      meta: [
+        { name: 'description', content: 'RovelSub Point Utility Application' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    },
   },
 
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: true },
   },
 
   compatibilityDate: '2025-01-15',
@@ -45,11 +45,8 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       standalone: false,
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
-    }
+      stylistic: true,
+    },
   },
   googleFonts: {
     families: {
