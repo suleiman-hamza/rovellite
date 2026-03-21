@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Public Sans', sans-serif;
+
+  --color-green-50: #EFFDF5;
+  --color-green-100: #D9FBE8;
+  --color-green-200: #B3F5D1;
+  --color-green-300: #75EDAE;
+  --color-green-400: #00DC82;
+  --color-green-500: #00C16A;
+  --color-green-600: #00A155;
+  --color-green-700: #007F45;
+  --color-green-800: #016538;
+  --color-green-900: #0A5331;
+  --color-green-950: #052E16;
+}
+
+/*Use the --font-* theme variables to customize the font family utilities in your project.*/
+@theme {
+  --font-sans: 'Public Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-poppins: 'Poppins', sans-serif;
+  --container-8xl: 75rem;
+  --shadow-form: 0px 4px 100px 0px #00000040;
+}
+
+:root {
+  --ui-header-height: --spacing(24);
+  --ui-header-height-mobile: --spacing(16);
+  --ui-container: var(--container-8xl);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+img {
+  max-width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.router-link-active {
+  outline: 1px solid white;
+  background-color: #0083c7;
+  color: white;
+}
