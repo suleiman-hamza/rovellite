@@ -30,10 +30,18 @@
   --ui-header-height: --spacing(24);
   --ui-header-height-mobile: --spacing(16);
   --ui-container: var(--container-8xl);
+  --slide-size: 70%;
+  --slide-spacing: 10px;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 img {

@@ -17,7 +17,7 @@
         />
       </NuxtLink>
       <p class="text-[14px] lg:text-[16px] tracking-[1px] font-poppins leading-[161%] max-w-80">
-        Access airtime, data, subscriptions, and pay bills in one platform. RovelSub Point is your trusted and secure digital service platform. Access airtime, data, subscriptions,
+        Access airtime, data, subscriptions, and pay bills in one platform. RovelSub Point is your trusted and secure digital service platform.
       </p>
     </template>
 
