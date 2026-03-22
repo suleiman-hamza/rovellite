@@ -41,7 +41,7 @@ const items = ref([
       <UCarousel
         v-slot="item"
         dots
-        :autoplay="{ delay: 4000 }"
+        loop
         wheel-gestures
         :prev="{ variant: 'solid' }"
         :next="{ variant: 'solid' }"
@@ -49,7 +49,7 @@ const items = ref([
         next-icon: next-icon
         :items="items"
         :ui="{
-          item: 'ps-0 md:basis-1/3 pl-(--slide-spacing)',
+          item: 'ps-0 outline outline-taupe-600 sm:outline-amber-400 md:outline-blue-600 md:basis-1/3 pl-(--slide-spacing) h-full items-stretch',
           prev: '-top-10 left-10',
           next: ' top-0 right-10',
           container: 'ms-0 -ml-(--slide-spacing)',
@@ -59,7 +59,7 @@ const items = ref([
 
         }"
       >
-        <div class="pt-8 rounded-sm bg-white relative">
+        <div class="pt-8 rounded-sm bg-white relative w-full">
           <span class="absolute top-0 w-24 h-24 rounded-full z-20 bg-white right-10"><NuxtImg src="/images/landing-page/testimonial-img.png" class="w-full h-auto" /></span>
           <div class="relative bg-[#F2FBFF] rounded-lg">
             <div class="font-poppins py-6 px-4 pb-18">
@@ -73,7 +73,7 @@ const items = ref([
               <p class="mt-2 tracking-[5%] text-[#34383D] leading-[190%] text-[16px] font-normal">
                 {{ item.item.description }}
               </p>
-              <NuxtImg src="/images/landing-page/quote.svg" />
+              <NuxtImg src="/images/landing-page/quote.svg" class="absolute bottom-5 right-5" />
             </div>
           </div>
         </div>

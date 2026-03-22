@@ -38,7 +38,7 @@
       </div>
 
       <div class="row-start-3 row-end-8 col-start-2 col-end-3 flex flex-col gap-4 items-center p-4">
-        <NuxtImg src="/images/landing-page/grid-avatar-group.png" />
+        <NuxtImg src="/images/landing-page/grid-avatar-group.png" class="w-full h-auto" />
         <UButton label="Get Started" size="lg" class="bg-[#1177FE] rounded-full px-8" />
       </div>
 

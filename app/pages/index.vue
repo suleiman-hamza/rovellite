@@ -214,6 +214,9 @@ const imgList = ref([
             <NuxtImg
               src="/images/landing-page/mobile-usertypes.png"
               alt="man standing png"
+              width="390"
+              height="436"
+              class="w-full h-auto"
             />
           </div>
         </div>
