@@ -48,8 +48,9 @@ const items = ref([
         prev-icon: prev-icon
         next-icon: next-icon
         :items="items"
+        class="w-full max-w-xs md:max-w-5xl mx-auto border"
         :ui="{
-          item: 'ps-0 outline outline-taupe-600 sm:outline-amber-400 md:outline-blue-600 md:basis-1/3 pl-(--slide-spacing) h-full items-stretch',
+          item: 'ps-0 md:basis-1/3 pl-(--slide-spacing) h-full items-stretch',
           prev: '-top-10 left-10',
           next: ' top-0 right-10',
           container: 'ms-0 -ml-(--slide-spacing)',
