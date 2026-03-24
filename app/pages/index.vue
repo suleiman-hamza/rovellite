@@ -131,6 +131,10 @@ const imgList = ref([
     alt: 'gotv logo',
   },
   {
+    src: '/images/landing-page/startimes.png',
+    alt: 'startimes logo',
+  },
+  {
     src: '/images/landing-page/phedc.png',
     alt: 'phedc logo',
   },
@@ -156,9 +160,15 @@ const imgList = ref([
 <template>
   <div class="font-poppins">
     <HeroSection />
-    <section id="features" class="font-poppins">
-      <UPageSection headline="WHAT WE OFFER" title="Our Services" class="bg-[#F2FBFF]" :ui="{ container: 'py-12 sm:py-24 lg:py-16', title: 'text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold', headline: 'text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }">
-        <UPageGrid>
+    <section id="features" class="font-poppins bg-[#F2FBFF] pt-14 md:py-18 pb-15">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
+        <h4 class="text-left size-fit text-[#1177FE] text-[12px] leading-[150%] sm:text-[18px] mb-3">
+          WHAT WE OFFER
+        </h4>
+        <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
+          Our Services
+        </h4>
+        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full mt-7.8 md:mt-10">
           <UPageFeature
             v-for="group in features"
             :key="group.title"
@@ -180,8 +190,8 @@ const imgList = ref([
               </div>
             </template>
           </UPageFeature>
-        </UPageGrid>
-      </UPageSection>
+        </div>
+      </section>
     </section>
     <!-- Our partners -->
     <UPageSection headline="LEADING PARTNERS" class="border-y border-[#CCCDCE]" title="Our Partners" :ui="{ container: 'py-12 sm:py-18 lg:py-18', title: 'text-left sm:text-center sm:size-full text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-bold', headline: 'text-left sm:text-center sm:size-full size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }">

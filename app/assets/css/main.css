@@ -22,8 +22,7 @@
   --font-sans: 'Public Sans', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-poppins: 'Poppins', sans-serif;
-  --container-8xl: 75rem;
-  --shadow-form: 0px 4px 100px 0px #00000040;
+  --container-8xl: 95rem;
 }
 
 :root {

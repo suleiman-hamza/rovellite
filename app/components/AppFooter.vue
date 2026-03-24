@@ -71,9 +71,9 @@
       <UContainer>
         <div>
           <span class="flex gap-4 items-center justify-start">
-            <NuxtImg src="/images/landing-page/facebook.svg" alt="facebook" />
-            <NuxtImg src="/images/landing-page/twitter.svg" alt="twitter(X)" />
-            <NuxtImg src="/images/landing-page/instagram.svg" alt="instagram" />
+            <NuxtImg src="/images/landing-page/facebook.svg" width="36" height="36" alt="facebook" />
+            <NuxtImg src="/images/landing-page/twitter.svg" width="36" height="36" alt="twitter(X)" />
+            <NuxtImg src="/images/landing-page/instagram.svg" width="36" height="36" alt="instagram" />
           </span>
           <USeparator :ui="{ root: 'my-6' }" />
           <p class="text-muted text-sm text-center">

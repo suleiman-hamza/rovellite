@@ -38,16 +38,22 @@ const items = ref<AccordionItem[]>([
 </script>
 
 <template>
-  <section id="faqs" class="bg-[#F2FBFF] font-poppins relative">
-    <span class="absolute top-17 md:top-28 right-10 sm:right-15">
-      <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
-    </span>
-    <UPageSection
-      headline="EXPLORE ANSWERS TO FREQUENTLY ASKED QUESTIONS"
-      title="Frequently Asked Question"
-      :ui="{ container: 'py-12 sm:py-18 lg:py-24', title: 'text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold', headline: 'text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-2' }"
-    >
-      <UAccordion :items="items" :ui="{ item: 'mb-4 bg-white rounded-md', trigger: 'p-4 sm:py-6 sm:px-8', label: 'tracking-[10%] md:tracking-normal text-[#676A6D] font-bold text-[14px] sm:text-[24px]', content: 'border-t border-[#CCCDCE] p-4 sm:px-8 tracking-[1%] md:tracking-[5%] leading-[190%] text-[#34383D] font-normal' }" />
-    </UPageSection>
+  <section id="faqs" class="bg-[#F2FBFF] font-poppins relative py-13 md:py-18">
+    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
+      <span class="absolute top-17 md:top-28 right-10 sm:right-15">
+        <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
+      </span>
+      <div>
+        <div class="mb-8 md:mb-10">
+          <h4 class="text-left size-fit text-[#1177FE] text-[12px] leading-[150%] sm:text-[18px] mb-3">
+            EXPLORE ANSWERS TO FREQUENTLY ASKED QUESTIONS
+          </h4>
+          <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
+            Frequently Asked Question
+          </h4>
+        </div>
+        <UAccordion :items="items" :ui="{ item: 'mb-4 bg-white rounded-md', trigger: 'p-4 sm:py-6 sm:px-8', label: 'tracking-[10%] md:tracking-normal text-[#676A6D] font-bold text-[14px] sm:text-[24px]', content: 'border-t border-[#CCCDCE] p-4 sm:px-8 tracking-[1%] md:tracking-[5%] leading-[190%] text-[#34383D] font-normal' }" />
+      </div>
+    </section>
   </section>
 </template>

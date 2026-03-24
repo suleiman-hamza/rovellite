@@ -61,7 +61,7 @@ const items = ref([
         }"
       >
         <div class="pt-8 rounded-sm bg-white relative w-full">
-          <span class="absolute top-0 w-24 h-24 rounded-full z-20 bg-white right-10"><NuxtImg src="/images/landing-page/testimonial-img.png" class="w-full h-auto" /></span>
+          <span class="absolute top-0 w-24 h-24 rounded-full z-20 bg-white right-10"><NuxtImg src="/images/landing-page/carousel-img.png" class="w-full h-auto" /></span>
           <div class="relative bg-[#F2FBFF] rounded-lg">
             <div class="font-poppins py-6 px-4 pb-18">
               <h4 class="leading-7.5 md:text-[24px] font-bold text-[#4D5155]">
