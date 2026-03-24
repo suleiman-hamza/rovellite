@@ -227,7 +227,7 @@ const imgList = ref([
             class="rounded-md bg-[#F2FBFF]"
           >
             <template #default>
-              <div class="p-4 flex gap-4 md:gap-6 items-start">
+              <div class="p-4 flex gap-4 md:gap-6 items-start border h-52">
                 <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
                   <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-8 md:h-8" />
                 </span>
@@ -249,29 +249,7 @@ const imgList = ref([
     <HowItWorks />
     <FAQs />
     <Testimonial />
-    <UPageSection class="bg-[#F2FBFF]" :ui="{ container: 'py-8 sm:py-0 lg:py-0' }">
-      <div class="flex flex-col sm:flex-row-reverse gap-4">
-        <NuxtImg src="/images/landing-page/rovel-phone.png" class="flex-1" />
-        <div class="flex-1 flex flex-col gap-2 justify-center sm:items-start items-center">
-          <h3 class="text-[#1177FE] tracking-[1%] leading-[150%]">
-            RovelSub App Update
-          </h3>
-          <h3 class="text-[#1A1F24] text-center md:text-left mb-3 text-[20px] md:text-[52px] leading-[150%] md:leading-16 tracking-[2%] font-extrabold">
-            RovelSub Point App Is Coming Soon
-          </h3>
-          <div class="flex justify-between gap-4 md:mt-8">
-            <UButton class="bg-white border flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
-              <NuxtImg src="/images/landing-page/apple-filled.svg" class="w-4 h-4" />
-              <span>Apple Store</span>
-            </UButton>
-            <UButton class="bg-white border flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
-              <NuxtImg src="/images/landing-page/playstore.svg" class="w-4 h-4" />
-              <span>Play Store</span>
-            </UButton>
-          </div>
-        </div>
-      </div>
-    </UPageSection>
+    <CommingSoon />
     <ContactPage id="contactus" />
   </div>
 </template>
