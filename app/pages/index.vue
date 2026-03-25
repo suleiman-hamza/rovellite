@@ -223,22 +223,14 @@ const imgList = ref([
           Who Can Be Our Users?
         </h5>
         <section class="flex flex-col md:grid grid-cols-2 gap-4">
-          <div class="flex items-center justify-center">
-            <div class="relative">
-              <!-- Polygon anchored to this wrapper -->
-              <span class="absolute top-10 left-8">
-                <NuxtImg src="/images/landing-page/lightbluediamond.svg" class="w-5 h-5" />
-              </span>
-
-              <!-- Main image (anchor target) -->
-              <NuxtImg
-                src="/images/landing-page/mobile-usertypes.png"
-                alt="man standing png"
-                width="390"
-                height="436"
-                class="w-full h-auto"
-              />
-            </div>
+          <div class="">
+            <NuxtImg
+              src="/images/landing-page/mobile-usertype-new.png"
+              alt="man standing png"
+              width="390"
+              height="396"
+              class="w-full h-auto border object-cover"
+            />
           </div>
           <div class="flex flex-col gap-4">
             <UPageFeature

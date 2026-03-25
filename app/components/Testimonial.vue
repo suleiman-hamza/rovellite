@@ -78,9 +78,9 @@ const items = ref([
           item: 'ps-0 sm:basis-2/3 md:basis-[33%] pl-(--slide-spacing) h-full',
           container: 'ms-0 -ml-(--slide-spacing) h-69 md:h-80',
           controls: 'relative',
-          arrows: 'relative',
-          prev: 'md:-top-90 -top-77 end-10',
-          next: 'md:-top-90 -top-77 right-0',
+          arrows: 'absolute border border-red-600 size-fit -top-90',
+          prev: 'relative ml-5',
+          next: 'relative',
           dots: 'sm:justify-start',
           dot: 'data-[state=active]:bg-[#1177FE]',
         }"
