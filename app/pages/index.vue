@@ -194,20 +194,28 @@ const imgList = ref([
       </section>
     </section>
     <!-- Our partners -->
-    <UPageSection headline="LEADING PARTNERS" class="border-y border-[#CCCDCE]" title="Our Partners" :ui="{ container: 'py-12 sm:py-18 lg:py-18', title: 'text-left sm:text-center sm:size-full text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-bold', headline: 'text-left sm:text-center sm:size-full size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }">
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(65px,70px))] md:grid-cols-[repeat(auto-fill,minmax(95px,100px))] gap-4 items-center self-center justify-center-safe justify-items-center w-full md:max-w-275 md:mx-auto">
-        <NuxtImg
-          v-for="imglogo in imgList"
-          :key="imglogo.alt"
-          :src="imglogo.src"
-          :alt="imglogo.alt"
-          class="w-17 h-17 md:w-23.75 md:h-23.75 object-contain"
-        />
-      </div>
-    </UPageSection>
+    <section class="border-y border-[#CCCDCE]">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16">
+        <h4 class="text-left sm:text-center sm:size-full size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
+          LEADING PARTNERS
+        </h4>
+        <h4 class="text-left sm:text-center sm:size-full text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-bold">
+          Our Partners
+        </h4>
+        <div class="grid grid-cols-[repeat(auto-fill,minmax(65px,70px))] md:grid-cols-[repeat(auto-fill,minmax(95px,100px))] gap-4 items-center self-center justify-center-safe justify-items-center w-full md:max-w-275 md:mx-auto">
+          <NuxtImg
+            v-for="imglogo in imgList"
+            :key="imglogo.alt"
+            :src="imglogo.src"
+            :alt="imglogo.alt"
+            class="w-17 h-17 md:w-23 md:h-23 object-contain"
+          />
+        </div>
+      </section>
+    </section>
 
-    <section class="border">
-      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 border py-16">
+    <section class="">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16">
         <h4 class="text-left size-fit text-[#1177FE] text-[12px] md:text-[18px] mb-0 tracking-[1%]">
           WHO IS ROVELSUB POINT FOR
         </h4>

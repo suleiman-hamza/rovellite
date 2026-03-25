@@ -37,7 +37,13 @@ const items = ref([
 
 <template>
   <section class="">
-    <UPageSection title="What Our User Say" headline="TESTIMONIAL" :ui="{ title: 'text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold', headline: 'text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }">
+    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
+      <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
+        TESTIMONIAL
+      </h4>
+      <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold">
+        What Our User Say
+      </h4>
       <UCarousel
         v-slot="item"
         dots
@@ -45,14 +51,10 @@ const items = ref([
         wheel-gestures
         :prev="{ variant: 'solid' }"
         :next="{ variant: 'solid' }"
-        prev-icon: prev-icon
-        next-icon: next-icon
         :items="items"
-        class="w-full max-w-xs md:max-w-5xl mx-auto border"
+        class="w-full mx-auto border"
         :ui="{
-          item: 'ps-0 md:basis-1/3 pl-(--slide-spacing) h-full items-stretch',
-          prev: '-top-10 left-10',
-          next: ' top-0 right-10',
+          item: 'ps-0 md:basis-1/2 pl-(--slide-spacing) h-full items-stretch',
           container: 'ms-0 -ml-(--slide-spacing)',
           controls: '',
           dots: 'sm:justify-start',
@@ -60,7 +62,7 @@ const items = ref([
 
         }"
       >
-        <div class="pt-8 rounded-sm bg-white relative w-full">
+        <div class="pt-8 rounded-sm bg-white relative">
           <span class="absolute top-0 w-24 h-24 rounded-full z-20 bg-white right-10"><NuxtImg src="/images/landing-page/carousel-img.png" class="w-full h-auto" /></span>
           <div class="relative bg-[#F2FBFF] rounded-lg">
             <div class="font-poppins py-6 px-4 pb-18">
@@ -79,6 +81,6 @@ const items = ref([
           </div>
         </div>
       </UCarousel>
-    </UPageSection>
+    </section>
   </section>
 </template>
