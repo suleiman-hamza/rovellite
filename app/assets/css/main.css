@@ -23,6 +23,7 @@
   --font-mono: 'JetBrains Mono', monospace;
   --font-poppins: 'Poppins', sans-serif;
   --container-8xl: 95rem;
+  --shadow-form: 0px 4px 100px 0px #00000040;
 }
 
 :root {

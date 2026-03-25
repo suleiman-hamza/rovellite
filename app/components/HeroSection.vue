@@ -1,8 +1,8 @@
 <template>
   <section class="md:h-screen bg-[url(/images/landing-page/hero-radial-grad.png)] bg-right bg-no-repeat">
     <div class="pt-4 pb-4 md:h-full gap-4 sm:gap-y-6 grid md:grid-cols-2 font-poppins mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
-      <div class="flex md:order-2 justify-start items-start border justify-items-start">
-        <NuxtImg src="/images/landing-page/new-desktop-hero-img.png" class="object-cover aspect-auto w-full border" alt="Woman Using Rovelsub for utility payments" />
+      <div class="flex md:order-2 justify-start items-start justify-items-start">
+        <NuxtImg src="/images/landing-page/new-desktop-hero-img.png" class="object-cover aspect-auto w-full" alt="Woman Using Rovelsub for utility payments" />
       </div>
       <div class="flex flex-col gap-6 h-full overflow-visible">
         <span class="size-fit">

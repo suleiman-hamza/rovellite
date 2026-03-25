@@ -26,26 +26,26 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <section id="contactus" class="bg-[url(/images/landing-page/Skyscrapper-city.png)] bg-contain md:bg-cover bg-bottom bg-no-repeat">
     <section class="pt-16 pb-24 md:pt-32 md:pb-42 mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
       <div
-        class="md:flex justify-between gap-18 w-full px-4 sm:px-6 lg:px-8 border"
+        class="md:flex justify-between gap-18 w-full"
       >
         <div class="">
           <h5 class="md:text-[1.125rem] text-[0.85rem] text-[#1177FE] capitalize">
             Get in touch with us
           </h5>
-          <h2 class="text-[1.58rem] md:text-[3rem] font-bold text-[#333333]">
+          <h2 class="text-[1.58rem] md:text-[3.5rem] tracking-[1%] font-bold text-[#333333]">
             Contact Us
           </h2>
 
-          <div class="contact-info mt-7 md:mt-9 max-w-125 mx-auto mb-16">
-            <div class="flex gap-4 items-start mb-7.5">
+          <div class="contact-info mt-7 md:mt-9 max-w-125 mx-auto mb-16 font-poppins">
+            <div class="flex gap-6 items-start mb-7.5">
               <span class="w-10 h-10 bg-[#1177FE] flex justify-center items-center rounded-full">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M12 12.713L0.015 3H23.985L12 12.713ZM12 15.287L0 5.562V21H24V5.562L12 15.287Z" fill="white" />
                 </svg>
               </span>
               <span>
-                <h4 class="font-bold text-[18px]">Email Address</h4>
-                <h5>Jodanrovel@gmail.com</h5>
+                <h4 class="font-bold tracking-[10%] leading-[150%] text-[18px] text-[#4D5155]">Email Address</h4>
+                <h5 class="text-[#34383D] tracking-[1%] leading-[150%] text-[14px]">roveltechworld@gmail.com</h5>
               </span>
             </div>
             <div class="flex gap-4 items-start mb-7.5">
@@ -58,8 +58,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 </svg>
               </span>
               <span>
-                <h4 class="font-bold text-[18px]">Call Us</h4>
-                <h5>(505) 555-0125</h5>
+                <h4 class="font-bold tracking-[10%] leading-[150%] text-[18px] text-[#4D5155]">Call Us</h4>
+                <h5 class="text-[#34383D] tracking-[1%] leading-[150%] text-[14px]">+23481116694640</h5>
               </span>
             </div>
             <div class="flex gap-4 items-start mb-2.5">
@@ -79,17 +79,17 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
                 </svg>
               </span>
               <span>
-                <h4 class="font-bold text-[18px]">Address</h4>
-                <h5>
-                  2972 Westheimer Rd.<br>
-                  Santa Ana, Illinois 85486
+                <h4 class="font-bold tracking-[10%] leading-[150%] text-[18px] text-[#4D5155]">Address</h4>
+                <h5 class="text-[#34383D] tracking-[1%] leading-[150%] text-[14px]">
+                  14 Thomas Compound, Okoloma,<br>
+                  Oyigbo Rivers.
                 </h5>
               </span>
             </div>
           </div>
         </div>
 
-        <div class="flex-1 bg-white rounded-md md:rounded-[20px] w-full p-4 md:px-10.5 md:py-15">
+        <div class="flex-1 bg-white rounded-md md:rounded-[20px] w-full p-4 md:px-10.5 md:py-15 shadow-form">
           <p class="text-[#333333] font-bold md:font-extrabold text-sm md:text-[24px] mb-4 font-poppins">
             Send Us A  Message
           </p>

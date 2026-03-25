@@ -205,56 +205,65 @@ const imgList = ref([
         />
       </div>
     </UPageSection>
-    <UPageSection headline="WHO IS ROVELSUB POINT FOR" title="Who Can Be Our Users?" :ui="{ container: 'py-12 sm:py-18 lg:py-18', root: '', title: 'text-left text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-extrabold', headline: 'text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0' }">
-      <section class="flex flex-col sm:grid grid-cols-2 gap-4">
-        <div class="flex items-center justify-center">
-          <div class="relative size-fit">
-            <!-- Polygon anchored to this wrapper -->
-            <span class="absolute top-10 left-8">
-              <NuxtImg src="/images/landing-page/lightbluediamond.svg" class="w-5 h-5" />
-            </span>
 
-            <!-- Background image -->
-            <NuxtImg
-              src="/images/landing-page/maskbg.png"
-              class="absolute inset-0 -z-10 object-top md:object-left"
-            />
+    <section class="border">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 border py-16">
+        <h4 class="text-left size-fit text-[#1177FE] text-[12px] md:text-[18px] mb-0 tracking-[1%]">
+          WHO IS ROVELSUB POINT FOR
+        </h4>
+        <h5 class="text-left text-[20px] md:text-[52px] text-[#1A1F24] tracking-[2%] font-extrabold">
+          Who Can Be Our Users?
+        </h5>
+        <section class="flex flex-col md:grid grid-cols-2 gap-4">
+          <div class="flex items-center justify-center">
+            <div class="relative size-fit">
+              <!-- Polygon anchored to this wrapper -->
+              <span class="absolute top-10 left-8">
+                <NuxtImg src="/images/landing-page/lightbluediamond.svg" class="w-5 h-5" />
+              </span>
 
-            <!-- Main image (anchor target) -->
-            <NuxtImg
-              src="/images/landing-page/mobile-usertypes.png"
-              alt="man standing png"
-              width="390"
-              height="436"
-              class="w-full h-auto"
-            />
+              <!-- Background image -->
+              <div
+                class="absolute inset-0 -z-10 object-top md:object-left border bg-sky-300/10 rounded-full shadow-2xs"
+              />
+
+              <!-- Main image (anchor target) -->
+              <NuxtImg
+                src="/images/landing-page/mobile-usertypes.png"
+                alt="man standing png"
+                width="390"
+                height="436"
+                class="w-full h-auto"
+              />
+            </div>
           </div>
-        </div>
-        <div class="flex flex-col gap-4">
-          <UPageFeature
-            v-for="group in userTypes"
-            :key="group.title"
-            class="rounded-md bg-[#F2FBFF]"
-          >
-            <template #default>
-              <div class="p-4 flex gap-4 md:gap-6 items-start border h-52">
-                <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
-                  <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-8 md:h-8" />
-                </span>
-                <div class="flex-1">
-                  <h4 class="text-[#4D5155] text-base sm:text-[24px] leading-[150%] tracking-[1%] font-bold">
-                    {{ group.title }}
-                  </h4>
-                  <p class="text-[14px] text-[#34383D] leading-[161%] sm:leading-[190%] tracking-[1%] sm:tracking-[5%] font-normal">
-                    {{ group.description }}
-                  </p>
+          <div class="flex flex-col gap-4">
+            <UPageFeature
+              v-for="group in userTypes"
+              :key="group.title"
+              class="rounded-md bg-[#F2FBFF]"
+            >
+              <template #default>
+                <div class="p-4 flex gap-4 md:gap-6 items-start h-52">
+                  <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
+                    <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-8 md:h-8" />
+                  </span>
+                  <div class="flex-1">
+                    <h4 class="text-[#4D5155] text-base sm:text-[24px] leading-[150%] tracking-[1%] font-bold">
+                      {{ group.title }}
+                    </h4>
+                    <p class="text-[14px] text-[#34383D] leading-[161%] sm:leading-[190%] tracking-[1%] sm:tracking-[5%] font-normal">
+                      {{ group.description }}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </UPageFeature>
-        </div>
+              </template>
+            </UPageFeature>
+          </div>
+        </section>
       </section>
-    </UPageSection>
+    </section>
+
     <WhyChooseUs />
     <HowItWorks />
     <FAQs />
