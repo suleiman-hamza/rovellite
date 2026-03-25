@@ -165,7 +165,7 @@ const imgList = ref([
         <h4 class="text-left size-fit text-[#1177FE] text-[12px] leading-[150%] sm:text-[18px] mb-3">
           WHAT WE OFFER
         </h4>
-        <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
+        <h4 class="mb-7 text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
           Our Services
         </h4>
         <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full mt-7.8 md:mt-10">
@@ -247,7 +247,7 @@ const imgList = ref([
               class="rounded-md bg-[#F2FBFF]"
             >
               <template #default>
-                <div class="p-4 flex gap-4 md:gap-6 items-start h-52">
+                <div class="p-4 flex gap-4 md:gap-6 items-start h-58">
                   <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
                     <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-8 md:h-8" />
                   </span>
