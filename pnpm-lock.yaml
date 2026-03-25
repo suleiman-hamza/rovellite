@@ -29,6 +29,9 @@ importers:
       '@nuxtjs/google-fonts':
         specifier: ^3.2.0
         version: 3.2.0(magicast@0.5.2)
+      embla-carousel-vue:
+        specifier: ^8.6.0
+        version: 8.6.0(vue@3.5.30(typescript@5.9.3))
       google-fonts:
         specifier: ^1.0.0
         version: 1.0.0

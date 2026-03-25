@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// import useEmblaCarousel from 'embla-carousel-vue'
 // import {  } from ''
 // const nextIcon = ref('i-lucide-chevron-right')
 // const prevIcon = ref('i-lucide-chevron-left')
@@ -67,32 +68,36 @@ const items = ref([
         v-slot="item"
         dots
         loop
+        arrows
         wheel-gestures
         :prev="{ variant: 'solid' }"
         :next="{ variant: 'solid' }"
         :items="items"
-        class="w-full mx-auto border"
+        class="w-full mx-auto"
         :ui="{
-          item: 'ps-0 md:basis-1/2 pl-(--slide-spacing) h-full',
-          container: 'ms-0 -ml-(--slide-spacing)',
-          controls: '',
+          item: 'ps-0 sm:basis-2/3 md:basis-[33%] pl-(--slide-spacing) h-full',
+          container: 'ms-0 -ml-(--slide-spacing) h-69 md:h-80',
+          controls: 'border relative',
+          arrows: 'relative border border-red-600 top-0',
+          prev: 'md:-top-90 -top-69 left-0',
+          next: 'md:-top-90 -top-69 right-0',
           dots: 'sm:justify-start',
           dot: 'data-[state=active]:bg-[#1177FE]',
 
         }"
       >
-        <div class="pt-8 rounded-sm bg-white relative">
-          <span class="absolute top-0 w-24 h-24 rounded-full z-20 bg-white right-10"><NuxtImg src="/images/landing-page/carousel-img.png" class="w-full h-auto" /></span>
-          <div class="relative bg-[#F2FBFF] rounded-lg">
+        <div class="pt-8 md:pt-12 rounded-sm bg-white relative h-full">
+          <span class="absolute top-0 w-25 h-25 md:h-32 md:w-32 rounded-full z-20 bg-white right-10 md:right-7"><NuxtImg src="/images/landing-page/carousel-img.png" class="w-full h-auto" /></span>
+          <div class="relative bg-[#F2FBFF] rounded-lg h-full">
             <div class="font-poppins py-6 px-4 pb-18">
-              <h4 class="leading-7.5 md:text-[24px] font-bold text-[#4D5155]">
+              <h4 class="leading-7.5 text-[14px] md:text-[24px] font-bold text-[#4D5155]">
                 {{ item.item.name }}
               </h4>
-              <h5 class="md:text-[18px] font-normal text-[#1A1F24] leading-[150%]">
+              <h5 class="md:text-[18px] text-[12px] mb-1 font-normal text-[#1A1F24] leading-[150%]">
                 {{ item.item.title }}
               </h5>
               <USeparator class="w-50" />
-              <p class="mt-2 tracking-[5%] text-[#34383D] leading-[190%] text-[16px] font-normal">
+              <p class="mt-2 tracking-[5%] text-[14px] text-[#34383D] leading-[190%] font-normal">
                 {{ item.item.description }}
               </p>
               <NuxtImg src="/images/landing-page/quote.svg" class="absolute bottom-5 right-5" />

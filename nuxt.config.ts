@@ -44,6 +44,14 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-15',
+  vite: {
+    optimizeDeps: {
+      include: [
+        'embla-carousel-vue',
+        'zod',
+      ],
+    },
+  },
 
   eslint: {
     config: {
@@ -51,6 +59,7 @@ export default defineNuxtConfig({
       stylistic: true,
     },
   },
+
   googleFonts: {
     families: {
       Poppins: true,
