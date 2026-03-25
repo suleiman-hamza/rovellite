@@ -37,7 +37,7 @@ const items = ref([
 
 <template>
   <section class="">
-    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
+    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-15">
       <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
         TESTIMONIAL
       </h4>

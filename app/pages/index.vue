@@ -195,7 +195,7 @@ const imgList = ref([
     </section>
     <!-- Our partners -->
     <section class="border-y border-[#CCCDCE]">
-      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16 lg:py-20">
         <h4 class="text-left sm:text-center sm:size-full size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
           LEADING PARTNERS
         </h4>
