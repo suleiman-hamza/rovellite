@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// import {  } from ''
 // const nextIcon = ref('i-lucide-chevron-right')
 // const prevIcon = ref('i-lucide-chevron-left')
 const items = ref([
@@ -48,12 +49,20 @@ const items = ref([
 <template>
   <section class="">
     <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-15">
-      <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
-        TESTIMONIAL
-      </h4>
-      <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold">
-        What Our User Say
-      </h4>
+      <div class="flex justify-between items-start border">
+        <div>
+          <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
+            TESTIMONIAL
+          </h4>
+          <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold">
+            What Our User Say
+          </h4>
+        </div>
+        <div class="border size-fit flex gap-8">
+          <UButton icon="i-lucide-chevron-left" :ui="{ leadingIcon: 'text-black' }" class="rounded-full bg-transparent outline outline-black" />
+          <UButton icon="i-lucide-chevron-right" :ui="{ leadingIcon: 'text-black' }" class="rounded-full bg-transparent outline outline-black" />
+        </div>
+      </div>
       <UCarousel
         v-slot="item"
         dots
@@ -64,7 +73,7 @@ const items = ref([
         :items="items"
         class="w-full mx-auto border"
         :ui="{
-          item: 'ps-0 md:basis-1/2 pl-(--slide-spacing) h-full items-stretch',
+          item: 'ps-0 md:basis-1/2 pl-(--slide-spacing) h-full',
           container: 'ms-0 -ml-(--slide-spacing)',
           controls: '',
           dots: 'sm:justify-start',
