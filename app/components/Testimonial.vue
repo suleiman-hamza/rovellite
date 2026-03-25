@@ -50,7 +50,7 @@ const items = ref([
 <template>
   <section class="">
     <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-15">
-      <div class="flex justify-between items-start border">
+      <div class="flex justify-between items-start border mb-8">
         <div>
           <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
             TESTIMONIAL
@@ -77,13 +77,12 @@ const items = ref([
         :ui="{
           item: 'ps-0 sm:basis-2/3 md:basis-[33%] pl-(--slide-spacing) h-full',
           container: 'ms-0 -ml-(--slide-spacing) h-69 md:h-80',
-          controls: 'border relative',
-          arrows: 'relative border border-red-600 top-0',
-          prev: 'md:-top-90 -top-69 left-0',
-          next: 'md:-top-90 -top-69 right-0',
+          controls: 'relative',
+          arrows: 'relative',
+          prev: 'md:-top-90 -top-77 end-10',
+          next: 'md:-top-90 -top-77 right-0',
           dots: 'sm:justify-start',
           dot: 'data-[state=active]:bg-[#1177FE]',
-
         }"
       >
         <div class="pt-8 md:pt-12 rounded-sm bg-white relative h-full">

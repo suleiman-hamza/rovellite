@@ -199,7 +199,7 @@ const imgList = ref([
         <h4 class="text-left sm:text-center sm:size-full size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
           LEADING PARTNERS
         </h4>
-        <h4 class="text-left sm:text-center sm:size-full text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-bold">
+        <h4 class="mb-8 text-left sm:text-center sm:size-full text-[20px] sm:text-[52px] text-[#1A1F24] tracking-[2px] font-bold">
           Our Partners
         </h4>
         <div class="grid grid-cols-[repeat(auto-fill,minmax(65px,70px))] md:grid-cols-[repeat(auto-fill,minmax(95px,100px))] gap-4 items-center self-center justify-center-safe justify-items-center w-full md:max-w-275 md:mx-auto">
