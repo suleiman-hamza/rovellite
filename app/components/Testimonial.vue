@@ -3,34 +3,44 @@
 // const prevIcon = ref('i-lucide-chevron-left')
 const items = ref([
   {
+    name: 'Tobi Adeyemi',
+    title: 'Entrepreneur',
+    description: 'RovelSub Point has made managing my daily transactions so easy. From recharging airtime to paying bills, everything is fast and seamless.',
+  },
+  {
+    name: 'Funke Okafor',
+    title: 'HR Manager',
+    description: 'As an HR manager, handling staff allowances and utility payments used to be stressful. RovelSub Point saves me time and ensures everything is secure.',
+  },
+  {
     name: 'Aisha Bello',
     title: 'Freelancer',
     description: 'Paying for my TV subscription and electricity bills has never been easier. The platform is intuitive and very user-friendly.',
-    icon: 'i-lucide-smile',
-  },
-  {
-    name: 'Suleiman',
-    title: 'Frontend Engineer',
-    description: 'RovelSub Point is the perfect choice for organizations, whether managing bulk payments, staff utilities, or business subscriptions, our platform ensures transactions are efficient, reliable, and seamless.',
-    icon: 'i-lucide-a-large-small',
   },
   {
     name: 'Chukwuemeka Nwosu',
     title: 'RovelSub Agent',
     description: 'Becoming a RovelSub agent has been a game-changer. I earn extra income while providing my customers with fast and reliable services.',
-    icon: 'i-lucide-globe',
   },
   {
-    name: 'Justice Odoyi',
-    title: 'Softwware Developer',
-    description: 'RovelSub Express is the perfect choice for individuals, whether you need to renew subscriptions, recharge your phone, or pay bills, our platform makes transactions quick and hassle-free.',
-    icon: 'i-lucide-book',
+    name: 'Kemi Adebayo',
+    title: 'Student',
+    description: 'Recharging my phone while catching up on my favorite shows is so effortless. RovelSub Point really makes life simpler!',
   },
   {
-    name: 'Justice Odoyi',
-    title: 'Softwware Developer',
-    description: 'RovelSub Express is the perfect choice for individuals, whether you need to renew subscriptions, recharge your phone, or pay bills, our platform makes transactions quick and hassle-free.',
-    icon: 'i-lucide-book',
+    name: 'Daniel Ibrahim',
+    title: 'Small Business Owner',
+    description: 'Paying bills used to be such a headache, but now it’s quick, simple, and hassle-free. I actually look forward to it!',
+  },
+  {
+    name: 'Sandra Okeke',
+    title: 'RovelSub Agent',
+    description: 'Being an agent is super fun! My customers are happy, and I’m making extra cash without stress. RovelSub Point rocks!',
+  },
+  {
+    name: 'Emeka Udo',
+    title: 'Freelancer',
+    description: 'I no longer worry about running out of data in the middle of work. Everything I need is just a few clicks away!',
   },
 ])
 </script>
