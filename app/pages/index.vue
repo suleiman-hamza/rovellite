@@ -175,7 +175,7 @@ const imgList = ref([
             class="bg-white rounded-md"
           >
             <template #default>
-              <div class="p-4 flex flex-col gap-4 items-start text-[#4D5155] font-poppins">
+              <div class="p-4.5 md:p-6 flex flex-col gap-4 items-start text-[#4D5155] font-poppins">
                 <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
                   <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-10 md:h-10" />
                 </span>
@@ -224,16 +224,11 @@ const imgList = ref([
         </h5>
         <section class="flex flex-col md:grid grid-cols-2 gap-4">
           <div class="flex items-center justify-center">
-            <div class="relative size-fit">
+            <div class="relative">
               <!-- Polygon anchored to this wrapper -->
               <span class="absolute top-10 left-8">
                 <NuxtImg src="/images/landing-page/lightbluediamond.svg" class="w-5 h-5" />
               </span>
-
-              <!-- Background image -->
-              <div
-                class="absolute inset-0 -z-10 object-top md:object-left border bg-sky-300/10 rounded-full shadow-2xs"
-              />
 
               <!-- Main image (anchor target) -->
               <NuxtImg

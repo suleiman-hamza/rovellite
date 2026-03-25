@@ -2,9 +2,9 @@
 </script>
 
 <template>
-  <section id="whychooseus" class="bg-[#F2FBFF] py-8 sm:py-12 font-poppins relative">
+  <section id="whychooseus" class="bg-[#F2FBFF] py-13 md:py-18 font-poppins relative">
     <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
-      <span class="absolute w-8 h-8 md:w-13.75 md:h-13.75 top-5 right-5 bg-[#C4ECFE] rounded-full block" />
+      <span class="absolute w-8 h-8 md:w-12 md:h-12 top-5 right-5 bg-[#C4ECFE] rounded-full block" />
       <div class="flex flex-col md:grid gap-4 md:grid-cols-3 md:grid-rows-[50px_50px_50px_50px_50px_50px_50px_50px_50px_50px_50px_50px_50px] lg:grid-rows-[50px_50px_50px_50px_30px_30px_50px_50px_50px_50px_50px]">
         <div class="col-start-1 col-end-3 row-start-1">
           <h4 class="flex gap-3 items-center text-left font-bold  size-fit text-[#1177FE] text-[12px] sm:text-[18px]">
@@ -40,7 +40,7 @@
 
         <div class="row-start-3 row-end-8 col-start-2 col-end-3 flex flex-col gap-4 items-center p-4">
           <NuxtImg src="/images/landing-page/grid-avatar-group.png" class="w-full h-auto" />
-          <UButton label="Get Started" size="lg" class="bg-[#1177FE] rounded-full px-8" />
+          <UButton label="Get Started" size="xl" class="bg-[#1177FE] rounded-full px-8 tracking-[2px]" />
         </div>
 
         <div class="col-start-3 row-start-1 row-end-6">

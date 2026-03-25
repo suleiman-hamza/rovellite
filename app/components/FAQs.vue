@@ -4,15 +4,15 @@ import type { AccordionItem } from '@nuxt/ui'
 const items = ref<AccordionItem[]>([
   {
     label: 'What is RovelSub Point?',
-    content: 'Yes! Nuxt UI is completely free and open source under the MIT license. All 125+ components are available to everyone.',
+    content: 'RovelSub Point is a digital service platform that allows you to buy data, recharge airtime, pay electricity bills, fund betting wallets, renew TV subscriptions, and access other essential services easily.',
   },
   {
     label: 'Is RovelSub Point secure?',
-    content: 'Yes! While optimized for Nuxt, Nuxt UI works perfectly with standalone Vue projects via our Vite plugin. You can follow the [installation guide](/docs/getting-started/installation/vue) to get started.',
+    content: 'Yes. We use secure payment systems and encrypted processes to ensure your transactions and personal information are protected at all times.',
   },
   {
     label: 'How do I create an account?',
-    content: 'You can fund your wallet using any of the available payment options on the platform. Your wallet balance updates instantly and is ready for immediate transactions. You can also skip wallet funding and pay directly with Paystack when selecting a service.',
+    content: 'Sign up using your basic details on the registration page. Once your account is verified, you can log in and start making transactions immediately',
   },
   {
     label: 'How do I fund my wallet?',
@@ -20,19 +20,19 @@ const items = ref<AccordionItem[]>([
   },
   {
     label: 'Can I pay without funding my wallet?',
-    content: 'Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.',
+    content: 'Yes! You can skip wallet funding and pay directly using Paystack or other available payment methods after selecting your preferred service.',
   },
   {
     label: 'How fast are transactions processed?',
-    content: 'Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.',
+    content: 'All transactions are completed instantly. Once payment is confirmed, services like data, airtime, and electricity tokens are delivered without delay.',
   },
   {
     label: 'What should I do if my transaction fails?',
-    content: 'Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.',
+    content: 'If a transaction fails, your wallet will either be refunded automatically or the service will be delivered shortly. You can also contact customer support for quick assistance.',
   },
   {
     label: 'Can I pay without funding my wallet?',
-    content: 'Yes! Nuxt UI is used in production by thousands of applications with extensive tests, regular updates, and active maintenance.',
+    content: 'Yes. You can register as a RovelSub Point agent, resell products purchased from our platform, and set your own prices for your customers.',
   },
 ])
 </script>
