@@ -50,20 +50,18 @@ const items = ref([
 <template>
   <section class="">
     <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-15">
-      <div class="flex justify-between items-start border mb-8">
-        <div>
-          <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
-            TESTIMONIAL
-          </h4>
-          <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold">
-            What Our User Say
-          </h4>
-        </div>
-        <div class="border size-fit flex gap-8">
+      <div class="mb-8">
+        <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
+          TESTIMONIAL
+        </h4>
+        <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold">
+          What Our User Say
+        </h4>
+      </div>
+      <!-- <div class="border size-fit flex gap-8">
           <UButton icon="i-lucide-chevron-left" :ui="{ leadingIcon: 'text-black' }" class="rounded-full bg-transparent outline outline-black" />
           <UButton icon="i-lucide-chevron-right" :ui="{ leadingIcon: 'text-black' }" class="rounded-full bg-transparent outline outline-black" />
-        </div>
-      </div>
+        </div> -->
       <UCarousel
         v-slot="item"
         dots
@@ -72,15 +70,17 @@ const items = ref([
         wheel-gestures
         :prev="{ variant: 'solid' }"
         :next="{ variant: 'solid' }"
+        prev-icon="i-lucide-chevron-left"
+        next-icon="i-lucide-chevron-right"
         :items="items"
         class="w-full mx-auto"
         :ui="{
           item: 'ps-0 sm:basis-2/3 md:basis-[33%] pl-(--slide-spacing) h-full',
-          container: 'ms-0 -ml-(--slide-spacing) h-69 md:h-80',
+          container: 'ms-0 -ml-(--slide-spacing) h-69 sm:h-80',
           controls: 'relative',
-          arrows: 'absolute border border-red-600 size-fit -top-90',
-          prev: 'relative ml-5',
-          next: 'relative',
+          arrows: 'absolute sm:absolute -top-85 sm:-top-100 md:-top-110 end-0 sm:inset-e-0',
+          prev: 'relative -left-8 sm:relative sm:-left-8 outline bg-transparent outline-[#999B9E] text-[#999B9E]',
+          next: 'relative right-0 bottom-0 sm:relative sm:right-0 sm:bottom-0 bg-transparent outline outline-[#999B9E] text-[#999B9E]',
           dots: 'sm:justify-start',
           dot: 'data-[state=active]:bg-[#1177FE]',
         }"

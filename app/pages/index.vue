@@ -222,8 +222,8 @@ const imgList = ref([
         <h5 class="text-left text-[20px] md:text-[52px] text-[#1A1F24] tracking-[2%] font-extrabold">
           Who Can Be Our Users?
         </h5>
-        <section class="flex flex-col md:grid grid-cols-2 gap-4">
-          <div class="">
+        <section class="flex flex-col md:grid grid-cols-2 gap-4 mt-">
+          <div class="shadow-form">
             <NuxtImg
               src="/images/landing-page/mobile-usertype-new.png"
               alt="man standing png"

@@ -81,8 +81,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
               <span>
                 <h4 class="font-bold tracking-[10%] leading-[150%] text-[18px] text-[#4D5155]">Address</h4>
                 <h5 class="text-[#34383D] tracking-[1%] leading-[150%] text-[14px]">
-                  14 Thomas Compound, Okoloma,<br>
-                  Oyigbo Rivers.
+                  14 Gynoscope Drive Off New<br> Layout Rivers, Port Harcourt
                 </h5>
               </span>
             </div>
