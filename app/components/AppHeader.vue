@@ -44,7 +44,7 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <section class="fixed w-full border top-0 z-20 h-(--ui-header-height) flex items-center">
+  <section class="fixed w-full border-b border-[#dedede] top-0 z-20 h-(--ui-header-height) flex items-center bg-white">
     <section class="w-full mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 flex gap-6 items-center">
       <div>
         <NuxtImg
