@@ -14,11 +14,11 @@
             RovelSub Point App Is Coming Soon
           </h3>
           <div class="flex justify-between gap-4 md:mt-8">
-            <UButton size="xl" class="bg-white w-45 border justify-center flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
+            <UButton class="bg-white md:w-45 w-36 border text-[14px] justify-center flex gap-1 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
               <NuxtImg src="/images/landing-page/apple-filled.svg" class="w-4 h-4" />
               <span>Apple Store</span>
             </UButton>
-            <UButton size="xl" class="bg-white w-45 border flex justify-center gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
+            <UButton class="bg-white md:w-45 w-36 border text-[14px] flex justify-center gap-1 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
               <NuxtImg src="/images/landing-page/playstore.svg" class="w-4 h-4" />
               <span>Play Store</span>
             </UButton>
