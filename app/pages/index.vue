@@ -160,7 +160,7 @@ const imgList = ref([
 <template>
   <div class="font-poppins">
     <HeroSection />
-    <section id="features" class="font-poppins bg-[#F2FBFF] pt-14 md:py-18 pb-15">
+    <section id="features" class="font-poppins bg-[#F2FBFF] pt-14 md:py-18 pb-18">
       <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 relative">
         <div class="mb-8 relative">
           <span class="absolute w-6 h-6 md:w-12 md:h-12 right-8 -top-1.5 md:-top-3 rotate-45 bg-[#DBF4FF]" />
@@ -171,7 +171,7 @@ const imgList = ref([
             Our Services
           </h4>
         </div>
-        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-7.8 md:mt-10">
+        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-x-6 md:gap-y-10.5 w-full mt-7.8 md:mt-10">
           <UPageFeature
             v-for="group in features"
             :key="group.title"

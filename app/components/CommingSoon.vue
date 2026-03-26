@@ -2,7 +2,7 @@
   <section class="bg-[#F2FBFF]">
     <section class="py-13 mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 lg:pt-18 lg:pb-10">
       <div class="flex flex-col sm:flex-row-reverse gap-10 md:gap-12 xl:justify-between">
-        <div class="flex-1 pl-6 relative">
+        <div class="flex-1 pl-6 relative border">
           <span class="absolute w-8 h-8 md:w-12 md:h-12 rounded-full left-3 top-2/5 bg-[#1177FE]" />
           <NuxtImg src="/images/landing-page/new-rovel-phone.png" class="ml-auto w-full" />
         </div>
@@ -14,11 +14,11 @@
             RovelSub Point App Is Coming Soon
           </h3>
           <div class="flex justify-between gap-4 md:mt-8">
-            <UButton class="bg-white border flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
+            <UButton size="xl" class="bg-white w-45 border justify-center flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
               <NuxtImg src="/images/landing-page/apple-filled.svg" class="w-4 h-4" />
               <span>Apple Store</span>
             </UButton>
-            <UButton class="bg-white border flex gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
+            <UButton size="xl" class="bg-white w-45 border flex justify-center gap-2 items-center border-[#1177FE] rounded-full text-[#1177FE] font-bold tracking-[10%] md:px-3">
               <NuxtImg src="/images/landing-page/playstore.svg" class="w-4 h-4" />
               <span>Play Store</span>
             </UButton>

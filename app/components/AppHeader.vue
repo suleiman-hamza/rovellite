@@ -44,12 +44,12 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <section class="fixed w-full border-b border-[#dedede] top-0 z-20 h-(--ui-header-height) flex items-center bg-white">
+  <section class="fixed w-full border-b border-[#dedede] top-0 z-20 h-(--ui-header-height-mobile) md:h-(--ui-header-height) flex items-center bg-white">
     <section class="w-full mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 flex gap-6 items-center">
       <div>
         <NuxtImg
           loading="eager"
-          src="/images/landing-page/header-logo.svg"
+          src="/images/landing-page/rovel-new-logo.svg"
           alt="Rovelsub point header logo"
           class="w-auto h-10 md:h-16 object-contain"
         />
