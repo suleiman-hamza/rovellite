@@ -48,9 +48,12 @@ const items = ref([
 </script>
 
 <template>
-  <section class="">
-    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-15">
-      <div class="mb-8">
+  <section>
+    <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 pt-15 pb-20">
+      <div class="mb-8 relative">
+        <span class="absolute top-0 md:left-30 left-20">
+          <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
+        </span>
         <h4 class="text-left size-fit text-[#1177FE] text-[12px] sm:text-[18px] mb-0">
           TESTIMONIAL
         </h4>
@@ -64,6 +67,7 @@ const items = ref([
         </div> -->
       <UCarousel
         v-slot="item"
+        :autoplay="{ delay: 3000 }"
         dots
         loop
         arrows

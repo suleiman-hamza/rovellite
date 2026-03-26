@@ -12,18 +12,20 @@
       <h4 class="text-left text-[20px] tracking-[1%] sm:text-[52px] text-[#1A1F24] font-bold">
         How It Works
       </h4>
-      <span class="absolute top-17 md:top-30 left-35 md:left-100">
+      <span class="absolute top-20 md:top-37 sm:left-44 left-36 md:left-100">
         <NuxtImg src="/images/landing-page/lightbluediamondborder.svg" class="w-5 h-5 md:h-8 md:w-8" />
       </span>
       <div
-        class="grid grid-cols-1 gap-y-6 md:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] md:grid-rows-[auto_auto_auto_auto_auto_auto_auto_auto_auto] mt-8 md:mt-15"
+        class="grid grid-cols-[1fr_2px_1fr] gap-y-6 md:grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] md:grid-rows-[auto_auto_auto_auto_auto_auto_auto_auto_auto] mt-8 md:mt-15"
       >
         <div class="hidden md:block border-t border-r border-dashed w-full h-full self-end col-span-4 col-start-6 row-start-2 row-end-4" />
         <div class="hidden md:block border-t border-l border-dashed w-full h-full self-end col-span-4 col-start-4 row-start-4 row-end-6" />
         <div class="hidden md:block border-t border-r border-dashed w-full h-full self-end col-span-4 col-start-6 row-start-6 row-end-8" />
+
+        <div class="border-l border-dashed border-[#676A6D] md:hidden col-start-2 col-end-3 row-start-1 h-full row-end-8 -z-10" />
         <!-- first one -->
         <div
-          class="md:col-start-1 md:col-end-7 row-[1/3]"
+          class="col-start-1 col-end-4 md:col-end-7 row-[1/3]"
         >
           <UPageFeature class="bg-[#F2FBFF]">
             <template #default>
@@ -45,7 +47,7 @@
         </div>
         <!-- second one -->
         <div
-          class="md:col-start-7 md:col-end-13 row-[3/5]"
+          class="col-start-1 col-end-4 md:col-start-7 md:col-end-13 row-[3/5]"
         >
           <UPageFeature class="bg-[#F2FBFF]">
             <template #default>
@@ -66,7 +68,7 @@
           </UPageFeature>
         </div>
         <div
-          class="md:col-start-1 md:col-end-7 row-[5/7]"
+          class="col-start-1 col-end-4 md:col-start-1 md:col-end-7 row-[5/7]"
         >
           <UPageFeature class="bg-[#F2FBFF]">
             <template #default>
@@ -87,7 +89,7 @@
           </UPageFeature>
         </div>
         <div
-          class="md:col-start-7 md:col-end-13 row-[7/9]"
+          class="col-start-1 col-end-4 md:col-start-7 md:col-end-13 row-[7/9]"
         >
           <UPageFeature class="bg-[#F2FBFF]">
             <template #default>

@@ -161,13 +161,16 @@ const imgList = ref([
   <div class="font-poppins">
     <HeroSection />
     <section id="features" class="font-poppins bg-[#F2FBFF] pt-14 md:py-18 pb-15">
-      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25">
-        <h4 class="text-left size-fit text-[#1177FE] text-[12px] leading-[150%] sm:text-[18px] mb-3">
-          WHAT WE OFFER
-        </h4>
-        <h4 class="mb-7 text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
-          Our Services
-        </h4>
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 relative">
+        <div class="mb-8 relative">
+          <span class="absolute w-6 h-6 md:w-12 md:h-12 right-8 -top-1.5 md:-top-3 rotate-45 bg-[#DBF4FF]" />
+          <h4 class="text-left size-fit text-[#1177FE] text-[12px] leading-[150%] sm:text-[18px] mb-3">
+            WHAT WE OFFER
+          </h4>
+          <h4 class="text-left text-[20px] sm:text-[52px] text-[#1A1F24] font-bold tracking-[2%] leading-[150%] md:leading-16.25">
+            Our Services
+          </h4>
+        </div>
         <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full mt-7.8 md:mt-10">
           <UPageFeature
             v-for="group in features"
