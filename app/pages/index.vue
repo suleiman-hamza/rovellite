@@ -171,7 +171,7 @@ const imgList = ref([
             Our Services
           </h4>
         </div>
-        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full mt-7.8 md:mt-10">
+        <div class="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-7.8 md:mt-10">
           <UPageFeature
             v-for="group in features"
             :key="group.title"
@@ -218,7 +218,7 @@ const imgList = ref([
     </section>
 
     <section class="">
-      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16">
+      <section class="mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 py-16 md:pb-42">
         <h4 class="text-left size-fit text-[#1177FE] text-[12px] md:text-[18px] mb-0 tracking-[1%]">
           WHO IS ROVELSUB POINT FOR
         </h4>
