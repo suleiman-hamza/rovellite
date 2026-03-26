@@ -12,7 +12,7 @@
         >
           <NuxtImg
             loading="eager"
-            src="/images/landing-page/header-logo.svg"
+            src="/images/landing-page/rovel-new-logo.svg"
             alt="Rovelsub point header logo"
             class="w-auto h-10 md:h-16 object-contain"
           />
