@@ -2,6 +2,7 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
+useSeoMeta({ title: 'Welcome - Get Started' })
 definePageMeta({
   layout: 'auth-layout',
 })

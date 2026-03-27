@@ -1,4 +1,5 @@
 <script setup lang="ts">
+useSeoMeta({ title: 'OnBoarding - RovelSub Point' })
 definePageMeta({
   layout: 'auth-layout',
 })
