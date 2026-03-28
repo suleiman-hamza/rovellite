@@ -33,8 +33,12 @@ export default defineEventHandler(async (event) => {
     // Attach decoded user data to the event context for downstream use in API routes
     event.context.user = decodedClaims
   }
-  catch (_err) {
-    // Clear the cookie if it is invalid, expired, or revoked
+  catch {
     setCookie(event, '__session', '', { maxAge: -1, path: '/' })
+
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Session cleared due to authentication error',
+    })
   }
 })

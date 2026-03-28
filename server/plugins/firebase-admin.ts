@@ -1,5 +1,8 @@
 import admin from 'firebase-admin'
 
+// Define the static regex here at the module level
+const NEWLINE_REGEX = /\\n/g
+
 export default defineNitroPlugin(() => {
   const config = useRuntimeConfig()
 
@@ -15,7 +18,7 @@ export default defineNitroPlugin(() => {
 
       // Format private key correctly for RSA (critical for Unix/macOS environments)
       if (serviceAccount.private_key) {
-        serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n')
+        serviceAccount.private_key = serviceAccount.private_key.replace(NEWLINE_REGEX, '\n')
       }
 
       admin.initializeApp({
