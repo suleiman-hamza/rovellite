@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, message: 'Unauthorized: Missing token' })
   }
 
-  const idToken = authHeader.split('Bearer ')[1]
+  const idToken = authHeader.split('Bearer ')[1] as string
 
   try {
     // Verify Firebase ID Token
