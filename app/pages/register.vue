@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { updateProfile } from 'firebase/auth' // firebase update profile
 import * as z from 'zod'
+
+import { useAuth } from '@/composables/use-auth' // firebase auth store
+import { mapFirebaseError } from '@/utils/firebase-error'
 
 useSeoMeta({ title: 'Welcome - Get Started' })
 definePageMeta({
   layout: 'auth-layout',
 })
+
+const toast = useToast()
+const { signUp } = useAuth()
+
+const loading = ref(false)
 
 const schema = z.object({
   username: z.string().min(4, 'Username cannot be less than 4 characters'),
@@ -21,10 +30,37 @@ const state = reactive<Partial<Schema>>({
   password: undefined,
 })
 
-const toast = useToast()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-  console.warn(event.data)
+  try {
+    loading.value = true
+    const firebaseUser = await signUp(
+      event.data.email,
+      event.data.password,
+    )
+
+    await updateProfile(firebaseUser, { displayName: event.data.username })
+    toast.add({
+      title: 'Registration Successful',
+      description: 'You have successfully registered, verify your email to continue.',
+    })
+
+    await navigateTo('/login') // Redirect to login
+  }
+  catch (error: any) {
+    loading.value = false
+    const message = mapFirebaseError(error)
+    displayError(message)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+function displayError(error: any) {
+  toast.add({
+    title: 'Error',
+    description: error,
+  })
 }
 </script>
 

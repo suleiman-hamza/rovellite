@@ -1,11 +1,22 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { User } from 'firebase/auth' // Type for firebaseUser
 import * as z from 'zod'
+
+import { useAuth } from '@/composables/use-auth'
+import { useProfileStore } from '@/stores/profile'
+import { mapFirebaseError } from '@/utils/firebase-error'
 
 useSeoMeta({ title: 'Login - Welcome Back' })
 definePageMeta({
   layout: 'auth-layout',
 })
+
+const store = useProfileStore()
+const toast = useToast()
+const { getUser, signIn, isEmailVerified } = useAuth()
+
+const loading = ref(false)
 
 const schema = z.object({
   email: z.email('Invalid email'),
@@ -19,10 +30,56 @@ const state = reactive<Partial<Schema>>({
   password: undefined,
 })
 
-const toast = useToast()
+// Watch user for redirect if already logged in
+watch(getUser, (currentUser) => {
+  if (currentUser) {
+    navigateTo('/app/dashboard')
+  }
+})
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-  console.warn(event.data)
+  try {
+    loading.value = true
+
+    const firebaseUser: User = await signIn(
+      event.data.email,
+      event.data.password,
+    )
+
+    // Check if email is verified
+    if (!isEmailVerified(firebaseUser)) {
+      toast.add({
+        title: 'Email Not Verified',
+        description: 'Please verify your email to continue.',
+      })
+      return // Prevent navigation until verified
+    }
+
+    await store.fetchProfile(firebaseUser.uid, firebaseUser.email)
+
+    toast.add({
+      title: 'Login Successful',
+      description: 'The form has been submitted.',
+      icon: 'i-lucide-calendar-days',
+    })
+    console.warn(event.data)
+  }
+  catch (error: any) {
+    loading.value = false
+
+    const message = mapFirebaseError(error)
+    displayError(message)
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+function displayError(error: any) {
+  toast.add({
+    title: 'Error',
+    description: error,
+  })
 }
 </script>
 

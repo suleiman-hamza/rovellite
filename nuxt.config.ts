@@ -1,12 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import process from 'node:process'
+
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui',
-    '@nuxtjs/google-fonts',
-    '@nuxt/fonts',
-    '@nuxt/image',
-  ],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/google-fonts', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt'],
   // configuration for components in pages folders
   pages: {
     pattern: ['**/*.vue', '!**/components/**'],
@@ -60,6 +56,43 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   ui: {
     colorMode: false,
+  },
+  runtimeConfig: {
+    apisecret: '1234567',
+    CORALPAY_USERNAME: process.env.CORALPAY_USERNAME,
+    CORALPAY_PASSWORD: process.env.CORALPAY_PASSWORD,
+    SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+    // PALMPAY_BACKEND_PUBLIC_KEY: process.env.PALMPAY_BACKEND_PUBLIC_KEY,
+    PALMPAY_PUBLIC_KEY: process.env.PALMPAY_PUBLIC_KEY,
+    PALMPAY_BACKEND_PRIVATE_KEY: process.env.PALMPAY_BACKEND_PRIVATE_KEY,
+    PALMPAY_APP_ID: process.env.PALMPAY_AUTHORIZATION_BEARER,
+    // Firebase Admin SDK
+    // Private keys (Server-side only)
+    firebaseAdminServiceAccount: process.env.FIREBASE_SERVICE_ACCOUNT_JSON
+      ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON)
+      : null,
+    // firebaseAdminServiceAccount: JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON || '{}'),
+
+    // Supabase SERVICE ROLE (server only)
+    supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+
+    public: {
+      firebase: {
+        apiKey: process.env.FIREBASE_API_KEY,
+        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+        appId: process.env.FIREBASE_APP_ID,
+        measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+      },
+
+      // Flattened & explicit (matches server usage)
+      supabaseUrl: process.env.SUPABASE_URL ?? '',
+      supabaseAnonKey: process.env.SUPABASE_KEY ?? '',
+
+      PALMPAY_MERCHANT_ID: 125010905579101,
+    },
   },
 
   routeRules: {
