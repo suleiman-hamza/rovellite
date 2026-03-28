@@ -2,13 +2,7 @@
 import process from 'node:process'
 
 export default defineNuxtConfig({
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui',
-    '@nuxtjs/google-fonts',
-    '@nuxt/fonts',
-    '@nuxt/image',
-  ],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/google-fonts', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt'],
   // configuration for components in pages folders
   pages: {
     pattern: ['**/*.vue', '!**/components/**'],
