@@ -106,7 +106,7 @@ function displayError(error: any) {
           <UInput v-model="state.password" type="password" size="xl" placeholder="john@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
-        <UButton type="submit" size="lg" class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] w-full tracking-[2%] justify-center py-3">
+        <UButton type="submit" size="lg" :loading class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] w-full tracking-[2%] justify-center py-3">
           Sign In
         </UButton>
       </UForm>
