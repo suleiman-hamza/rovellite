@@ -40,7 +40,7 @@ const items: NavigationMenuItem[] = [{
           :collapsed="collapsed"
           :items="items"
           orientation="vertical"
-          :ui="{ link: 'before:bg-transparent before:rounded-none', linkLeadingIcon: 'text-secondary data-active:border', linkLabel: '', item: '' }"
+          :ui="{ link: 'before:bg-transparent before:rounded-none', linkLeadingIcon: 'text-secondary data-active:border', linkLabel: 'border', item: '' }"
         />
       </template>
 
