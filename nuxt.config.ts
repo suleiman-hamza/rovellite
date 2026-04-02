@@ -63,9 +63,10 @@ export default defineNuxtConfig({
     CORALPAY_PASSWORD: process.env.CORALPAY_PASSWORD,
     SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
     // PALMPAY_BACKEND_PUBLIC_KEY: process.env.PALMPAY_BACKEND_PUBLIC_KEY,
-    PALMPAY_PUBLIC_KEY: process.env.PALMPAY_PUBLIC_KEY,
-    PALMPAY_BACKEND_PRIVATE_KEY: process.env.PALMPAY_BACKEND_PRIVATE_KEY,
-    PALMPAY_APP_ID: process.env.PALMPAY_AUTHORIZATION_BEARER,
+    palmpayAppId: process.env.PALMPAY_APP_ID ?? '',
+    palmpayBaseUrl: process.env.PALMPAY_BASE_URL ?? '',
+    palmpayPrivateKey: process.env.PALMPAY_PRIVATE_KEY ?? '',
+    palmpayPublicKey: process.env.PALMPAY_PUBLIC_KEY ?? '',
     // Firebase Admin SDK
     // Private keys (Server-side only)
     firebaseAdminServiceAccount: process.env.FIREBASE_SERVICE_ACCOUNT_JSON
