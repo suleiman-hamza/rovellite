@@ -116,9 +116,9 @@ const items: NavigationMenuItem[] = [{
       <template #header>
         <UDashboardNavbar>
           <template #title>
-            <h2 class="text-[24px] text-[#1177FE] font-normal">
+            <span class="text-[24px] text-[#1177FE] font-normal">
               Welcome Back, <span class="font-bold uppercase">Rovel</span>
-            </h2>
+            </span>
           </template>
           <template #leading>
             <UDashboardSidebarCollapse />

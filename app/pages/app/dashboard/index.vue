@@ -13,17 +13,6 @@ const cards = ref([
     icon: '/images/icons/wallet-out.svg',
   },
 ])
-const cards2 = ref([
-  {
-    title: '#20,000',
-  },
-  {
-    title: '0',
-  },
-  {
-    title: 'ref-code',
-  },
-])
 </script>
 
 <template>
@@ -73,6 +62,17 @@ const cards2 = ref([
         <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
           <h3>vvshsiahehk;ssio</h3>
           <h4>Referral Code</h4>
+        </div>
+      </UPageGrid>
+    </section>
+
+    <section class="mt-4 rounded-lg">
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg md:grid-cols-4 lg:grid-cols-5">
+        <div v-for="(_, index) in 10" :key="index" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4">
+          <span class="bg-[#DBF4FF] p-2">
+            <NuxtImg src="/images/icons/airtime.svg" alt="come svg for pool" class="w-10 h-10" />
+          </span>
+          <h4>Referal Bonus</h4>
         </div>
       </UPageGrid>
     </section>
