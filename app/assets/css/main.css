@@ -36,6 +36,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
 }
 
 *,
@@ -48,10 +49,4 @@ img {
   max-width: 100%;
   object-fit: cover;
   display: block;
-}
-
-.router-link-active {
-  outline: 1px solid white;
-  background-color: #0083c7;
-  color: white;
 }
