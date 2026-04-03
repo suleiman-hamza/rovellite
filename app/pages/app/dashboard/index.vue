@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import { useProfileStore } from '@/stores/profile'
+
+const profileStore = useProfileStore()
+
+definePageMeta({
+  middleware: ['auth'],
+})
+
 const cards = ref([
   {
     title: 'Wallet Balance',
@@ -15,6 +23,26 @@ const cards = ref([
 ])
 
 const accountNumber = ref('1234567890')
+
+async function createWallet() {
+  try {
+    const response = await $fetch('/api/virtual-account/create', {
+      method: 'POST',
+      body: {
+        userId: profileStore.userProfile?.user_id,
+      },
+    })
+    if (!response.success) {
+      console.error('Error creating wallet:', response.message)
+    }
+    else {
+      console.warn('Wallet created successfully')
+    }
+  }
+  catch (error) {
+    console.error('Error creating wallet:', error)
+  }
+}
 </script>
 
 <template>
@@ -51,7 +79,7 @@ const accountNumber = ref('1234567890')
         <p class="font-bold text-[18px] md:text-[24px]">
           You do not have a wallet
         </p>
-        <UButton label="Create Wallet" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />
+        <UButton label="Create Wallet" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="createWallet" />
       </div>
 
       <!-- show palmpay wallet for users with a wallet -->
@@ -64,7 +92,7 @@ const accountNumber = ref('1234567890')
             <span>{{ accountNumber }}</span>
           </div>
           <p class="tracking-[2%] text-[#3A3A3A] leading-[150%] font-normal">
-            Transfer to Fund wallet. #50 charge applies
+            Transfer to Fund wallet. #50 charge applies {{ profileStore.userProfile?.email }}
           </p>
         </div>
         <UButton label="Copy" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />

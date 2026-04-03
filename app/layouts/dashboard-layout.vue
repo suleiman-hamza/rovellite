@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import { useProfileStore } from '@/stores/profile'
+
+const store = useProfileStore()
 
 const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
@@ -117,7 +120,7 @@ const items: NavigationMenuItem[] = [{
         <UDashboardNavbar>
           <template #title>
             <span class="text-[24px] text-[#1177FE] font-normal">
-              Welcome Back, <span class="font-bold uppercase">Rovel</span>
+              Welcome Back, <span class="font-bold uppercase">{{ store.userProfile?.full_name }}</span>
             </span>
           </template>
           <template #leading>
@@ -133,8 +136,8 @@ const items: NavigationMenuItem[] = [{
               </UChip>
               <UButton label="My Cart" icon="i-lucide-shopping-cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]', label: 'text-[#4D5155] font-semibold text-[16px] tracking-[2%]' }" />
               <UUser
-                name="John Doe" :avatar="{
-                  src: 'https://i.pravatar.cc/150?u=john-doe',
+                :name="store.userProfile?.full_name" :avatar="{
+                  src: store.userProfile?.avatar_url || 'https://i.pravatar.cc/150?u=john-doe',
                   loading: 'lazy',
                   icon: 'i-lucide-image',
                 }"
