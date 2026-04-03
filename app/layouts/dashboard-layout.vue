@@ -47,6 +47,10 @@ const items: NavigationMenuItem[] = [{
   icon: '/images/icons/education.svg',
   to: '/app/education',
 }, {
+  label: 'Transportation',
+  icon: 'images/icons/transportation.svg',
+  to: '/app/transportation',
+}, {
   label: 'Solar System',
   icon: '/images/icons/solar.svg',
   to: '/app/solarSystem',
