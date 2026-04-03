@@ -1,4 +1,73 @@
 <script setup lang="ts">
+import type { VirtualAccountResponse } from '@@/types/palmpay'
+// import { useClipboard } from '@vueuse/core'
+
+import { useProfileStore } from '@/stores/profile'
+
+const store = useProfileStore()
+
+definePageMeta({
+  middleware: ['auth'],
+})
+
+const items = [{
+  label: 'Subscriptions',
+  icon: '/images/dashboard/dashboard.svg',
+  to: '/app/subscriptions',
+}, {
+  label: 'Gift cards',
+  icon: '/images/dashboard/giftcard.svg',
+  to: '/app/giftCards',
+}, {
+  label: 'Data/Internet',
+  icon: '/images/dashboard/data.svg',
+  to: '/app/dataInternet',
+}, {
+  label: 'Airtime',
+  icon: '/images/dashboard/airtime.svg',
+  to: '/app/airtime',
+}, {
+  label: 'TV/Decoders',
+  icon: '/images/dashboard/tv-decoder.svg',
+  to: '/app/tvDecoders',
+}, {
+  label: 'Electricity',
+  icon: '/images/dashboard/electricity.svg',
+  to: '/app/electricity',
+}, {
+  label: 'Education',
+  icon: '/images/dashboard/education.svg',
+  to: '/app/education',
+}, {
+  label: 'Transportation',
+  icon: 'images/dashboard/airtime.svg',
+  to: '/app/transportation',
+}, {
+  label: 'Solar System',
+  icon: '/images/dashboard/solar.svg',
+  to: '/app/solarSystem',
+}, {
+  label: 'Withdraw Referral Earning',
+  icon: '/images/dashboard/referral.svg',
+  to: '',
+}]
+
+const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
+
+onBeforeMount(async () => {
+  const { data: VA, error: VAerror } = await useAsyncData(
+    'virtual-account',
+    () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
+  )
+
+  if (VAerror.value) {
+    console.error('Error fetching virtual account:', VAerror.value)
+  }
+  else {
+    virtualAccountDetails.value = VA.value as VirtualAccountResponse
+  }
+})
+
 const cards = ref([
   {
     title: 'Wallet Balance',
@@ -14,7 +83,25 @@ const cards = ref([
   },
 ])
 
-const accountNumber = ref('1234567890')
+async function createWallet() {
+  try {
+    const response = await $fetch('/api/virtual-account/create', {
+      method: 'POST',
+      body: {
+        userId: store.userProfile?.user_id,
+      },
+    })
+    if (!response.success) {
+      console.error('Error creating wallet:', response.message)
+    }
+    else {
+      console.warn('Wallet created successfully')
+    }
+  }
+  catch (error) {
+    console.error('Error creating wallet:', error)
+  }
+}
 </script>
 
 <template>
@@ -45,29 +132,29 @@ const accountNumber = ref('1234567890')
           </template>
         </UPageCard>
       </UPageGrid>
-      <!-- show create wallet option for users without a wallet -->
-
-      <div class="flex md:flex-row flex-col items-center justify-between p-4 sm:px-6">
-        <p class="font-bold text-[18px] md:text-[24px]">
-          You do not have a wallet
-        </p>
-        <UButton label="Create Wallet" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />
-      </div>
 
       <!-- show palmpay wallet for users with a wallet -->
-      <div class="flex md:flex-row flex-col gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
+      <div v-if="virtualAccountDetails !== null" class="flex md:flex-row flex-col gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
         <div class="flex flex-col gap-3 text-center">
           <div class="flex gap-2 md:gap-3 items-center font-bold text-[18px] md:text-[24px]">
             <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-8 h-8" />
             <h3>Palmpay</h3>
             <USeparator orientation="vertical" class="h-4" />
-            <span>{{ accountNumber }}</span>
+            <span>{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
           <p class="tracking-[2%] text-[#3A3A3A] leading-[150%] font-normal">
             Transfer to Fund wallet. #50 charge applies
           </p>
         </div>
         <UButton label="Copy" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />
+      </div>
+
+      <!-- show create wallet option for users without a wallet -->
+      <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 sm:px-6">
+        <p class="font-bold text-[18px] md:text-[24px]">
+          You do not have a wallet
+        </p>
+        <UButton label="Create Wallet" loading-auto size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="createWallet" />
       </div>
     </section>
 
@@ -90,14 +177,14 @@ const accountNumber = ref('1234567890')
 
     <section class="mt-4 rounded-lg">
       <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg md:grid-cols-4 lg:grid-cols-5">
-        <div v-for="(_, index) in 10" :key="index" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4">
           <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg">
-            <NuxtImg src="/images/icons/airtime.svg" alt="come svg for pool" class="w-10 h-10" />
+            <NuxtImg :src="item.icon" alt="come svg for pool" class="w-10 h-10" />
           </span>
           <h4 class="tracking-[5%] text-[16px] text-[#676A6D] font-normal">
-            Referal Bonus
+            {{ item.label }}
           </h4>
-        </div>
+        </NuxtLink>
       </UPageGrid>
     </section>
   </main>

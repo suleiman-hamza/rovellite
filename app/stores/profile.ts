@@ -1,4 +1,6 @@
+// import type { VirtualAccountResponse } from '@@/types/palmpay'
 import type { Profile } from '../../types/supabase'
+
 import { createClient } from '@supabase/supabase-js'
 import { useRuntimeConfig } from 'nuxt/app'
 import { useAuth } from '../composables/use-auth'
@@ -9,6 +11,7 @@ export const useProfileStore = defineStore('profile', () => {
   const { getUser } = useAuth()
 
   const userProfile = ref<Profile | null>(null)
+  // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
   const loading = ref(false)
 
   // Handle get supabase client
