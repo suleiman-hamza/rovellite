@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import { useClipboard } from '@vueuse/core'
+// import { useClipboard } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
