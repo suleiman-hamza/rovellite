@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+// import type { VirtualAccountResponse } from '../../types/palmpay'
+
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
@@ -127,14 +129,16 @@ const items: NavigationMenuItem[] = [{
             <UDashboardSidebarCollapse />
           </template>
           <template #right>
-            <div class="border p-1 flex gap-3">
+            <div class="p-1 flex gap-3">
               <UChip :text="5" color="error" inset size="3xl">
                 <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
               </UChip>
               <UChip :text="5" color="error" inset size="3xl">
                 <UButton icon="i-lucide-mail" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
               </UChip>
-              <UButton label="My Cart" icon="i-lucide-shopping-cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]', label: 'text-[#4D5155] font-semibold text-[16px] tracking-[2%]' }" />
+              <UButton icon="i-lucide-shopping-cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]' }">
+                <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
+              </UButton>
               <UUser
                 :name="store.userProfile?.full_name" :avatar="{
                   src: store.userProfile?.avatar_url || 'https://i.pravatar.cc/150?u=john-doe',

@@ -36,6 +36,31 @@ export interface VirtualAccountQueryResponse {
   status: boolean
 }
 
+// i need this export on the frontend after querying the virtual account [userId] endpoint
+export interface VirtualAccountResponse {
+  success: boolean
+  message: string
+  data: {
+    id: string
+    user_id: string
+    provider: string
+    virtual_account_no: string
+    virtual_account_name: string
+    status: string
+    app_id: string
+    raw_response: VirtualAccountQueryResponse['data']
+    created_at: string
+    profiles: {
+      email: string
+      phone: string | null
+      full_name: string
+      avatar_url: string | null
+    }
+    palmPayFresh: VirtualAccountCreateData
+  }
+  timestamp: string
+}
+
 /** Typed Response for Virtual Account Creation */
 export interface VirtualAccountCreateResponse extends PalmPayBaseResponse {
   data: VirtualAccountCreateData

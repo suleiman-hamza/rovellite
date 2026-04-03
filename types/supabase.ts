@@ -17,6 +17,27 @@ export enum UserRole {
   ADMIN = 'admin',
 }
 
+// export interface VirtualAccount {
+//   id: string
+//   user_id: string
+//   provider: string
+//   virtual_account_no: string
+//   virtual_account_name: string
+//   status: string
+//   app_id: string
+//   raw_response: string
+//   created_at: string
+// }
+
+// export interface PalmpayResponse {
+//   appId: string;
+//   email: string;
+//   status: string;
+//   customerName: string;
+//   identityType: string;
+//   licenseNumber: string;
+//   accountReference: string | null;
+// }
 // Type for inserting a new profile (omit auto-generated fields)
 export type ProfileInsert = Omit<Profile, 'created_at' | 'updated_at'> & {
   // Make email required for insert

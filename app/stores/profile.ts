@@ -1,4 +1,6 @@
+import type { VirtualAccountResponse } from '@@/types/palmpay'
 import type { Profile } from '../../types/supabase'
+
 import { createClient } from '@supabase/supabase-js'
 import { useRuntimeConfig } from 'nuxt/app'
 import { useAuth } from '../composables/use-auth'
@@ -9,6 +11,7 @@ export const useProfileStore = defineStore('profile', () => {
   const { getUser } = useAuth()
 
   const userProfile = ref<Profile | null>(null)
+  const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
   const loading = ref(false)
 
   // Handle get supabase client
@@ -60,6 +63,18 @@ export const useProfileStore = defineStore('profile', () => {
 
       const { data, error } = await query.maybeSingle()
 
+      const { data: VA, error: VAerror } = await useAsyncData(
+        'virtual-account',
+        () => $fetch(`/api/virtual-account/${queryUid}`),
+      )
+
+      if (VAerror.value) {
+        console.error('Error fetching virtual account:', VAerror.value)
+      }
+      else {
+        virtualAccountDetails.value = VA.value as VirtualAccountResponse
+      }
+
       // Ignore “no rows” error
       if (error && error.code !== 'PGRST116')
         throw error
@@ -85,6 +100,7 @@ export const useProfileStore = defineStore('profile', () => {
 
   return {
     userProfile,
+    virtualAccountDetails,
     loading,
     fetchProfile,
     clearProfile,

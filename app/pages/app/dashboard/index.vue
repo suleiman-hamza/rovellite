@@ -1,11 +1,20 @@
 <script setup lang="ts">
+// import type { VirtualAccountResponse } from '@@/types/palmpay'
+
 import { useProfileStore } from '@/stores/profile'
 
-const profileStore = useProfileStore()
+const store = useProfileStore()
 
 definePageMeta({
   middleware: ['auth'],
 })
+
+// onBeforeMount(async () => {
+
+//   else if (data.value) {
+//     VADetails.value = data.value as VirtualAccountResponse
+//   }
+// })
 
 const cards = ref([
   {
@@ -22,14 +31,12 @@ const cards = ref([
   },
 ])
 
-const accountNumber = ref('1234567890')
-
 async function createWallet() {
   try {
     const response = await $fetch('/api/virtual-account/create', {
       method: 'POST',
       body: {
-        userId: profileStore.userProfile?.user_id,
+        userId: store.userProfile?.user_id,
       },
     })
     if (!response.success) {
@@ -73,29 +80,29 @@ async function createWallet() {
           </template>
         </UPageCard>
       </UPageGrid>
-      <!-- show create wallet option for users without a wallet -->
-
-      <div class="flex md:flex-row flex-col items-center justify-between p-4 sm:px-6">
-        <p class="font-bold text-[18px] md:text-[24px]">
-          You do not have a wallet
-        </p>
-        <UButton label="Create Wallet" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="createWallet" />
-      </div>
 
       <!-- show palmpay wallet for users with a wallet -->
-      <div class="flex md:flex-row flex-col gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
+      <div v-if="store.virtualAccountDetails" class="flex md:flex-row flex-col gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
         <div class="flex flex-col gap-3 text-center">
           <div class="flex gap-2 md:gap-3 items-center font-bold text-[18px] md:text-[24px]">
             <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-8 h-8" />
             <h3>Palmpay</h3>
             <USeparator orientation="vertical" class="h-4" />
-            <span>{{ accountNumber }}</span>
+            <span>{{ store.virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
           <p class="tracking-[2%] text-[#3A3A3A] leading-[150%] font-normal">
-            Transfer to Fund wallet. #50 charge applies {{ profileStore.userProfile?.email }}
+            Transfer to Fund wallet. #50 charge applies
           </p>
         </div>
         <UButton label="Copy" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />
+      </div>
+
+      <!-- show create wallet option for users without a wallet -->
+      <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 sm:px-6">
+        <p class="font-bold text-[18px] md:text-[24px]">
+          You do not have a wallet
+        </p>
+        <UButton label="Create Wallet" loading-auto size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="createWallet" />
       </div>
     </section>
 
