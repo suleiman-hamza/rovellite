@@ -25,12 +25,12 @@
         <div class="border-l border-dashed border-[#676A6D] md:hidden col-start-2 col-end-3 row-start-1 h-full row-end-8 -z-10" />
         <!-- first one -->
         <div
-          class="col-start-1 col-end-4 md:col-end-7 row-[1/3] h-54.5 bg-[#F2FBFF] rounded-lg"
+          class="col-start-1 col-end-4 md:col-end-7 row-[1/3] h-58 md:h-54.5 bg-[#F2FBFF] rounded-lg"
         >
           <UPageFeature class="">
             <template #default>
               <div class="p-4 md:p-6 pt-5 md:pt-7.5 flex gap-4 items-start">
-                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
+                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 text-[18px] md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
                   1
                 </span>
                 <div class="flex-1">
@@ -52,7 +52,7 @@
           <UPageFeature class="">
             <template #default>
               <div class="p-4 md:p-6 pt-5 md:pt-7.5 flex gap-4 items-start">
-                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
+                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 text-[18px] md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
                   2
                 </span>
                 <div class="flex-1">
@@ -73,7 +73,7 @@
           <UPageFeature class="">
             <template #default>
               <div class="p-4 md:p-6 pt-5 md:pt-7.5 flex gap-4 items-start">
-                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
+                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 text-[18px] md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
                   3
                 </span>
                 <div class="flex-1">
@@ -94,7 +94,7 @@
           <UPageFeature class="">
             <template #default>
               <div class="p-4 md:p-6 pt-5 md:pt-7.5 flex gap-4 items-start">
-                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
+                <span class="bg-[#1177FE] w-12 md:w-22 h-12 md:h-22 text-[18px] md:text-[52px] text-white font-bold flex items-center justify-center rounded-lg">
                   4
                 </span>
                 <div class="flex-1">

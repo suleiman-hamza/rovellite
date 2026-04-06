@@ -239,7 +239,7 @@ const imgList = ref([
             <UPageFeature
               v-for="group in userTypes"
               :key="group.title"
-              class="rounded-md bg-[#F2FBFF] h-54.5"
+              class="rounded-md bg-[#F2FBFF] h-50 md:h-54.5"
             >
               <template #default>
                 <div class="md:py-7.5 py-5 pr-4 md:pr-5.5 pl-3 md:pl-7 flex gap-4 items-start h-50 md:h-54.5 max-w-159.5">

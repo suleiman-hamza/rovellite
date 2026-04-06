@@ -4,7 +4,7 @@
 <template>
   <div>
     <AppHeader />
-    <main class="mt-(--ui-header-height)">
+    <main class="md:mt-(--ui-header-height)  mt-(--ui-header-height-mobile)">
       <slot />
     </main>
     <AppFooter />
