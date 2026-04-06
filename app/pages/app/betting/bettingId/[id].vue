@@ -65,34 +65,29 @@ function addToCart() {
 </script>
 
 <template>
-  <main class="bg-[#F2F2F4] min-h-full p-4 border">
-    <section v-if="betPlatform" class="border bg-white font-openSans rounded-lg flex flex-col gap-4 sm:pb-4">
-      <div class="rounded-md flex gap-4 md:gap-8 h-24 sm:h-32 items-center p-5 md:px-6 border w-full">
+  <main class="bg-white font-openSans rounded-lg p-7">
+    <section v-if="betPlatform" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
+      <div class="rounded-lg flex justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-5 md:px-6 bg-[#DBF4FF] w-full">
         <!-- :style="{ backgroundColor: result?.accentColor } -->
-        <UButton variant="ghost" class="flex p-2 items-center justify-center" @click="$router.back()">
+        <!-- <UButton variant="ghost" class="flex p-2 items-center justify-center" @click="$router.back()">
           <UIcon name="i-lucide-arrow-left" />
-        </UButton>
-        <span class="rounded-md p-2 border bg-white w-25 h-full flex items-center justify-center">
-          <NuxtImg :src="betPlatform?.image" class="object-contain w-full h-full" />
+        </UButton> -->
+        <span class="rounded-full">
+          <NuxtImg :src="betPlatform?.image" class="object-contain w-24 h-24" />
         </span>
-        <p class="text-[18px] sm:text-[24px] font-bold text-black">
+        <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155]">
           {{ betPlatform?.name.toUpperCase() }}
         </p>
       </div>
-      <div class="border w-full sm:max-w-md mx-auto">
-        <div class="border px-4 sm:px-6 text-center text-[#565252] font-openSans">
-          <div class="bordertext-[18px] sm:text-[32px] font-extrabold">
-            {{ betPlatform?.name }} Top Up
-          </div>
-        </div>
-        <div class="border px-4 sm:px-6">
+      <div class="w-full sm:max-w-lg mx-auto mt-9 mb-17.5">
+        <div class="px-4 sm:px-6">
           <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
-            <UFormField label="Choose Wallet" name="agent">
-              <USelect :items="betPlatform" />
+            <UFormField name="agent">
+              <USelect placeholder="Choose Wallet" size="xl" class="w-full" />
             </UFormField>
 
-            <UFormField label="User Id" name="id">
-              <UInput />
+            <UFormField name="id">
+              <UInput size="xl" :placeholder="`${betPlatform.name} User Id`" class="w-full" />
             </UFormField>
 
             <div class="flex items-center justify-between font-sourcePro border">
@@ -102,32 +97,32 @@ function addToCart() {
               </UButton>
             </div>
 
-            <UFormField label="Amount" name="amount">
-              <UInput />
+            <UFormField name="amount">
+              <UInput size="xl" placeholder="Amount" class="w-full" />
+              <p class="text-[14px]">
+                Minimum: #100 | Maximun: #100
+              </p>
             </UFormField>
 
-            <UButton type="submit">
-              Submit
-            </UButton>
+            <div class="flex gap-4 px-4 sm:px-6">
+              <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                Add to Cart
+              </UButton>
+              <UButton
+                type="submit"
+                class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
+              >
+                Checkout
+                <!-- <Icon name="ion:caret-down" width="512" height="512" /> -->
+              </UButton>
+            </div>
           </UForm>
-        </div>
-        <div class="border px-4 sm:px-6">
-          <UButton class="w-full font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
-            Add to Cart
-          </UButton>
-          <UButton
-            type="submit"
-            class="w-full font-bold text-[16px] sm:text-[20px]"
-          >
-            Checkout
-            <!-- <Icon name="ion:caret-down" width="512" height="512" /> -->
-          </UButton>
         </div>
       </div>
     </section>
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-else class="flex items-center space-x-4">
-      <span class="w-100 h-100 block bg-red-500" />
+      <span>Loading...</span>
     </div>
 
     <div v-if="pageerror">
