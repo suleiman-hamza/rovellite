@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import { useClipboard } from '@vueuse/core'
+// import { useClipboard } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
-const source = store.userProfile?.user_id.virtual_account_no
-const { text, copy, copied, isSupported } = useClipboard({ source })
+// const source = store.userProfile?.user_id.virtual_account_no
+// const { text, copy, copied, isSupported } = useClipboard({ source })
 
 definePageMeta({
   middleware: ['auth'],
@@ -136,21 +136,24 @@ async function createWallet() {
       </UPageGrid>
 
       <!-- show palmpay wallet for users with a wallet -->
-      <div v-if="virtualAccountDetails !== null" class="flex md:flex-row flex-col gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
-        <div class="flex flex-col gap-3 text-center">
-          <div class="flex gap-2 md:gap-3 items-center font-bold text-[18px] md:text-[24px]">
-            <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-8 h-8" />
-            <h3>Palmpay</h3>
-            <USeparator orientation="vertical" class="h-4" />
+      <div v-if="virtualAccountDetails !== null" class="flex flex-row gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
+        <div class="flex flex-col md:gap-3">
+          <div class="flex gap-1 md:gap-3 items-center font-bold text-[18px] md:text-[24px]">
+            <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-5.5 h-5.5 md:w-8 md:h-8" />
+            <h3 class="text-[16px] md:text-[18px]">
+              Palmpay
+            </h3>
+            <USeparator orientation="vertical" class="hidden md:inline h-4" />
             <span>{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
-          <p class="tracking-[2%] text-[#3A3A3A] leading-[150%] font-normal">
+          <p class="tracking-[2%] text-[#3A3A3A] text-[12px] md:text-[20px] leading-[150%] font-normal">
             Transfer to Fund wallet. #50 charge applies
           </p>
         </div>
-        <UButton size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="copy(source)">
-          <span v-if="!copied">Copy</span>
-          <span v-else>Copied!</span>
+        <UButton size="lg" label="copy" :ui="{ label: 'text-white text-[12px] md:text-[20px]', base: 'bg-[#1177FE] px-3 md:px-6 rounded-full md:rounded-md' }">
+          <!-- <span v-if="!copied">Copy</span>
+          <span v-else>Copied!</span> -->
+          <!-- @click="copy(source)" -->
         </UButton>
       </div>
 
@@ -164,29 +167,44 @@ async function createWallet() {
     </section>
 
     <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg">
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
-          <h3>#20,000</h3>
-          <h4>Referal Bonus</h4>
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-xl grid-cols-2 md:grid-cols-3">
+        <div class="col-span-2 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-4">
+          <div>
+            <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
+              vvshsiahehk;ssio
+            </h3>
+            <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
+              Referral Code
+            </h4>
+          </div>
+          <span class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]">copy</span>
         </div>
         <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
-          <h3>0</h3>
-          <h4>Total Referrals</h4>
+          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
+            #20,000
+          </h3>
+          <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
+            Referal Bonus
+          </h4>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
-          <h3>vvshsiahehk;ssio</h3>
-          <h4>Referral Code</h4>
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-4">
+          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
+            0
+          </h3>
+          <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
+            Total Referrals
+          </h4>
         </div>
       </UPageGrid>
     </section>
 
     <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4">
-          <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg">
-            <NuxtImg :src="item.icon" alt="come svg for pool" class="w-10 h-10" />
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 sm:px-6 gap-2 md:gap-4 rounded-lg grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4 truncate">
+          <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
+            <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
           </span>
-          <h4 class="tracking-[5%] text-[16px] text-[#676A6D] font-normal">
+          <h4 class="md:tracking-[5%] text-[12px] md:text-[16px] text-[#676A6D] font-normal truncate text-ellipsis">
             {{ item.label }}
           </h4>
         </NuxtLink>
