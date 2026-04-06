@@ -72,11 +72,11 @@ const items = computed<NavigationMenuItem[]>(() => [
       </div>
 
       <div class="items-center gap-4 lg:gap-6 lg:flex font-poppins hidden text-base">
-        <UButton to="/login" size="xl" variant="ghost" class="border-[#1177FE] border text-[#1177FE] rounded-[40px] font-semibold lg:px-8 px-6 leading-[150%] tracking-[2%]" aria-label="Login">
+        <UButton to="/login" size="xl" variant="ghost" class="w-33.25 h-12 border-[#1177FE] border text-[#1177FE] items-center justify-center rounded-[40px] font-semibold leading-[150%] tracking-[2%]" aria-label="Login">
           Login
         </UButton>
 
-        <UButton to="/register" size="xl" class="bg-[#1177FE] text-white rounded-[40px] font-semibold lg:px-8 px-6 leading-[150%] tracking-[2%]" aria-label="Sign Up">
+        <UButton to="/register" size="xl" class="w-33.25 h-12 bg-[#1177FE] text-white rounded-[40px] font-semibold items-center justify-center leading-[150%] tracking-[2%]" aria-label="Sign Up">
           Register
         </UButton>
       </div>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-// import { useClipboard } from '@vueuse/core'
+import { useClipboard } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
+const source = store.userProfile?.user_id.virtual_account_no
+const { text, copy, copied, isSupported } = useClipboard({ source })
 
 definePageMeta({
   middleware: ['auth'],
@@ -146,7 +148,10 @@ async function createWallet() {
             Transfer to Fund wallet. #50 charge applies
           </p>
         </div>
-        <UButton label="Copy" size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" />
+        <UButton size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="copy(source)">
+          <span v-if="!copied">Copy</span>
+          <span v-else>Copied!</span>
+        </UButton>
       </div>
 
       <!-- show create wallet option for users without a wallet -->
@@ -176,7 +181,7 @@ async function createWallet() {
     </section>
 
     <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg md:grid-cols-4 lg:grid-cols-5">
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-lg grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4">
           <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-10 h-10" />

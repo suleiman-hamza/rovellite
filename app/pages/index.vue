@@ -225,7 +225,7 @@ const imgList = ref([
         <h5 class="text-left text-[20px] md:text-[52px] text-[#1A1F24] tracking-[2%] font-extrabold">
           Who Can Be Our Users?
         </h5>
-        <section class="flex flex-col md:grid grid-cols-2 gap-4 mt-">
+        <section class="flex flex-col md:grid grid-cols-2 gap-4">
           <div class="shadow-form">
             <NuxtImg
               src="/images/landing-page/mobile-usertype-new.png"
@@ -239,18 +239,18 @@ const imgList = ref([
             <UPageFeature
               v-for="group in userTypes"
               :key="group.title"
-              class="rounded-md bg-[#F2FBFF]"
+              class="rounded-md bg-[#F2FBFF] h-54.5"
             >
               <template #default>
-                <div class="p-4 flex gap-4 md:gap-6 items-start h-58">
-                  <span class="bg-[#1177FE] p-3 flex items-center justify-center rounded-sm">
-                    <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-8 md:h-8" />
+                <div class="md:py-7.5 py-5 pr-4 md:pr-5.5 pl-3 md:pl-7 flex gap-4 items-start h-50 md:h-54.5 max-w-159.5">
+                  <span class="bg-[#1177FE] mt-7.5 w-12 h-12 md:w-22 md:h-22 md:self-center flex items-center justify-center rounded-sm">
+                    <NuxtImg :src="group.icon" class="block w-6 h-6 md:w-10.5 md:h-10.5" />
                   </span>
                   <div class="flex-1">
-                    <h4 class="text-[#4D5155] text-base sm:text-[24px] leading-[150%] tracking-[1%] font-bold">
+                    <h4 class="text-[#4D5155] text-base md:mb-2 sm:text-[24px] leading-[150%] md:leading-7.5 tracking-[1%] font-bold">
                       {{ group.title }}
                     </h4>
-                    <p class="text-[14px] text-[#34383D] leading-[161%] sm:leading-[190%] tracking-[1%] sm:tracking-[5%] font-normal">
+                    <p class="text-[14px] md:text-[16px] text-[#34383D] leading-[161%] md:leading-[190%] tracking-[1%] sm:tracking-[5%] font-normal">
                       {{ group.description }}
                     </p>
                   </div>

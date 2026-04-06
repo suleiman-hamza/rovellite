@@ -2,9 +2,9 @@
   <section class="bg-[#F2FBFF]">
     <section class="py-13 mx-5 sm:mx-6 md:mx-8 lg:mx-19 2xl:mx-25 lg:pt-18 lg:pb-10">
       <div class="flex flex-col sm:flex-row-reverse gap-10 md:gap-12 xl:justify-between">
-        <div class="flex-1 pl-6 relative">
-          <span class="absolute w-8 h-8 md:w-12 md:h-12 rounded-full left-3 top-2/5 bg-[#1177FE]" />
-          <NuxtImg src="/images/landing-page/new-rovel-phone.png" class="ml-auto w-full" />
+        <div class="flex-1 pl-6 relative h-125">
+          <!-- <span class="absolute w-8 h-8 md:w-10 md:h-10 rounded-full left-3 md:right-74 top-2/5 bg-[#1177FE]" /> -->
+          <NuxtImg src="/images/landing-page/new-rovel-phone.png" class="ml-auto w-auto h-full" />
         </div>
         <div class="flex-1 flex flex-col gap-2 justify-center sm:items-start items-center">
           <h3 class="text-[#1177FE] text-[clamp(0.85rem,4vw,1.2rem)] tracking-[1%] leading-[150%]">
