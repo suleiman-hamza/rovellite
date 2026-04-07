@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-// import { useClipboard } from '@vueuse/core'
+import { useClipboard } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
-// const source = store.userProfile?.user_id.virtual_account_no
-// const { text, copy, copied, isSupported } = useClipboard({ source })
 
 definePageMeta({
   middleware: ['auth'],
@@ -69,6 +67,10 @@ onBeforeMount(async () => {
     virtualAccountDetails.value = VA.value as VirtualAccountResponse
   }
 })
+
+// what to copy to clipboard, in this case, the user's virtual account number
+const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
+const { copy, copied } = useClipboard({ source })
 
 const cards = ref([
   {
@@ -150,10 +152,9 @@ async function createWallet() {
             Transfer to Fund wallet. #50 charge applies
           </p>
         </div>
-        <UButton size="lg" label="copy" :ui="{ label: 'text-white text-[12px] md:text-[20px]', base: 'bg-[#1177FE] px-3 md:px-6 rounded-full md:rounded-md' }">
-          <!-- <span v-if="!copied">Copy</span>
-          <span v-else>Copied!</span> -->
-          <!-- @click="copy(source)" -->
+        <UButton size="lg" :ui="{ label: 'text-white text-[12px] md:text-[20px]', base: 'bg-[#1177FE] px-3 md:px-6 rounded-full md:rounded-md' }" @click="copy(source)">
+          <span v-if="!copied">Copy</span>
+          <span v-else>Copied!</span>
         </UButton>
       </div>
 
