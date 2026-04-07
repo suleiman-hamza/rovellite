@@ -84,18 +84,20 @@ function displayError(error: any) {
 </script>
 
 <template>
-  <section class="grid grid-cols-1 md:grid-cols-2">
-    <div class="flex flex-col max-w-md mx-auto md:my-12 px-5 py-4">
-      <NuxtImg
-        loading="eager"
-        src="/images/landing-page/rovel-new-logo.svg"
-        width="100"
-        height="100"
-        alt="Rovelsub point header logo"
-        class="w-30 object-contain size-fit mb-6"
-      />
+  <section class="grid grid-cols-1 md:grid-cols-2 min-h-full">
+    <div class="flex flex-col w-full max-w-md mx-auto my-auto px-5 py-4">
+      <div class="flex justify-center md:justify-start">
+        <NuxtImg
+          loading="eager"
+          src="/images/landing-page/rovel-new-logo.svg"
+          width="100"
+          height="100"
+          alt="Rovelsub point header logo"
+          class="w-30 object-contain size-fit mb-6"
+        />
+      </div>
       <h3 class="text-[#1177FE] tracking-[2%] leading-[150%] font-semibold text-[18px] mb-4">
-        Sign In To Your RovelSub Point Account Today
+        Sign In
       </h3>
       <UForm :schema="schema" :state="state" class="space-y-6 mb-6" @submit="onSubmit">
         <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
@@ -106,11 +108,26 @@ function displayError(error: any) {
           <UInput v-model="state.password" type="password" size="xl" placeholder="john@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
+        <UFormField>
+          <div class="flex justify-between">
+            <UCheckbox label="Remember Me" size="xl" :ui="{ indicator: 'bg-[#1177FE]' }" />
+            <NuxtLink to="/forget-password" class="text-[#1177FE] text-[16px] tracking-[5%]">
+              Forgot Password?
+            </NuxtLink>
+          </div>
+        </UFormField>
+
         <UButton type="submit" size="lg" :loading class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] w-full tracking-[2%] justify-center py-3">
           Sign In
         </UButton>
+
+        <p class="text-center md:text-right text-[18px] leading-[150%] font-normal text-[#ADADAD]">
+          Don't have an account? <NuxtLink to="/register" class="text-[#1177FE]">
+            Create Account
+          </NuxtLink>
+        </p>
       </UForm>
-      <USeparator label="Or continue with" :ui="{ container: 'text-[#858585]', label: 'text-[#5D5B5C]' }" class="mb-6 tracking-[2%]" />
+      <!-- <USeparator label="Or continue with" :ui="{ container: 'text-[#858585]', label: 'text-[#5D5B5C]' }" class="mb-6 tracking-[2%]" />
       <div class="space-y-5">
         <UButton type="submit" variant="outline" size="lg" :ui="{ base: 'ring-[#5D5B5C]' }" class="text-center rounded-sm text-[#3A3A3A] leading-[150%] text-[18px] w-full justify-center py-3">
           <template #leading>
@@ -129,9 +146,9 @@ function displayError(error: any) {
             Register
           </NuxtLink>
         </p>
-      </div>
+      </div> -->
     </div>
-    <div class="hidden bg-[#1177FE] min-h-screen relative md:flex items-center justify-center p-4">
+    <div class="hidden bg-[#1177FE] h-full relative md:flex items-center justify-center p-4">
       <NuxtImg src="/images/top-left.svg" class="absolute top-0 left-0 z-1" alt="ellipse top" />
       <NuxtImg src="/images/bottom-right.svg" class="absolute bottom-0 right-0 z-0" alt="ellipse bottom" />
       <div class="font-poppins text-center flex flex-col gap-5 items-center justify-center">
