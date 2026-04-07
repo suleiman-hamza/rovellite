@@ -1,16 +1,41 @@
 <script setup lang="ts">
+import z from 'zod'
+
 definePageMeta({
   layout: 'auth-layout',
 })
 useSeoMeta({
   title: 'Forgot Password',
 })
+
+const step = ref<'email' | 'otp'>('email')
+const loading = ref(false)
+
+const emailSchema = z.email('Enter a valid email address')
+const emailState = ref('')
+
+// cross check otp schema later
+const otpSchema = z.number('enter a valid otp')
+const otpState = ref()
+
+function sendCode() {
+  loading.value = true
+  try {
+    step.value = 'otp'
+  }
+  catch (error) {
+    console.warn('Error sending code:', error)
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
   <main class="grid grid-cols-1 md:grid-cols-2 min-h-full">
-    <div>
-      <div class="flex flex-col w-full max-w-md mx-auto my-auto px-5 py-4 border">
+    <div class="h-full flex justify-center items-center">
+      <div class="flex flex-col w-full max-w-md mx-auto my-auto px-5 py-4">
         <div class="flex justify-center md:justify-start">
           <NuxtImg
             loading="eager"
@@ -24,6 +49,45 @@ useSeoMeta({
         <h3 class="text-[#1177FE] tracking-[2%] leading-[150%] font-semibold text-[18px] mb-4">
           Forgot Password
         </h3>
+        <div v-if="step === 'email'">
+          <p class="text-[18px] leading-[150%] font-normal text-[#34383D] mb-4">
+            Enter your email used for your registration to receive a verification code.
+          </p>
+          <UForm :state="emailState" :schema="emailSchema" class="space-y-8 mb-4">
+            <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+              <UInput size="xl" placeholder="john@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+            </UFormField>
+
+            <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center" @click="sendCode">
+              Send Code
+            </UButton>
+          </UForm>
+          <p class="text-center md:text-right text-[18px] leading-[150%] font-normal text-[#ADADAD]">
+            Remember your account? <NuxtLink to="/login" class="text-[#1177FE]">
+              Sign In
+            </NuxtLink>
+          </p>
+        </div>
+
+        <section v-else>
+          <p class="text-[18px] leading-[150%] font-normal text-[#34383D] mb-4">
+            Enter the code sent to your number in the field below
+          </p>
+          <UForm :state="otpState" :schema="otpSchema" class="space-y-8 mb-4">
+            <UFormField name="otp" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+              <UInput size="xl" type="number" placeholder="Enter Code" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+            </UFormField>
+
+            <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center">
+              Verify
+            </UButton>
+          </UForm>
+          <p class="text-center md:text-right text-[18px] leading-[150%] font-normal text-[#ADADAD]">
+            Remember your account? <NuxtLink to="/login" class="text-[#1177FE]">
+              Sign In
+            </NuxtLink>
+          </p>
+        </section>
       </div>
     </div>
     <div class="hidden bg-[#1177FE] h-full relative md:flex items-center justify-center p-4">
