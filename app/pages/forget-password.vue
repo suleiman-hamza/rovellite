@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useCountdown } from '@vueuse/core'
 import z from 'zod'
 
 definePageMeta({
@@ -8,6 +9,17 @@ useSeoMeta({
   title: 'Forgot Password',
 })
 
+// TODO: Implement actual logic for sending code and verifying OTP
+const deactivateButton = ref(true)
+
+const countdownSeconds = 60
+const { remaining, start } = useCountdown(countdownSeconds, {
+  onComplete() {
+    deactivateButton.value = false
+  },
+})
+
+// State management for the form steps
 const step = ref<'email' | 'otp'>('email')
 const loading = ref(false)
 
@@ -18,10 +30,13 @@ const emailState = ref('')
 const otpSchema = z.number('enter a valid otp')
 const otpState = ref()
 
+// This simulates sending the code to the user's email
 function sendCode() {
   loading.value = true
   try {
+    // Simulate sending code logic here, changes the step to otp and starts the countdown
     step.value = 'otp'
+    start()
   }
   catch (error) {
     console.warn('Error sending code:', error)
@@ -29,6 +44,12 @@ function sendCode() {
   finally {
     loading.value = false
   }
+}
+
+// This resets the countdown and disable the resend button until the countdown completes
+function resetCountDown() {
+  deactivateButton.value = true
+  start(countdownSeconds)
 }
 </script>
 
@@ -54,8 +75,8 @@ function sendCode() {
             Enter your email used for your registration to receive a verification code.
           </p>
           <UForm :state="emailState" :schema="emailSchema" class="space-y-8 mb-4">
-            <UFormField name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-              <UInput size="xl" type="email" placeholder="Enter Email" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+            <UFormField name="email" label="Email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+              <UInput size="xl" type="email" placeholder="example@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
             </UFormField>
 
             <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center" @click="sendCode">
@@ -74,9 +95,18 @@ function sendCode() {
             Enter the code sent to your number in the field below
           </p>
           <UForm :state="otpState" :schema="otpSchema" class="space-y-8 mb-4">
-            <UFormField name="otp" class="flex justify-center">
-              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6' }" />
+            <UFormField name="otp" class="flex w-full justify-center">
+              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6 border', base: ['rounded-sm ring-[#676A6D]'] }" />
             </UFormField>
+
+            <div class="flex justify-between items-center">
+              <UButton class="text-[#1177FE] text-[18px] p-0 bg-transparent" :ui="{ base: 'bg-white disabled:text-[#808385] disabled:bg-transparent hover:bg-transparent' }" :disabled="deactivateButton" @click="resetCountDown">
+                Resend
+              </UButton>
+              <p class="text-[14px] text-[#1177FE] text-[18px] leading-[150%] font-normal">
+                {{ remaining }} sec
+              </p>
+            </div>
 
             <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center">
               Verify
