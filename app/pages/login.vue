@@ -58,9 +58,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     await store.fetchProfile(firebaseUser.uid, firebaseUser.email)
 
     toast.add({
-      title: 'Login Successful',
-      description: 'The form has been submitted.',
-      icon: 'i-lucide-calendar-days',
+      title: 'Welcome Back',
+      description: 'You are now signed in.',
     })
     console.warn(event.data)
   }

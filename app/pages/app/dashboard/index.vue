@@ -69,8 +69,12 @@ onBeforeMount(async () => {
 })
 
 // what to copy to clipboard, in this case, the user's virtual account number
-const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
-const { copy, copied } = useClipboard({ source })
+// const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
+const source = '6658401689'
+const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
+
+const refferalCode = ref('vvshsiahehk;ssio')
+const referalOnly = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 
 const cards = ref([
   {
@@ -178,9 +182,14 @@ async function createWallet() {
               Referral Code
             </h4>
           </div>
-          <span class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]">copy</span>
+          <button
+            class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]" @click="referalOnly.copy(refferalCode)"
+          >
+            <span v-if="!referalOnly.copied">Copy</span>
+            <span v-else>Copied!</span>
+          </button>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
+        <div class=" flex flex-col justify-center items-center p-4">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>

@@ -54,8 +54,8 @@ function sendCode() {
             Enter your email used for your registration to receive a verification code.
           </p>
           <UForm :state="emailState" :schema="emailSchema" class="space-y-8 mb-4">
-            <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-              <UInput size="xl" placeholder="john@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+            <UFormField name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+              <UInput size="xl" type="email" placeholder="Enter Email" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
             </UFormField>
 
             <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center" @click="sendCode">
@@ -74,8 +74,8 @@ function sendCode() {
             Enter the code sent to your number in the field below
           </p>
           <UForm :state="otpState" :schema="otpSchema" class="space-y-8 mb-4">
-            <UFormField name="otp" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-              <UInput size="xl" type="number" placeholder="Enter Code" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+            <UFormField name="otp" class="flex justify-center">
+              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6' }" />
             </UFormField>
 
             <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center">
