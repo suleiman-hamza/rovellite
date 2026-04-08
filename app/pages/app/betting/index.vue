@@ -32,7 +32,7 @@ onBeforeMount(async () => {
         v-for="betting in bettingData"
         :key="betting.id"
         :to="`betting/bettingId/${betting.id}`"
-        class="block p-2 sm:p-3 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-gray-100 transition-colors"
+        class="block p-2 sm:p-3 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-[#E3EDF0] transition-colors"
       >
         <div class="flex items-center gap-2 flex-col">
           <NuxtImg :src="betting.images" :alt="betting.name" class="object-contain w-12 h-12 md:w-24 md:h-24" />

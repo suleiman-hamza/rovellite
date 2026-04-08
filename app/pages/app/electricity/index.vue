@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import type { Biller } from '#shared/types/biller-types'
 useSeoMeta({
-  title: 'Betting',
+  title: 'Electricity',
   // change this description to a more relevant one later
   description: () => `This is a description for the page`,
 })
@@ -32,7 +32,7 @@ onBeforeMount(async () => {
         alt="Electricity Image"
         class="w-full h-48 object-cover rounded-lg mb-4 sm:mb-8"
       />
-      <main class="grid grid-cols-[repeat(auto-fit,minmax(100px,120px))] sm:grid-cols-[repeat(auto-fit,minmax(120px,150px))] md:grid-cols-[repeat(auto-fit,minmax(150px,200px))] justify-center items-center gap-4 h-full bg-white p-4 rounded-lg">
+      <main class="grid grid-cols-[repeat(auto-fit,minmax(100px,120px))] sm:grid-cols-[repeat(auto-fit,minmax(120px,150px))] md:grid-cols-[repeat(auto-fit,minmax(150px,200px))] justify-center items-center gap-4 md:gap-x-5 md:gap-y-8 h-full bg-white p-4 rounded-lg">
         <NuxtLink
           v-for="discos in availableDiscos"
           :key="discos.slug"
@@ -42,7 +42,7 @@ onBeforeMount(async () => {
           <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5">
             <NuxtImg :src="discos.logo" alt="Education Logo" class="object-contain" />
           </span>
-          <h4 class="text-base sm:text-[24px] text-[#7F7C7C] leading-none font-sourcePro font-semibold sm:font-bold">
+          <h4 class="font-poppins text-[16px] text-[#676A6D] leading-[150%] tracking-[1%] sm:font-bold">
             {{ discos.name }}
           </h4>
         </NuxtLink>
