@@ -11,10 +11,12 @@ definePageMeta({
 })
 
 const bettingData = ref<Biller[] | null>(null)
+const fetchError = ref()
 
 onBeforeMount(async () => {
   const { data, error } = await useFetch<Biller[]>('/api/betting')
   if (error.value) {
+    fetchError.value = error.value
     console.error('Error fetching betting data:', error.value)
   }
   else {
@@ -40,6 +42,10 @@ onBeforeMount(async () => {
         </div>
       </NuxtLink>
     </section>
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-else-if="fetchError" class="flex items-center space-x-4">
+      <p>Error fetching betting data.</p>
+    </div>
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-else class="flex items-center space-x-4">
       <p>loading...</p>
