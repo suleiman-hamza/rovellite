@@ -96,7 +96,7 @@ function resetCountDown() {
           </p>
           <UForm :state="otpState" :schema="otpSchema" class="space-y-8 mb-4">
             <UFormField name="otp" class="flex w-full justify-center">
-              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6 border', base: ['rounded-sm ring-[#676A6D]'] }" />
+              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6', base: ['rounded-sm ring-[#676A6D]'] }" />
             </UFormField>
 
             <div class="flex justify-between items-center">
