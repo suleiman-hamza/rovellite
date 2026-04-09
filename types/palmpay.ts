@@ -5,8 +5,8 @@ export interface PalmPayBaseResponse {
   status?: boolean
 }
 
-/** Specific Virtual Account Creation Data */
-export interface VirtualAccountCreateData {
+/** Data returned when creating or querying a Virtual Account on PalmPay */
+export interface VirtualAccountData {
   virtualAccountNo: string
   virtualAccountName: string
   customerName: string
@@ -19,55 +19,50 @@ export interface VirtualAccountCreateData {
   [key: string]: any
 }
 
-export interface VirtualAccountQueryResponse {
-  respCode: string
-  respMsg: string
-  data: {
-    virtualAccountName: string
-    virtualAccountNo: string
-    identityType: string
-    email: string
-    licenseNumber: string
-    customerName: string
-    status: string
-    accountReference: string | null
-    appId: string
-  }
+/** Response from PalmPay Create Endpoint */
+export interface VirtualAccountCreateResponse extends PalmPayBaseResponse {
+  data: VirtualAccountData
+}
+
+/** Response from PalmPay Query Endpoint (/queryOne) */
+export interface VirtualAccountQueryResponse extends PalmPayBaseResponse {
+  data: VirtualAccountData
   status: boolean
 }
 
-// i need this export on the frontend after querying the virtual account [userId] endpoint
+/** Standardized Response returned to Frontend from /api/virtual-account/[userId] */
 export interface VirtualAccountResponse {
   success: boolean
   message: string
-  data: {
-    id: string
-    user_id: string
-    provider: string
-    virtual_account_no: string
-    virtual_account_name: string
-    status: string
-    app_id: string
-    raw_response: VirtualAccountQueryResponse['data']
-    created_at: string
-    profiles: {
-      email: string
-      phone: string | null
-      full_name: string
-      avatar_url: string | null
-    }
-    palmPayFresh: VirtualAccountCreateData
-  }
+  data: VirtualAccountWithProfile
   timestamp: string
 }
 
-/** Typed Response for Virtual Account Creation */
-export interface VirtualAccountCreateResponse extends PalmPayBaseResponse {
-  data: VirtualAccountCreateData
-}
-
-/** Generic PalmPay Response (default fallback) */
+/** Generic fallback response */
 export interface PalmPayResponse extends PalmPayBaseResponse {
   data?: any
   [key: string]: any
+}
+
+/** Virtual Account joined with User Profile - Used in frontend responses */
+export interface VirtualAccountWithProfile {
+  id: string
+  user_id: string
+  provider: string
+  virtual_account_no: string
+  virtual_account_name: string
+  status: string
+  app_id?: string
+  raw_response?: any
+  created_at: string
+  updated_at?: string
+
+  profiles: {
+    full_name: string
+    email: string
+    phone?: string | null
+    avatar_url?: string | null
+  }
+
+  palmPayFresh?: VirtualAccountData // Latest live data from PalmPay
 }
