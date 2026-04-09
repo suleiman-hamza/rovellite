@@ -28,12 +28,6 @@ export async function createVirtualAccount(event: any, input: { userId: string }
       .eq('user_id', userId)
       .single()
 
-    // if (profileError || !profile) {
-    //   throw createError({
-    //     statusCode: 404,
-    //     statusMessage: 'User not found in database',
-    //   })
-    // }
     if (profileError || !profile) {
       return apiResponse.error('User profile not found', 404)
     }
@@ -45,12 +39,6 @@ export async function createVirtualAccount(event: any, input: { userId: string }
       .eq('user_id', userId)
       .single()
 
-    // if (existing) {
-    //   throw createError({
-    //     statusCode: 409,
-    //     statusMessage: `User already has a virtual account: ${existing.virtual_account_no}`,
-    //   })
-    // }
     if (existing) {
       return apiResponse.error(
         `User already has a virtual account: ${existing.virtual_account_no}`,
@@ -109,7 +97,7 @@ export async function createVirtualAccount(event: any, input: { userId: string }
     }, 'Virtual Account created successfully')
   }
   catch (error: any) {
-    console.error('createVirtualAccount Error:', error)
+    // console.error('createVirtualAccount Error:', error)
     return apiResponse.error(
       error.message || 'Internal error while creating virtual account',
       500,
