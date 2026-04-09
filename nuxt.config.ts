@@ -106,6 +106,9 @@ export default defineNuxtConfig({
       include: [
         'embla-carousel-vue',
         'zod',
+        'firebase/app',
+        'firebase/auth',
+        '@supabase/supabase-js',
       ],
     },
   },

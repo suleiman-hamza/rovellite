@@ -9,7 +9,6 @@ const createVaSchema = z.object({
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    console.warn('Create VA Request Body:', body)
 
     // Validate with Zod
     const { userId } = createVaSchema.parse(body)
@@ -19,7 +18,7 @@ export default defineEventHandler(async (event) => {
     return result
   }
   catch (error: any) {
-    console.error('VA Creation Error:', error)
+    // console.error('VA Creation Error:', error)
 
     // Handle Zod validation errors
     if (error.name === 'ZodError') {
