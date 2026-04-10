@@ -5,6 +5,8 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile'
 
+const toast = useToast()
+
 const { signOutUser } = useAuth()
 
 const store = useProfileStore()
@@ -13,10 +15,6 @@ const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
   icon: '/images/icons/dashboard.svg',
   to: '/app/dashboard',
-}, {
-  label: 'Subscriptions',
-  icon: '/images/icons/subscription.svg',
-  to: '/app/subscriptions',
 }, {
   label: 'Gift cards',
   icon: '/images/icons/giftcard.svg',

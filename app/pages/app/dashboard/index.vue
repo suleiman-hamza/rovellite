@@ -54,29 +54,28 @@ const items = [{
 
 const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 
-onBeforeMount(async () => {
-  const { data: VA, error: VAerror } = await useAsyncData(
-    'virtual-account',
-    () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
-  )
+const { data: VA, status, error: VAerror } = await useAsyncData(
+  'virtual-account',
+  () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
+)
 
-  if (VAerror.value) {
-    console.error('Error fetching virtual account:', VAerror.value)
-  }
-  else {
-    virtualAccountDetails.value = VA.value as VirtualAccountResponse
-  }
-})
+if (VAerror.value) {
+  console.error('Error fetching virtual account:', VAerror.value)
+}
+else {
+  virtualAccountDetails.value = VA.value as VirtualAccountResponse
+}
 
 // what to copy to clipboard, in this case, the user's virtual account number
-// const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
-const source = '6658401689'
+const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')
 const referalOnly = useClipboard({ source: refferalCode, copiedDuring: 3000 })
+const loading = ref(false)
 
 async function createWallet() {
+  loading.value = true
   try {
     const response = await $fetch('/api/virtual-account/create', {
       method: 'POST',
@@ -94,6 +93,9 @@ async function createWallet() {
   catch (error) {
     console.error('Error creating wallet:', error)
   }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -101,8 +103,16 @@ async function createWallet() {
   <main class="">
     <section class="bg-white rounded-lg">
       <Wallet />
+      <div v-if="status === 'pending'" class="flex items-center gap-4 border">
+        <USkeleton class="size-12 rounded-full" />
+
+        <div class="grid gap-2">
+          <USkeleton class="h-4 w-[250px]" />
+          <USkeleton class="h-4 w-[200px]" />
+        </div>
+      </div>
       <!-- show palmpay wallet for users with a wallet -->
-      <div v-if="virtualAccountDetails !== null" class="p-4 sm:px-6">
+      <div v-else-if="status === 'success' && virtualAccountDetails?.success" class="p-4 sm:px-6">
         <div class="flex justify-between items-start md:gap-3">
           <div class="flex gap-1.5 md:gap-3 items-center font-bold text-[16px] md:text-[24px] mb-2">
             <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-5.5 h-5.5 md:w-8 md:h-8" />
@@ -120,19 +130,23 @@ async function createWallet() {
         <p class="tracking-[2%] text-[#3A3A3A] text-[12px] md:text-[20px] leading-[150%] font-normal">
           Transfer to Fund wallet. #50 charge applies
         </p>
+        <!-- <p>{{ virtualAccountDetails?.data }}</p> -->
       </div>
 
       <!-- show create wallet option for users without a wallet -->
       <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 sm:px-6">
-        <p class="font-bold text-[18px] md:text-[24px]">
+        <p class="font-bold text-[18px] md:text-[24px] mb-2">
           You do not have a wallet
         </p>
-        <UButton label="Create Wallet" loading-auto size="lg" :ui="{ label: 'text-white text-[16px] md:text-[20px]', base: 'bg-[#1177FE] px-6' }" @click="createWallet" />
+        <UButton :loading :disabled="loading" size="lg" class="text-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+          <span v-if="loading">Processing</span>
+          <span v-else>Create Wallet</span>
+        </UButton>
       </div>
     </section>
 
     <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-4 sm:px-6 gap-4 rounded-xl grid-cols-2 md:grid-cols-3">
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] py-5 px-3 sm:px-6 sm:py-4.5 md:px-10 gap-4 rounded-xl grid-cols-2 md:grid-cols-3">
         <div class="col-span-2 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-4">
           <div>
             <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
@@ -149,7 +163,7 @@ async function createWallet() {
             <span v-else>Copied!</span>
           </button>
         </div>
-        <div class=" flex flex-col justify-center items-center p-4">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>
@@ -168,8 +182,8 @@ async function createWallet() {
       </UPageGrid>
     </section>
 
-    <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 sm:px-6 gap-2 md:gap-4 rounded-lg grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+    <section class="mt-4 rounded-[20px]">
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 py-4 sm:px-6 gap-2 md:gap-4 rounded-[20px] grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] rounded-lg flex flex-col justify-center items-center p-4 truncate">
           <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
