@@ -20,7 +20,7 @@ const electricDiscoLogos: Record<string, string> = {
 //   logo?: string
 // }
 
-export default defineEventHandler(async () => {
+export default defineCachedEventHandler(async () => {
   const group = 'ELECTRIC_DISCO'
   const data = await $fetch(`/api/coral-pay/biller-group-slug/${group}`)
   const selected = data?.filter(item => ['EKEDC', 'EEDC', 'AEDC', 'IKEDC', 'IBEDC', 'KEDCO', 'KAEDCO', 'JEDC', 'APLE', 'BEDC', 'BH_ELECTRIC', 'YOLA', 'YEDC', 'PHEDC'].includes(item.slug))

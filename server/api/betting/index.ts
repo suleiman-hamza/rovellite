@@ -32,7 +32,7 @@ const logos: Record<string, string> = {
   'surebet': '/images/betting/surebet.png',
 }
 
-export default defineEventHandler(async () => {
+export default defineCachedEventHandler(async () => {
   const id = 7 // coralPay id for betting providers
 
   // in-server fetch to make internal requests to another handler
