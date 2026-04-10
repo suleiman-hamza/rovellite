@@ -80,7 +80,7 @@ function displayError(error: any) {
       </h3>
       <UForm :schema="schema" :state="state" class="space-y-6 mb-6" @submit="onSubmit">
         <UFormField label="User Name" name="username" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UInput v-model="state.email" size="xl" placeholder="User123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+          <UInput v-model="state.username" size="xl" placeholder="User123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
         <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">

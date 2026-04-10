@@ -125,7 +125,7 @@ const items: NavigationMenuItem[] = [{
       <template #header>
         <UDashboardNavbar>
           <template #title>
-            <span class="text-[24px] text-[#1177FE] font-normal">
+            <span class="text-[16px] md:text-[24px] text-[#1177FE] font-normal">
               Welcome Back, <span class="font-bold uppercase">{{ store.userProfile?.full_name }}</span>
             </span>
           </template>
@@ -133,7 +133,7 @@ const items: NavigationMenuItem[] = [{
             <UDashboardSidebarCollapse />
           </template>
           <template #right>
-            <div class="p-1 flex gap-3">
+            <div class="sm:flex gap-3 hidden">
               <UChip :text="5" color="error" inset size="3xl">
                 <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
               </UChip>
@@ -151,6 +151,9 @@ const items: NavigationMenuItem[] = [{
                 }"
               />
             </div>
+            <UChip :text="5" color="error" inset size="3xl" class="sm:hidden">
+              <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
+            </UChip>
           </template>
         </UDashboardNavbar>
       </template>

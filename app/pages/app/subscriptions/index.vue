@@ -8,5 +8,9 @@ definePageMeta({
 <template>
   <main>
     <h1>Sub page</h1>
+    <Wallet />
   </main>
 </template>
+
+<style scoped>
+</style>
