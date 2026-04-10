@@ -2,7 +2,10 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 // import type { VirtualAccountResponse } from '../../types/palmpay'
 
+import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile'
+
+const { signOutUser } = useAuth()
 
 const store = useProfileStore()
 
@@ -67,6 +70,28 @@ const items: NavigationMenuItem[] = [{
   icon: '/images/icons/settings.svg',
   to: '/app/settings',
 }]
+
+const loading = ref(false)
+async function logOut() {
+  loading.value = true
+  try {
+    const result = await signOutUser()
+    if (!result.success) {
+      throw new Error('Logout failed')
+    }
+    navigateTo('/login')
+  }
+  catch {
+    toast.add({
+      title: 'Logout Failed',
+      description: 'An error occurred while logging out. Please try again.',
+      color: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -118,7 +143,7 @@ const items: NavigationMenuItem[] = [{
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
