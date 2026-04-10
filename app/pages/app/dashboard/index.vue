@@ -11,10 +11,6 @@ definePageMeta({
 })
 
 const items = [{
-  label: 'Subscriptions',
-  icon: '/images/dashboard/dashboard.svg',
-  to: '/app/subscriptions',
-}, {
   label: 'Gift cards',
   icon: '/images/dashboard/giftcard.svg',
   to: '/app/giftCards',
@@ -71,7 +67,7 @@ const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')
-const referalOnly = useClipboard({ source: refferalCode, copiedDuring: 3000 })
+const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
 async function createWallet() {
@@ -107,8 +103,8 @@ async function createWallet() {
         <USkeleton class="size-12 rounded-full" />
 
         <div class="grid gap-2">
-          <USkeleton class="h-4 w-[250px]" />
-          <USkeleton class="h-4 w-[200px]" />
+          <USkeleton class="h-4 w-62" />
+          <USkeleton class="h-4 w-62" />
         </div>
       </div>
       <!-- show palmpay wallet for users with a wallet -->
@@ -157,9 +153,9 @@ async function createWallet() {
             </h4>
           </div>
           <button
-            class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]" @click="referalOnly.copy(refferalCode)"
+            class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]" @click="copyReferralCode(refferalCode)"
           >
-            <span v-if="!referalOnly.copied">Copy</span>
+            <span v-if="!copiedReferralCode">Copy</span>
             <span v-else>Copied!</span>
           </button>
         </div>
