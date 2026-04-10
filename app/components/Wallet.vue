@@ -36,63 +36,129 @@ const cards = ref([
   {
     title: 'Wallet Balance',
     icon: '/images/icons/wallet-ballance.svg',
+    bgColor: 'bg-[#1177FE]',
   },
   {
-    title: 'Wallet In',
+    title: 'Total Credited',
     icon: '/images/icons/wallet-in.svg',
+    bgColor: 'bg-[#1ED760]',
   },
   {
-    title: 'Wallet Out',
+    title: 'Total Spent',
     icon: '/images/icons/wallet-out.svg',
+    bgColor: 'bg-[#FBABAB]',
   },
 ])
+
+const isAmountVisible = ref(true)
+const balance = ref(12550.50)
+
+const displayedBalance = computed(() => {
+  if (isAmountVisible.value) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN',
+    }).format(balance.value)
+  }
+  return '••••'
+})
+
+function toggleAmountVisibility() {
+  isAmountVisible.value = !isAmountVisible.value
+}
 </script>
 
 <template>
-  <div class="border p-2">
-    <div class="embla bg-[#1177FE] p-4 rounded-[20.75px]">
-      <div ref="emblaRef" class="embla__viewport">
-        <div class="embla__container">
-          <UPageCard
-            v-for="(card, index) in cards"
-            :key="index"
-            class="embla__slide rounded-none bg-[#1177FE] ring-0"
-            :ui="{ container: 'p-0 sm:p-0 rounded-none bg-transparent', root: 'ring-0' }"
-          >
-            <template #default>
-              <div class="bg-white p-4 rounded-[20px]">
-                <div class="flex gap-2 items-center">
-                  <span class="bg-[#1177FE] p-2.5 rounded-sm">
-                    <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
-                  </span>
-                  <div class="">
-                    <p class="text-[20px] font-bold text-[#4D5155]">
-                      N0.00
-                    </p>
-                    <h3 class="text-[14px] md:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
-                      {{ card.title }}
-                    </h3>
+  <div class="">
+    <section class="sm:hidden">
+      <div class="embla bg-[#1177FE] p-4 rounded-[20.75px]">
+        <div ref="emblaRef" class="embla__viewport">
+          <div class="embla__container">
+            <UPageCard
+              v-for="(card, index) in cards"
+              :key="index"
+              class="embla__slide rounded-none bg-[#1177FE] ring-0"
+              :ui="{ container: 'p-0 sm:p-0 rounded-none bg-transparent', root: 'ring-0' }"
+            >
+              <template #default>
+                <div class="bg-white p-4 rounded-[20px]">
+                  <div class="flex gap-2.5 items-center">
+                    <!-- wallet icon -->
+                    <span :class="card.bgColor" class="p-2.5 rounded-[8px]">
+                      <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
+                    </span>
+                    <!-- wallet balance -->
+                    <div class="truncate">
+                      <p class="text-[18px] font-bold text-[#4D5155]">
+                        {{ displayedBalance }}
+                      </p>
+                      <h3 class="text-[16px] md:text-[18px] tracking-[5%] md:tracking-[10%] text-[#676A6D] font-regular">
+                        {{ card.title }}
+                      </h3>
+                    </div>
+                    <!-- wallet actions show or hide balance -->
+                    <div class="ml-auto">
+                      <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
+                        <UIcon v-if="isAmountVisible" name="i-lucide-eye" class="bg-[#34383D] size-5" />
+                        <UIcon v-else name="i-lucide-eye-off" class="bg-[#34383D] size-5" />
+                      </UButton>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </UPageCard>
+              </template>
+            </UPageCard>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="embla__dots flex gap-1 justify-center mt-3">
-      <button
-        v-for="(_, index) in scrollSnaps"
-        :key="index"
-        :class="[
-          index === selectedSnap ? 'embla__dot--selected' : '',
-        ]"
-        class="embla__dot p-0 leading-0"
-        @click="scrollTo(index)"
-      >
-        <UIcon name="i-lucide-circle-small" />
-      </button>
-    </div>
+      <div class="embla__dots flex gap-1 justify-center mt-3">
+        <button
+          v-for="(_, index) in scrollSnaps"
+          :key="index"
+          :class="[
+            index === selectedSnap ? 'embla__dot--selected' : '',
+          ]"
+          class="embla__dot p-0 leading-0"
+          @click="scrollTo(index)"
+        >
+          <UIcon name="i-lucide-circle-small" class="bg-[#8fd3f0]" />
+        </button>
+      </div>
+    </section>
+    <!-- desktop view -->
+    <section class="hidden sm:block">
+      <UPageGrid class="bg-[#1177FE] p-5 md:px-7.5 rounded-[20px] gap-4">
+        <UPageCard
+          v-for="(card, index) in cards"
+          :key="index"
+          :ui="{ container: 'p-0 sm:p-0' }"
+        >
+          <template #default>
+            <div class="bg-white p-4 px-2  rounded-[20px]">
+              <div class="flex gap-2 items-center">
+                <span :class="card.bgColor" class="p-2.5 rounded-[8px]">
+                  <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
+                </span>
+                <div class="truncate">
+                  <p class="text-[20px] font-bold text-[#4D5155]">
+                    {{ displayedBalance }}
+                  </p>
+                  <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
+                    {{ card.title }}
+                  </h3>
+                </div>
+                <!-- wallet actions show or hide balance -->
+                <div class="p-1 ml-auto">
+                  <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
+                    <UIcon v-if="isAmountVisible" name="i-lucide-eye" class="bg-[#34383D] size-5" />
+                    <UIcon v-else name="i-lucide-eye-off" class="bg-[#34383D] size-5" />
+                  </UButton>
+                </div>
+              </div>
+            </div>
+          </template>
+        </UPageCard>
+      </UPageGrid>
+    </section>
   </div>
 </template>
 
@@ -116,6 +182,8 @@ const cards = ref([
 }
 
 .embla__dot--selected {
+  background-color: #1177FE;
+  border-radius: 50%;
   opacity: 1;
 }
 </style>

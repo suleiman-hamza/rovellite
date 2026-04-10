@@ -76,21 +76,6 @@ const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 const refferalCode = ref('vvshsiahehk;ssio')
 const referalOnly = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 
-const cards = ref([
-  {
-    title: 'Wallet Balance',
-    icon: '/images/icons/wallet-ballance.svg',
-  },
-  {
-    title: 'Wallet In',
-    icon: '/images/icons/wallet-in.svg',
-  },
-  {
-    title: 'Wallet Out',
-    icon: '/images/icons/wallet-out.svg',
-  },
-])
-
 async function createWallet() {
   try {
     const response = await $fetch('/api/virtual-account/create', {
@@ -115,51 +100,26 @@ async function createWallet() {
 <template>
   <main class="">
     <section class="bg-white rounded-lg">
-      <UPageGrid class="bg-[#1177FE] p-4 md:px-6 rounded-lg gap-4">
-        <UPageCard
-          v-for="(card, index) in cards"
-          :key="index"
-          :ui="{ container: 'p-0 sm:p-0' }"
-        >
-          <template #default>
-            <div class="bg-white p-4 rounded-lg">
-              <div class="flex gap-2 items-center">
-                <span class="bg-[#1177FE] p-2.5 rounded-sm">
-                  <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
-                </span>
-                <div class="">
-                  <p class="text-[20px] font-bold text-[#4D5155]">
-                    N0.00
-                  </p>
-                  <h3 class="text-[14px] md:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
-                    {{ card.title }}
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </template>
-        </UPageCard>
-      </UPageGrid>
-
+      <Wallet />
       <!-- show palmpay wallet for users with a wallet -->
-      <div v-if="virtualAccountDetails !== null" class="flex flex-row gap-4 md:gap-0 items-center justify-between p-4 sm:px-6">
-        <div class="flex flex-col md:gap-3">
-          <div class="flex gap-1 md:gap-3 items-center font-bold text-[18px] md:text-[24px]">
+      <div v-if="virtualAccountDetails !== null" class="p-4 sm:px-6">
+        <div class="flex justify-between items-start md:gap-3">
+          <div class="flex gap-1.5 md:gap-3 items-center font-bold text-[16px] md:text-[24px] mb-2">
             <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-5.5 h-5.5 md:w-8 md:h-8" />
-            <h3 class="text-[16px] md:text-[18px]">
+            <h3 class="text-[16px] md:text-[18px] text-[#01060C] tracking-[1%]">
               Palmpay
             </h3>
             <USeparator orientation="vertical" class="hidden md:inline h-4" />
-            <span>{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
+            <span class="text-[#01060C] tracking-[1%]">{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
-          <p class="tracking-[2%] text-[#3A3A3A] text-[12px] md:text-[20px] leading-[150%] font-normal">
-            Transfer to Fund wallet. #50 charge applies
-          </p>
+          <UButton size="lg" :ui="{ label: 'text-white text-[12px] md:text-[20px]', base: 'bg-[#1177FE] w-20 h-7 flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="copy(source)">
+            <span v-if="!copied">Copy</span>
+            <span v-else>Copied!</span>
+          </UButton>
         </div>
-        <UButton size="lg" :ui="{ label: 'text-white text-[12px] md:text-[20px]', base: 'bg-[#1177FE] px-3 md:px-6 rounded-full md:rounded-md' }" @click="copy(source)">
-          <span v-if="!copied">Copy</span>
-          <span v-else>Copied!</span>
-        </UButton>
+        <p class="tracking-[2%] text-[#3A3A3A] text-[12px] md:text-[20px] leading-[150%] font-normal">
+          Transfer to Fund wallet. #50 charge applies
+        </p>
       </div>
 
       <!-- show create wallet option for users without a wallet -->
