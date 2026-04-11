@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // import type { Package } from '@@/shared/types/biller-types'
 import { useRoute } from 'vue-router'
-import { z } from 'zod'
+// import { z } from 'zod'
 
 const route = useRoute()
 definePageMeta({
@@ -14,27 +14,27 @@ useSeoMeta({
 })
 
 // form validation schema w/ zod
-const formSchema = z.object({
-  package: z
-    .string(),
-  customerId: z.string()
-    .regex(/^\d{11}$/, 'Enter a valid 11-digit meter number'),
-  amount: z.string()
-    .min(1, 'Amount is required.'),
-  phoneNumber: z.string()
-    .min(10, 'Phone number must be at least 10 digits.'),
-})
+// const formSchema = z.object({
+//   package: z
+//     .string(),
+//   customerId: z.string()
+//     .regex(/^\d{11}$/, 'Enter a valid 11-digit meter number'),
+//   amount: z.string()
+//     .min(1, 'Amount is required.'),
+//   phoneNumber: z.string()
+//     .min(10, 'Phone number must be at least 10 digits.'),
+// })
 
 // form initial values
-const formState = reactive({
-  package: '',
-  customerId: '',
-  amount: '',
-  phoneNumber: '',
-})
+// const formState = reactive({
+//   package: '',
+//   customerId: '',
+//   amount: '',
+//   phoneNumber: '',
+// })
 
-const loading = ref<boolean>(false)
-const slug = route.params.slug
+// const loading = ref<boolean>(false)
+// const slug = route.params.slug
 const discoSlug = ref()
 const pageerror = ref()
 
