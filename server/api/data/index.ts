@@ -12,7 +12,7 @@ const BillerLogos: Record<string, LogoEntry> = {
   'vdt': { src: '/images/data/vdt.png' },
 } as const
 
-export default defineEventHandler(async () => {
+export default defineCachedEventHandler(async () => {
   // airtime and data group slug
   const group = 'AIRTIME_AND_DATA'
   // fetch all billers in the group, then filter for the ones we want to display

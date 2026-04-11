@@ -27,7 +27,7 @@ onBeforeMount(async () => {
       <NuxtLink
         v-for="dataPlan in dataValue"
         :key="dataPlan.id"
-        :to="`data/dataId/${dataPlan.id}`"
+        :to="`dataInternet/dataId/${dataPlan.id}`"
         class="block p-2 sm:p-3 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-[#E3EDF0] transition-colors"
       >
         <div class="flex items-center gap-2 flex-col">
