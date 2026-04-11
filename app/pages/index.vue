@@ -225,21 +225,24 @@ const imgList = ref([
         <h5 class="text-left text-[20px] md:text-[52px] text-[#1A1F24] tracking-[2%] font-extrabold">
           Who Can Be Our Users?
         </h5>
-        <section class="flex flex-col md:grid grid-cols-2 gap-4">
-          <div class="shadow-form">
-            <NuxtImg
-              src="/images/landing-page/mobile-usertype-new.png"
-              alt="man standing png"
-              width="390"
-              height="396"
-              class="w-full h-auto border object-cover"
-            />
+        <section class="flex flex-col md:grid grid-cols-2 gap-4 mt-4">
+          <div class="">
+            <div class="relative h-auto">
+              <div class="absolute inset-0 bg-radial from-[#C4ECFE] from-40% to-transparent to-70% -z-1" />
+              <NuxtImg
+                src="/images/landing-page/mobile-usertype-new.png"
+                alt="man standing png"
+                width="390"
+                height="396"
+                class="w-full h-auto object-cover"
+              />
+            </div>
           </div>
           <div class="flex flex-col gap-4">
             <UPageFeature
               v-for="group in userTypes"
               :key="group.title"
-              class="rounded-md bg-[#F2FBFF] h-50 md:h-54.5"
+              class="rounded-md bg-[#F2FBFF] md:h-auto lg:h-54.5"
             >
               <template #default>
                 <div class="md:py-7.5 py-5 pr-4 md:pr-5.5 pl-3 md:pl-7 flex gap-4 items-start h-50 md:h-54.5 max-w-159.5">

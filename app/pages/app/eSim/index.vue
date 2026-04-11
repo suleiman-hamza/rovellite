@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Esim',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

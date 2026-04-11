@@ -34,79 +34,69 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 }
 
-const betPlatform = ref()
+const dataPackage = ref()
 const pageerror = ref()
 
 onBeforeMount(async () => {
-  const { data: result, error } = await useFetch(`/api/betting/${route.params.id}`)
+  const { data: result, error } = await useFetch(`/api/data/${route.params.id}`)
 
   if (error.value) {
     pageerror.value = error.value
-    console.error('Error fetching betting data:', error.value)
+    console.error('Error fetching data:', error.value)
   }
   else {
-    betPlatform.value = result.value
+    dataPackage.value = result.value
   }
 })
 
 // loading state for add to cart button
-const loading = ref(false)
+// const loading = ref(false)
 
 // Simulate adding to cart with a loading state
-function addToCart() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    toast.add({
-      title: 'Added to Cart',
-      description: 'The item has been added to your cart.',
-    })
-  }, 2000)
-}
+// function addToCart() {
+//   loading.value = true
+//   setTimeout(() => {
+//     loading.value = false
+//     toast.add({
+//       title: 'Added to Cart',
+//       description: 'The item has been added to your cart.',
+//     })
+//   }, 2000)
+// }
 </script>
 
 <template>
   <main class="bg-white font-openSans rounded-lg p-7">
-    <section v-if="betPlatform" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
+    <section v-if="dataPackage" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
       <div class="rounded-lg flex justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-5 md:px-6 bg-[#DBF4FF] w-full">
         <!-- :style="{ backgroundColor: result?.accentColor } -->
         <!-- <UButton variant="ghost" class="flex p-2 items-center justify-center" @click="$router.back()">
           <UIcon name="i-lucide-arrow-left" />
         </UButton> -->
         <span class="rounded-full">
-          <NuxtImg :src="betPlatform?.image" class="object-contain w-24 h-24" />
+          <NuxtImg :src="dataPackage?.image" class="object-contain w-24 h-24" />
         </span>
         <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155]">
-          {{ betPlatform?.name.toUpperCase() }}
+          {{ dataPackage?.name.toUpperCase() }}
         </p>
       </div>
       <div class="w-full sm:max-w-lg mx-auto mt-9 mb-17.5">
+        <!-- <p>{{ dataPackage }}</p> -->
         <div class="px-4 sm:px-6">
           <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
             <UFormField name="agent">
-              <USelect placeholder="Choose Wallet" size="xl" class="w-full" />
-            </UFormField>
-
-            <UFormField name="id">
-              <UInput size="xl" :placeholder="`${betPlatform.name} User Id`" class="w-full" />
-            </UFormField>
-
-            <div class="flex items-center justify-between font-sourcePro border">
-              <p />
-              <UButton variant="subtle" class="text-[#0045A5] text-[14px] py-0 leading-none">
-                Use Saved Beneficiary
-              </UButton>
-            </div>
-
-            <UFormField name="amount">
-              <UInput size="xl" placeholder="Amount" class="w-full" />
-              <p class="text-[14px]">
+              <USelect placeholder="Plan" size="xl" class="w-full" />
+              <p class="text-[14px] mt-2">
                 Minimum: #100 | Maximun: #100
               </p>
             </UFormField>
 
+            <UFormField name="id">
+              <UInput size="xl" placeholder="Phone Number" class="w-full" />
+            </UFormField>
+
             <div class="flex gap-4 px-4 sm:px-6">
-              <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+              <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
                 Add to Cart
               </UButton>
               <UButton
@@ -114,7 +104,6 @@ function addToCart() {
                 class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
               >
                 Checkout
-                <!-- <Icon name="ion:caret-down" width="512" height="512" /> -->
               </UButton>
             </div>
           </UForm>
