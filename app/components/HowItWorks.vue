@@ -57,7 +57,7 @@
                 </span>
                 <div class="flex-1">
                   <h4 class="text-[#4D5155] text-[16px] mb-2 md:text-[22px] leading-7.5 tracking-[1%] font-bold">
-                    Fund Your Wallet or Pay with Paystack
+                    Fund Your Wallet / Pay with Paystack
                   </h4>
                   <p class="text-[14px] md:text-[16px] text-[#34383D] leading-[161%] sm:leading-[190%] tracking-[1%] sm:tracking-[5%] font-normal">
                     Add money to your wallet using any of our available payment options for immediate transactions. You can also skip wallet funding and pay directly with Paystack i.e ATM Card, bank transfer etc.
