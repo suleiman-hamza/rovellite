@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { useCountdown } from '@vueuse/core'
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
 import z from 'zod'
+
+const auth = getAuth()
 
 definePageMeta({
   layout: 'auth-layout',
@@ -12,7 +15,7 @@ useSeoMeta({
 // TODO: Implement actual logic for sending code and verifying OTP
 const deactivateButton = ref(true)
 
-const countdownSeconds = 60
+const countdownSeconds = 45
 const { remaining, start } = useCountdown(countdownSeconds, {
   onComplete() {
     deactivateButton.value = false
@@ -31,9 +34,10 @@ const otpSchema = z.number('enter a valid otp')
 const otpState = ref()
 
 // This simulates sending the code to the user's email
-function sendCode() {
+async function sendCode() {
   loading.value = true
   try {
+    await sendPasswordResetEmail(auth, emailState.value)
     // Simulate sending code logic here, changes the step to otp and starts the countdown
     step.value = 'otp'
     start()
@@ -76,7 +80,7 @@ function resetCountDown() {
           </p>
           <UForm :state="emailState" :schema="emailSchema" class="space-y-8 mb-4">
             <UFormField name="email" label="Email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-              <UInput size="xl" type="email" placeholder="example@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+              <UInput v-model="emailState" size="xl" type="email" placeholder="example@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
             </UFormField>
 
             <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center" @click="sendCode">
@@ -103,7 +107,7 @@ function resetCountDown() {
               <UButton class="text-[#1177FE] text-[18px] p-0 bg-transparent" :ui="{ base: 'bg-white disabled:text-[#808385] disabled:bg-transparent hover:bg-transparent' }" :disabled="deactivateButton" @click="resetCountDown">
                 Resend
               </UButton>
-              <p class="text-[14px] text-[#1177FE] text-[18px] leading-[150%] font-normal">
+              <p class="text-[#1177FE] text-[18px] leading-[150%] font-normal">
                 {{ remaining }} sec
               </p>
             </div>

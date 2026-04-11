@@ -1,7 +1,7 @@
 import type { Response } from '#shared/types/biller-types'
 import Buffer from 'node:buffer'
 
-export default defineEventHandler(async (event) => {
+export default defineCachedEventHandler(async (event) => {
   const id = Number(event.context.params?.id)
 
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()

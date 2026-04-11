@@ -103,12 +103,18 @@ export function useAuth() {
     loading.value = true
 
     try {
-      await $fetch('/api/auth/logout', {
+      const result = await $fetch('/api/auth/logout', {
         method: 'POST',
       })
 
       await signOut(firebaseAuth)
-      user.value = null
+      if (!result.success) {
+        throw new Error('Failed to log out on server')
+      }
+      else {
+        user.value = null
+        return result
+      }
     }
     catch (error: any) {
       error.value = error.message

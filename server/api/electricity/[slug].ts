@@ -14,5 +14,12 @@ export default defineEventHandler(async (event) => {
       'Content-Type': 'text/plain',
     },
   })
-  return response?.responseData
+
+  const allElectricityDiscos = await $fetch('/api/electricity')
+
+  // filter the electricity disco from the list of all discos to get the image and name
+  const filter = allElectricityDiscos.find((disco) => {
+    return disco.slug === slug
+  })
+  return { ...response.responseData, image: filter?.logo || null, name: filter?.name || null }
 })

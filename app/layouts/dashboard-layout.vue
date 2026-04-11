@@ -2,7 +2,12 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 // import type { VirtualAccountResponse } from '../../types/palmpay'
 
+import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile'
+
+const toast = useToast()
+
+const { signOutUser } = useAuth()
 
 const store = useProfileStore()
 
@@ -10,10 +15,6 @@ const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
   icon: '/images/icons/dashboard.svg',
   to: '/app/dashboard',
-}, {
-  label: 'Subscriptions',
-  icon: '/images/icons/subscription.svg',
-  to: '/app/subscriptions',
 }, {
   label: 'Gift cards',
   icon: '/images/icons/giftcard.svg',
@@ -67,11 +68,33 @@ const items: NavigationMenuItem[] = [{
   icon: '/images/icons/settings.svg',
   to: '/app/settings',
 }]
+
+const loading = ref(false)
+async function logOut() {
+  loading.value = true
+  try {
+    const result = await signOutUser()
+    if (!result.success) {
+      throw new Error('Logout failed')
+    }
+    navigateTo('/login')
+  }
+  catch {
+    toast.add({
+      title: 'Logout Failed',
+      description: 'An error occurred while logging out. Please try again.',
+      color: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
   <UDashboardGroup class="bg-[#F9F9FB]">
-    <UDashboardSidebar collapsible resizable :ui="{ root: 'rounded-r-[16px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
+    <UDashboardSidebar collapsible resizable :default-size="35" :ui="{ root: 'rounded-r-[16px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
       <template #header="{ collapsed }">
         <div v-if="!collapsed" class="w-auto h-(--ui-header-height) flex items-center justify-center py-2">
           <NuxtImg
@@ -118,7 +141,7 @@ const items: NavigationMenuItem[] = [{
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">

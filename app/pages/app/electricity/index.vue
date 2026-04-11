@@ -24,13 +24,13 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <main class="min-h-full font-poppins">
-    <section v-if="availableDiscos" class="rounded-lg bg-white">
+  <main class="font-poppins">
+    <section v-if="availableDiscos" class="rounded-[20px] bg-white">
       <NuxtImg
-        src="/images/electricity/electricity_banner.png"
+        src="/images/electricity/electricity-banner.png"
         loading="eager"
         alt="Electricity Image"
-        class="w-full h-48 object-cover rounded-lg mb-4 sm:mb-8"
+        class="w-full h-48 object-cover rounded-[20px] mb-4 sm:mb-8"
       />
       <main class="grid grid-cols-[repeat(auto-fit,minmax(100px,120px))] sm:grid-cols-[repeat(auto-fit,minmax(120px,150px))] md:grid-cols-[repeat(auto-fit,minmax(150px,200px))] justify-center items-center gap-4 md:gap-x-5 md:gap-y-8 h-full bg-white p-4 rounded-lg">
         <NuxtLink
