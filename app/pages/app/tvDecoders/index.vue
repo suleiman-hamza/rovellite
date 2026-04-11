@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'TV/Decoders',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

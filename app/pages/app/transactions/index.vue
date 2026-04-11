@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Transactions',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

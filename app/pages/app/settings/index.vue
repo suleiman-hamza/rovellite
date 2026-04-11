@@ -2,6 +2,11 @@
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
+definePageMeta({
+  title: 'Settings',
+  layout: 'dashboard-layout',
+  middleware: 'auth',
+})
 </script>
 
 <template>

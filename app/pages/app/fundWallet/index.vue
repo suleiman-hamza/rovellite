@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Fund Wallet',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

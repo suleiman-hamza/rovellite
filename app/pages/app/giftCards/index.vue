@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Gift Cards',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

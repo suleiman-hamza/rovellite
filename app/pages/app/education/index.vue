@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Education',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

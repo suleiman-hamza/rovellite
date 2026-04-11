@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Solar',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 definePageMeta({
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 
 useSeoMeta({

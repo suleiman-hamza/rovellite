@@ -8,6 +8,7 @@ const toast = useToast()
 definePageMeta({
   title: 'Betting Details',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 
 const formSchema = z.object({

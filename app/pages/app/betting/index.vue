@@ -8,6 +8,7 @@ useSeoMeta({
 })
 definePageMeta({
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 
 const bettingData = ref<Biller[] | null>(null)

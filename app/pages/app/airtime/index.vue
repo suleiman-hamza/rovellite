@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Airtime',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

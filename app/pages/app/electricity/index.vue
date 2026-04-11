@@ -7,6 +7,7 @@ useSeoMeta({
 })
 definePageMeta({
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 const availableDiscos = ref()
 const fetcherror = ref()

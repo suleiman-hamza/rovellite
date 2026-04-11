@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Transportation',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 

@@ -2,6 +2,7 @@
 definePageMeta({
   title: 'Data',
   layout: 'dashboard-layout',
+  middleware: 'auth',
 })
 </script>
 
