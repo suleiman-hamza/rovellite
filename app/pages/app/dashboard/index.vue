@@ -118,7 +118,7 @@ async function createWallet() {
             <USeparator orientation="vertical" class="hidden md:inline h-4" />
             <span class="text-[#01060C] tracking-[1%]">{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
-          <UButton size="lg" class="text-white text-[12px] md:text-[20px] md:font-bold" :ui="{ base: 'bg-[#1177FE] w-20 h-7 md:w-40 h-15 flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="copy(source)">
+          <UButton size="lg" class="text-white text-[12px] md:text-[20px] md:font-bold" :ui="{ base: 'bg-[#1177FE] w-20 h-7 md:w-40 md:h-15 flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="copy(source)">
             <span v-if="!copied">Copy</span>
             <span v-else>Copied!</span>
           </UButton>

@@ -33,7 +33,7 @@ onBeforeMount(async () => {
         alt="Electricity Image"
         class="w-full h-48 object-cover rounded-[20px] mb-4 sm:mb-8"
       />
-      <main class="grid grid-cols-[repeat(auto-fit,minmax(100px,120px))] sm:grid-cols-[repeat(auto-fit,minmax(120px,150px))] md:grid-cols-[repeat(auto-fit,minmax(150px,200px))] justify-center items-center gap-4 md:gap-x-5 md:gap-y-8 h-full bg-white p-4 rounded-lg">
+      <main class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 gap-y-3 md:gap-x-5 md:gap-y-7 h-full bg-white p-4 rounded-lg">
         <NuxtLink
           v-for="discos in availableDiscos"
           :key="discos.slug"
@@ -43,7 +43,7 @@ onBeforeMount(async () => {
           <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5">
             <NuxtImg :src="discos.logo" alt="Education Logo" class="object-contain" />
           </span>
-          <h4 class="font-poppins text-[16px] text-[#676A6D] leading-[150%] tracking-[1%] sm:font-bold">
+          <h4 class="font-poppins text-[14px] md:text-[16px] text-[#676A6D] leading-[150%] tracking-[1%] sm:font-bold">
             {{ discos.name }}
           </h4>
         </NuxtLink>
