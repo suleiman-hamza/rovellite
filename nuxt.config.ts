@@ -16,6 +16,9 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+  imports: {
+    autoImport: true,
+  },
   devtools: {
     enabled: true,
   },

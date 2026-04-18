@@ -1,4 +1,3 @@
-// import type { VirtualAccountResponse } from '@@/types/palmpay'
 import type { Profile } from '../../types/supabase'
 
 import { createClient } from '@supabase/supabase-js'

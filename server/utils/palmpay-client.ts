@@ -6,7 +6,7 @@ import { generatePalmPaySignature } from './palmpay-sign'
 
 /**
  * PalmPay API request utility
- * @param endpoint - PalmPay endpoints (e.g. '/api/v2/virtual/account/label/create')
+ * @param endpoint - PalmPay endpoints (e.g. '/api/v2/virtual/account/create')
  * @param body - Request payload
  */
 
