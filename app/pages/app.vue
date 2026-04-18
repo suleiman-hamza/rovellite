@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard-layout',
-  keepalive: true,
+  // keepalive: true,
   // middleware: 'auth',
 })
 </script>

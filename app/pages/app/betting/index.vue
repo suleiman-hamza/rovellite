@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Biller } from '#shared/types/biller-types'
+// import type { Biller } from '#shared/types/biller-types'
 
 useSeoMeta({
   title: 'Betting',
@@ -10,20 +10,22 @@ definePageMeta({
   layout: 'dashboard-layout',
   middleware: 'auth',
 })
+const { getUser } = useAuth()
 
-const bettingData = ref<Biller[] | null>(null)
-const fetchError = ref()
-
-onBeforeMount(async () => {
-  const { data, error } = await useFetch<Biller[]>('/api/betting')
-  if (error.value) {
-    fetchError.value = error.value
-    console.error('Error fetching betting data:', error.value)
-  }
-  else {
-    bettingData.value = data.value as Biller[]
-  }
+const { data: bettingData, error: fetcherror, refresh } = await useFetch('/api/betting', {
+  key: 'betting-provider',
+  immediate: !!getUser(),
+  watch: false,
 })
+
+if (import.meta.client) {
+  const stop = watch(() => getUser(), (user) => {
+    if (user && !bettingData.value) {
+      refresh()
+      stop()
+    }
+  }, { immediate: true })
+}
 </script>
 
 <template>
@@ -44,8 +46,9 @@ onBeforeMount(async () => {
       </NuxtLink>
     </section>
     <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else-if="fetchError" class="flex items-center space-x-4">
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
       <p>Error fetching betting data.</p>
+      <p>{{ fetcherror }}</p>
     </div>
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-else class="flex items-center space-x-4">

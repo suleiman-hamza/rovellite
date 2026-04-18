@@ -5,20 +5,26 @@ definePageMeta({
   middleware: 'auth',
 })
 
+const { getUser } = useAuth()
+
 // const isLoading = ref(false)
-const dataValue = ref()
-const fetcherror = ref()
 
-onBeforeMount(async () => {
-  const { data, error } = await useFetch('/api/data')
-
-  if (data.value) {
-    dataValue.value = data.value
-  }
-  if (error.value) {
-    fetcherror.value = error.value
-  }
+const { data: dataValue, error: fetcherror, refresh } = await useFetch('/api/data', {
+  key: 'data-plans',
+  immediate: !!getUser(),
+  watch: false,
 })
+
+if (import.meta.client) {
+  const stop = watch(() => getUser(), (user) => {
+    if (user && !dataValue.value) {
+      refresh()
+      stop()
+    }
+  }, { immediate: true })
+}
+
+// Now 'data' and 'error' are reactive and will update automatically
 </script>
 
 <template>

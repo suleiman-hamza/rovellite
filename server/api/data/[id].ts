@@ -1,7 +1,7 @@
 import type { Response } from '#shared/types/biller-types'
 import Buffer from 'node:buffer'
 
-export default defineCachedEventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const id = Number(event.context.params?.id)
 
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
@@ -24,6 +24,8 @@ export default defineCachedEventHandler(async (event) => {
     return provider.id === id
   })
 
+  console.warn('Data provider response:', { dataplan: [...dataProvider.responseData], image: filter?.image, name: filter?.name })
+
   // returm the betting provider with the image and name from the filter
-  return { ...dataProvider.responseData, image: filter?.image || null, name: filter?.name || null }
+  return { dataplan: [...dataProvider.responseData], image: filter?.image, name: filter?.name }
 })

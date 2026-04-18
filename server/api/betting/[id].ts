@@ -25,5 +25,5 @@ export default defineCachedEventHandler(async (event) => {
   })
 
   // returm the betting provider with the image and name from the filter
-  return { ...bettingProvider.responseData, image: filter?.images || null, name: filter?.name || null }
+  return { bettinPlan: [...bettingProvider.responseData], image: filter?.images, name: filter?.name }
 })
