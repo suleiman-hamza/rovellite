@@ -17,15 +17,13 @@ export default defineEventHandler(async (event) => {
     return result
   }
   catch (error: any) {
-    console.error('VA Update Route Error:', error)
+    // console.error('VA Update Route Error:', error)
 
     if (error.name === 'ZodError') {
-      return apiResponse.error(error.errors[0].message, 400, 'VALIDATION_ERROR')
+      const message = error.errors?.[0]?.message || 'Validation error'
+      return apiResponse.error(message, 400, 'VALIDATION_ERROR')
     }
 
-    return apiResponse.error(
-      error.message || 'Failed to update virtual account',
-      error.statusCode || 500,
-    )
+    return apiResponse.error('Failed to update virtual account status', 500)
   }
 })

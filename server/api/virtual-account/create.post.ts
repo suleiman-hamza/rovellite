@@ -22,16 +22,17 @@ export default defineEventHandler(async (event) => {
 
     // Handle Zod validation errors
     if (error.name === 'ZodError') {
+      const message = error.errors?.[0]?.message || 'Validation error'
       return apiResponse.error(
-        error.errors[0].message,
+        message,
         400,
         'VALIDATION_ERROR',
       )
     }
 
     return apiResponse.error(
-      error.message || 'Failed to create virtual account',
-      error.statusCode || 500,
+      'Failed to create virtual account',
+      500,
     )
   }
 })
