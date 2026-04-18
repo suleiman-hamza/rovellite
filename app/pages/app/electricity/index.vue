@@ -1,32 +1,43 @@
 <script setup lang="ts">
 // import type { Biller } from '#shared/types/biller-types'
+const { getUser } = useAuth()
 useSeoMeta({
   title: 'Electricity',
   // change this description to a more relevant one later
   description: () => `This is a description for the page`,
 })
+
 definePageMeta({
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
 })
-const availableDiscos = ref()
-const fetcherror = ref()
-
-onBeforeMount(async () => {
-  const { data, error } = await useFetch('/api/electricity')
-
-  if (data.value) {
-    availableDiscos.value = data.value
-  }
-  if (error.value) {
-    fetcherror.value = error.value
-  }
+const { data: availableDiscos, error: fetcherror, refresh, status } = await useFetch('/api/electricity', {
+  key: 'disco-list',
+  immediate: !!getUser(),
+  watch: false,
 })
+
+if (import.meta.client) {
+  const stop = watch(() => getUser(), (user) => {
+    if (user && !availableDiscos.value) {
+      refresh()
+      stop()
+    }
+  }, { immediate: true })
+}
 </script>
 
 <template>
   <main class="font-poppins">
-    <section v-if="availableDiscos" class="rounded-[20px] bg-white">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="status === 'pending'" class="flex items-center space-x-4">
+      <p>loading...</p>
+    </div>
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+      <p>{{ fetcherror }}</p>
+    </div>
+    <section v-else class="rounded-[20px] bg-white">
       <NuxtImg
         src="/images/electricity/electricity-banner.png"
         loading="eager"
@@ -37,7 +48,7 @@ onBeforeMount(async () => {
         <NuxtLink
           v-for="discos in availableDiscos"
           :key="discos.slug"
-          :to="`/app/electricity/discoSlug/${discos.slug}`"
+          :to="`electricity/discoSlug/${discos.slug}`"
           class="p-2 sm:p-4 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-[#E3EDF0] transition-colors flex flex-col gap-2 items-center justify-center text-center"
         >
           <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5">
@@ -49,13 +60,5 @@ onBeforeMount(async () => {
         </NuxtLink>
       </main>
     </section>
-
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
-      <p>{{ fetcherror }}</p>
-    </div>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <p>loading...</p>
-    </div>
   </main>
 </template>

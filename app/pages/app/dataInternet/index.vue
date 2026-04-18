@@ -10,7 +10,7 @@ const { getUser } = useAuth()
 
 // const isLoading = ref(false)
 
-const { data: dataValue, error: fetcherror, refresh } = await useFetch('/api/data', {
+const { data: dataValue, error: fetcherror, refresh, status } = await useFetch('/api/data', {
   key: 'data-plans',
   immediate: !!getUser(),
   watch: false,
@@ -30,7 +30,14 @@ if (import.meta.client) {
 
 <template>
   <main class="">
-    <UPageGrid v-if="dataValue" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="status === 'pending'" class="flex items-center space-x-4">
+      <p>loading...</p>
+    </div>
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+      <p>{{ fetcherror }}</p>
+    </div>
+    <UPageGrid v-else class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
       <NuxtLink
         v-for="dataPlan in dataValue"
         :key="dataPlan.id"
@@ -45,13 +52,5 @@ if (import.meta.client) {
         </div>
       </NuxtLink>
     </UPageGrid>
-
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
-      <p>{{ fetcherror }}</p>
-    </div>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <p>loading...</p>
-    </div>
   </main>
 </template>

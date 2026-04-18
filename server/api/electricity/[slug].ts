@@ -3,7 +3,7 @@ import Buffer from 'node:buffer'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
-  console.warn(slug)
+  console.warn(slug) // remove this in prod
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
   const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
 
@@ -21,5 +21,5 @@ export default defineEventHandler(async (event) => {
   const filter = allElectricityDiscos.find((disco) => {
     return disco.slug === slug
   })
-  return { ...response.responseData, image: filter?.logo || null, name: filter?.name || null }
+  return { discoResponse: [...response.responseData], image: filter?.logo, name: filter?.name }
 })
