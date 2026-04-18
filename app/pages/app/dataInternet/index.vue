@@ -3,6 +3,7 @@ definePageMeta({
   title: 'Data',
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
 })
 
 const { getUser } = useAuth()

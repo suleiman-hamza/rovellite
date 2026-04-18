@@ -9,6 +9,7 @@ useSeoMeta({
 definePageMeta({
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
 })
 const { getUser } = useAuth()
 
