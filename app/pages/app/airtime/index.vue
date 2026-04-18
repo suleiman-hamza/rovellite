@@ -3,27 +3,40 @@ definePageMeta({
   title: 'Airtime',
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
 })
+
+const { getUser } = useAuth()
 
 // const isLoading = ref(false)
-const airtimeValue = ref()
-const fetcherror = ref()
-
-onBeforeMount(async () => {
-  const { data, error } = await useFetch('/api/airtime')
-
-  if (data.value) {
-    airtimeValue.value = data.value
-  }
-  if (error.value) {
-    fetcherror.value = error.value
-  }
+const { data: airtimeValue, error: fetcherror, refresh, pending } = await useFetch('/api/airtime', {
+  key: 'airtime-plan',
+  immediate: !!getUser(),
+  watch: false,
 })
+
+if (import.meta.client) {
+  const stop = watch(() => getUser(), (user) => {
+    if (user && !airtimeValue.value) {
+      refresh()
+      stop()
+    }
+  }, { immediate: true })
+}
 </script>
 
 <template>
   <main class="">
-    <UPageGrid v-if="airtimeValue" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="pending" class="flex items-center space-x-4">
+      <p>loading...</p>
+    </div>
+
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+      <p>Error: {{ fetcherror }}</p>
+    </div>
+
+    <UPageGrid v-else class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
       <NuxtLink
         v-for="airtimePlan in airtimeValue"
         :key="airtimePlan.id"
@@ -38,13 +51,5 @@ onBeforeMount(async () => {
         </div>
       </NuxtLink>
     </UPageGrid>
-
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
-      <p>{{ fetcherror }}</p>
-    </div>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <p>loading...</p>
-    </div>
   </main>
 </template>

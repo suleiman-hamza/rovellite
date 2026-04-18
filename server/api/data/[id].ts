@@ -24,8 +24,6 @@ export default defineEventHandler(async (event) => {
     return provider.id === id
   })
 
-  console.warn('Data provider response:', { dataplan: [...dataProvider.responseData], image: filter?.image, name: filter?.name })
-
   // returm the betting provider with the image and name from the filter
   return { dataplan: [...dataProvider.responseData], image: filter?.image, name: filter?.name }
 })
