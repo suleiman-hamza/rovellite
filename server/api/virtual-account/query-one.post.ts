@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     if (error.name === 'ZodError') {
       const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(message, 400,'VALIDATION_ERROR',
+      return apiResponse.error(message, 400, 'VALIDATION_ERROR',
       )
     }
 

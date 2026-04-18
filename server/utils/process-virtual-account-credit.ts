@@ -1,12 +1,12 @@
-import { createAdminSupabaseClient } from '../../types/supabase'
-import type { 
+import type {
   CreditWalletWithTransactionArgs,
   VirtualAccountCreditParams,
-  VirtualAccountCreditResult
+  VirtualAccountCreditResult,
 } from '../../types/supabase'
+import { createAdminSupabaseClient } from '../../types/supabase'
 
 export async function processVirtualAccountCredit(
-  params: VirtualAccountCreditParams
+  params: VirtualAccountCreditParams,
 ): Promise<VirtualAccountCreditResult> {
   const adminSupabase = createAdminSupabaseClient()
   const { virtualAccountNo, amount, reference, description, metadata } = params

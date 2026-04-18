@@ -113,7 +113,7 @@ export default defineEventHandler(async (event) => {
   }
   catch (err: any) {
     console.error('[sync-user] Error:', err)
-    
+
     if (err?.code === 'auth/id-token-expired' || err?.code === 'auth/invalid-id-token') {
       return apiResponse.error('Invalid or expired token', 401)
     }

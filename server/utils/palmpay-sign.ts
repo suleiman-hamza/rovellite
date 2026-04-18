@@ -1,8 +1,9 @@
 import crypto from 'node:crypto'
+import process from 'node:process'
 
 export function generatePalmPaySignature(
   payload: Record<string, any>,
-  palmpayPrivateKey: string
+  palmpayPrivateKey: string,
 ): string {
   // Sort keys alphabetically (The Lexicographical Rule)
   const sortedKeys = Object.keys(payload).sort()
@@ -12,7 +13,6 @@ export function generatePalmPaySignature(
     .filter(key => payload[key] !== undefined && payload[key] !== '')
     .map(key => `${key}=${payload[key]}`)
     .join('&')
-
 
   // DEBUG LOGGING (only in development)
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
@@ -28,7 +28,6 @@ export function generatePalmPaySignature(
     .digest('hex')
     .toUpperCase()
 
-
   // RSA-SHA1 Signing
   const sign = crypto.createSign('RSA-SHA1')
   sign.update(md5Hash)
@@ -41,19 +40,18 @@ export function generatePalmPaySignature(
   return sign.sign(formattedKey, 'base64')
 }
 
-
 // verify signature
 export function verifyPalmpaySignature(
   event: any,
   body: any,
-  privateKey: string
-): { isValid: boolean; expected: string; received: string; error?: string } {
+  privateKey: string,
+): { isValid: boolean, expected: string, received: string, error?: string } {
   const receivedSignature = getHeader(event, 'Signature') || getHeader(event, 'x-signature')
-  
+
   const payloadForSigning = body.data ?? body
   const expectedSignature = generatePalmPaySignature(
     payloadForSigning,
-    privateKey
+    privateKey,
   )
 
   // console.warn('   Received :', receivedSignature || '(missing)')
@@ -70,11 +68,11 @@ export function verifyPalmpaySignature(
   }
 
   if (!receivedSignature) {
-    return { 
-      isValid: false, 
-      expected: expectedSignature, 
-      received: '', 
-      error: 'Missing signature' 
+    return {
+      isValid: false,
+      expected: expectedSignature,
+      received: '',
+      error: 'Missing signature',
     }
   }
 

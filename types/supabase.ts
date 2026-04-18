@@ -88,10 +88,9 @@ export interface VirtualAccountCreditParams {
 }
 
 // result of the virtual account credit
-export type VirtualAccountCreditResult = 
-  | { success: true; message: string }
-  | { success: false; message: string; statusCode: number; code?: string }
-
+export type VirtualAccountCreditResult
+  = | { success: true, message: string }
+    | { success: false, message: string, statusCode: number, code?: string }
 
 // JOINED TYPES
 export interface VirtualAccountWithWallet extends VirtualAccountRow {

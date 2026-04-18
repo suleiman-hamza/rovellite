@@ -1,7 +1,7 @@
 import { apiResponse } from '#server/utils/api-response'
 import { verifyPalmpaySignature } from '#server/utils/palmpay-sign'
-import { processVirtualAccountCredit } from '#server/utils/process-virtual-account-credit'
 import { palmpayWebhookSchema } from '#server/utils/palmpay-webhook-schema'
+import { processVirtualAccountCredit } from '#server/utils/process-virtual-account-credit'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -46,10 +46,10 @@ export default defineEventHandler(async (event) => {
 
     return apiResponse.success(
       { reference, amount: amountNum },
-      'SUCCESS'
+      'SUCCESS',
     )
   }
-  catch (error: any) {
+  catch {
     // console.error('PalmPay Webhook Error:', error)
     return apiResponse.error('Internal server error processing webhook', 500)
   }
