@@ -6,7 +6,7 @@ import { generatePalmPaySignature } from './palmpay-sign'
 
 /**
  * PalmPay API request utility
- * @param endpoint - PalmPay endpoints (e.g. '/api/v2/virtual/account/label/create')
+ * @param endpoint - PalmPay endpoints (e.g. '/api/v2/virtual/account/create')
  * @param body - Request payload
  */
 
@@ -37,7 +37,7 @@ export async function palmPayRequest<T = PalmPayResponse>(
 
   const signature = generatePalmPaySignature(fullBody, palmpayPrivateKey)
 
-  return await $fetch(`${palmpayBaseUrl}${endpoint}`, {
+  return await $fetch<T>(`${palmpayBaseUrl}${endpoint}` as string, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${palmpayAppId}`,
