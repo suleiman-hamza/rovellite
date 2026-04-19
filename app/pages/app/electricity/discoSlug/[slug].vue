@@ -77,7 +77,7 @@ const selectPlan = computed(() => {
 </script>
 
 <template>
-  <main class="rounded-[20px] md:py-8 bg-white font-poppins">
+  <main class="rounded-[20px] md:py-7 bg-white font-poppins">
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
@@ -87,7 +87,7 @@ const selectPlan = computed(() => {
     </div>
     <div v-else class="max-w-207 mx-auto border border-[#E3EDF0] rounded-lg">
       <!-- blue banner/ header -->
-      <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-5 md:px-6 bg-[#DBF4FF] w-full">
+      <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
         <div class="flex gap-8 items-center">
           <span class="rounded-full">

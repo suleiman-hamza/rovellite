@@ -1,4 +1,5 @@
-// import type { AirtimeResponse } from "~/shared/types/biller-types";
+// import type { AirtimeResponse } from "#shared/types/biller-types";
+
 interface LogoEntry { src: string, accent?: string }
 const BillerLogos: Record<string, LogoEntry> = {
   'mtn_nigeria': { src: '/images/data/mtn.png' },

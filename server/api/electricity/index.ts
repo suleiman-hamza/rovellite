@@ -1,16 +1,18 @@
+import type { Biller } from '~~/shared/types/biller-types'
+
 const electricDiscoLogos: Record<string, string> = {
-  ekedc: '/images/electricity/Eko Electric.svg',
-  eedc: '/images/electricity/Enugu Electric.svg',
-  aedc: '/images/electricity/Abj Electric Company.svg',
-  ikedc: '/images/electricity/Ikeja Electric.svg',
-  ibedc: '/images/electricity/Ibadan Electric.svg',
-  kedco: '/images/electricity/Kano Electric.svg',
-  kaedco: '/images/electricity/Kaduna Electricity.svg',
-  jedc: '/images/electricity/Jos Electric.svg',
-  aple: '/images/electricity/Apl Electric Company.svg',
-  bedc: '/images/electricity/Benin Electric.svg',
-  yedc: '/images/electricity/Yola Electric.svg',
-  phedc: '/images/electricity/Port-Harcourt Electric.svg',
+  ekedc: '/images/electricity/ekedc.png',
+  eedc: '/images/electricity/eedc.png',
+  aedc: '/images/electricity/aedc.png',
+  ikedc: '/images/electricity/ikedc.png',
+  ibedc: '/images/electricity/ibedc.png',
+  kedco: '/images/electricity/kedco.png',
+  kaedco: '/images/electricity/kaedco.png',
+  jedc: '/images/electricity/jedc.png',
+  aple: '/images/electricity/apl.png',
+  bedc: '/images/electricity/bedc.png',
+  yedc: '/images/electricity/yedc.png',
+  phedc: '/images/electricity/phed.png',
 }
 
 // type Biller = {
@@ -22,9 +24,9 @@ const electricDiscoLogos: Record<string, string> = {
 
 export default defineCachedEventHandler(async () => {
   const group = 'ELECTRIC_DISCO'
-  const data = await $fetch(`/api/coral-pay/biller-group-slug/${group}`)
-  const selected = data?.filter(item => ['EKEDC', 'EEDC', 'AEDC', 'IKEDC', 'IBEDC', 'KEDCO', 'KAEDCO', 'JEDC', 'APLE', 'BEDC', 'BH_ELECTRIC', 'YOLA', 'YEDC', 'PHEDC'].includes(item.slug))
-  const enriched = selected.map(item => ({
+  const data = await $fetch<Biller[]>(`/api/coral-pay/biller-group-slug/${group}`)
+  const selected = data?.filter((item: Biller) => ['EKEDC', 'EEDC', 'AEDC', 'IKEDC', 'IBEDC', 'KEDCO', 'KAEDCO', 'JEDC', 'APLE', 'BEDC', 'YEDC', 'PHEDC'].includes(item.slug))
+  const enriched = selected.map((item: Biller) => ({
     ...item,
     logo: electricDiscoLogos[item.slug?.toLowerCase()] ?? '/images/electricity/Canva.png',
   }))
