@@ -23,15 +23,11 @@ const { remaining, start } = useCountdown(countdownSeconds, {
 })
 
 // State management for the form steps
-const step = ref<'email' | 'otp'>('email')
+const step = ref<'email' | 'emailSent'>('email')
 const loading = ref(false)
 
 const emailSchema = z.email('Enter a valid email address')
 const emailState = ref('')
-
-// cross check otp schema later
-const otpSchema = z.number('enter a valid otp')
-const otpState = ref()
 
 // This simulates sending the code to the user's email
 async function sendCode() {
@@ -39,7 +35,7 @@ async function sendCode() {
   try {
     await sendPasswordResetEmail(auth, emailState.value)
     // Simulate sending code logic here, changes the step to otp and starts the countdown
-    step.value = 'otp'
+    step.value = 'emailSent'
     start()
   }
   catch (error) {
@@ -96,26 +92,16 @@ function resetCountDown() {
 
         <section v-else>
           <p class="text-[18px] leading-[150%] font-normal text-[#34383D] mb-4">
-            Enter the code sent to your number in the field below
+            An email has been sent to your email address. Please check your inbox and follow the instructions to reset your password.
           </p>
-          <UForm :state="otpState" :schema="otpSchema" class="space-y-8 mb-4">
-            <UFormField name="otp" class="flex w-full justify-center">
-              <UPinInput v-model="otpState" otp type="number" :length="4" color="secondary" size="xl" :ui="{ root: 'gap-6', base: ['rounded-sm ring-[#676A6D]'] }" />
-            </UFormField>
-
-            <div class="flex justify-between items-center">
-              <UButton class="text-[#1177FE] text-[18px] p-0 bg-transparent" :ui="{ base: 'bg-white disabled:text-[#808385] disabled:bg-transparent hover:bg-transparent' }" :disabled="deactivateButton" @click="resetCountDown">
-                Resend
-              </UButton>
-              <p class="text-[#1177FE] text-[18px] leading-[150%] font-normal">
-                {{ remaining }} sec
-              </p>
-            </div>
-
-            <UButton type="submit" size="lg" loading-auto class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] md:text-[20px] font-bold w-full tracking-[2%] justify-center">
-              Verify
+          <div class="flex justify-between items-center">
+            <UButton class="text-[#1177FE] text-[18px] p-0 bg-transparent" :ui="{ base: 'bg-white disabled:text-[#808385] disabled:bg-transparent hover:bg-transparent' }" :disabled="deactivateButton" @click="resetCountDown">
+              Resend
             </UButton>
-          </UForm>
+            <p class="text-[#1177FE] text-[18px] leading-[150%] font-normal">
+              {{ remaining }} sec
+            </p>
+          </div>
           <p class="text-center md:text-right text-[18px] leading-[150%] font-normal text-[#ADADAD]">
             Remember your account? <NuxtLink to="/login" class="text-[#1177FE]">
               Sign In

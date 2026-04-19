@@ -37,7 +37,7 @@ export async function palmPayRequest<T = PalmPayResponse>(
 
   const signature = generatePalmPaySignature(fullBody, palmpayPrivateKey)
 
-  return await $fetch(`${palmpayBaseUrl}${endpoint}`, {
+  return await $fetch<T>(`${palmpayBaseUrl}${endpoint}`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${palmpayAppId}`,

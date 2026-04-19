@@ -1,4 +1,4 @@
-import type { Biller, Response } from '#shared/types/biller-types'
+import type { Biller, BillerResponse } from '#shared/types/biller-types'
 
 const logos: Record<string, string> = {
   'betking': '/images/betting/betking.png',
@@ -37,7 +37,7 @@ export default defineCachedEventHandler(async () => {
 
   // in-server fetch to make internal requests to another handler
   // <Response> is used to type the response from the API, ensuring it matches the expected structure
-  const bettingProviders = await $fetch<Response>(`/api/coral-pay/biller-group-id/${id}`)
+  const bettingProviders = await $fetch<BillerResponse>(`/api/coral-pay/biller-group-id/${id}`)
 
   // modify the response to work well with the ui by looping through and adding the image property to each provider based on the slug, using the logos mapping
   const final: Biller[] = bettingProviders.responseData.map(provider => ({

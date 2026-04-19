@@ -11,7 +11,7 @@ export interface Biller {
   images?: string
 }
 
-export interface Response {
+export interface BillerResponse {
   error: boolean
   status: string
   message: string

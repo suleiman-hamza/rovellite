@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
   const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64') // create a base64-encoded string for basic authentication using CoralPay credentials from runtime configuration
 
-  const response: PackagesResponse = await $fetch(`https://sandbox1.coralpay.com/coralpay-vas/api/packages/biller/slug/${slug}`, {
+  const response = await $fetch<PackagesResponse>(`https://sandbox1.coralpay.com/coralpay-vas/api/packages/biller/slug/${slug}` as any, {
     method: 'GET',
     headers: {
       'Authorization': `Basic ${credentials}`,

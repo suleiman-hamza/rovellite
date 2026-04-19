@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Biller } from '#shared/types/biller-types'
+// import type { Biller } from '#shared/types/biller-types'
 
 useSeoMeta({
   title: 'Betting',
@@ -9,26 +9,40 @@ useSeoMeta({
 definePageMeta({
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
+})
+const { getUser } = useAuth()
+
+const { data: bettingData, error: fetcherror, refresh, status } = await useLazyFetch('/api/betting', {
+  key: 'betting-provider',
+  immediate: !!getUser(),
+  watch: false,
 })
 
-const bettingData = ref<Biller[] | null>(null)
-const fetchError = ref()
-
-onBeforeMount(async () => {
-  const { data, error } = await useFetch<Biller[]>('/api/betting')
-  if (error.value) {
-    fetchError.value = error.value
-    console.error('Error fetching betting data:', error.value)
-  }
-  else {
-    bettingData.value = data.value as Biller[]
-  }
-})
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !bettingData.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 </script>
 
 <template>
   <main class="min-h-full font-poppins">
-    <section v-if="bettingData" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="status === 'pending'" class="flex items-center space-x-4">
+      <p>loading...</p>
+    </div>
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+      <p>Error fetching betting data.</p>
+      <p>{{ fetcherror }}</p>
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
+    </div>
+    <section v-else-if="bettingData" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-x-5 md:gap-y-8">
       <NuxtLink
         v-for="betting in bettingData"
         :key="betting.id"
@@ -43,13 +57,5 @@ onBeforeMount(async () => {
         </div>
       </NuxtLink>
     </section>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else-if="fetchError" class="flex items-center space-x-4">
-      <p>Error fetching betting data.</p>
-    </div>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <p>loading...</p>
-    </div>
   </main>
 </template>
