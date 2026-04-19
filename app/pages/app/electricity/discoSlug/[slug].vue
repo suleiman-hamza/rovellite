@@ -88,7 +88,7 @@ const selectPlan = computed(() => {
         Retry
       </UButton>
     </div>
-    <div v-else-if="discoSlug" class="max-w-207 mx-auto border border-[#E3EDF0] rounded-lg">
+    <div v-else-if="discoSlug" class="max-w-200 mx-auto border border-[#E3EDF0] rounded-lg">
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />

@@ -88,7 +88,7 @@ function addToCart() {
         Retry
       </UButton>
     </div>
-    <section v-else-if="betPlatform" class="border border-[#E3EDF0] max-w-207 mx-auto rounded-lg">
+    <section v-else-if="betPlatform" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <UButton icon="i-lucide-arrow-left" to="/app/betting" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
         <div class="flex gap-4 md:gap-8 items-center">
