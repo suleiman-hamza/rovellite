@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import { useClipboard } from '@vueuse/core'
+import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
@@ -70,6 +70,20 @@ const refferalCode = ref('vvshsiahehk;ssio')
 const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
+const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
+const isDesktop = useMediaQuery('(min-width: 768px)')
+
+const open = ref(false)
+
+const state = reactive({
+  email: undefined,
+  fullname: undefined,
+  bvn: undefined,
+})
+
+const title = 'Create Wallet'
+const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
+
 async function createWallet() {
   loading.value = true
   try {
@@ -134,10 +148,43 @@ async function createWallet() {
         <p class="font-bold text-[18px] md:text-[24px] mb-2">
           You do not have a wallet
         </p>
-        <UButton :loading :disabled="loading" size="lg" class="text-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
-          <span v-if="loading">Processing</span>
-          <span v-else>Create Wallet</span>
-        </UButton>
+        <DefineFormTemplate>
+          <UForm :state="state" class="space-y-4">
+            <UFormField label="Email" name="email" required>
+              <UInput v-model="state.email" placeholder="shadcn@example.com" required />
+            </UFormField>
+            <UFormField label="Full Name" name="fullname" required>
+              <UInput v-model="state.fullname" placeholder="John Doe" required />
+            </UFormField>
+            <UFormField label="Bank Verification Number (BVN)" name="bvn" required>
+              <UInput v-model="state.bvn" placeholder="12345678901" required />
+            </UFormField>
+
+            <UButton label="Submit" type="submit" />
+          </UForm>
+        </DefineFormTemplate>
+
+        <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
+          <UButton :loading :disabled="loading" size="lg" class="text-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+            <span v-if="loading">Processing</span>
+            <span v-else>Create Wallet</span>
+          </UButton>
+
+          <template #body>
+            <ReuseFormTemplate />
+          </template>
+        </UModal>
+
+        <UDrawer v-else v-model:open="open" :title="title" :description="description">
+          <UButton :loading :disabled="loading" size="lg" class="text-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+            <span v-if="loading">Processing</span>
+            <span v-else>Create Wallet</span>
+          </UButton>
+
+          <template #body>
+            <ReuseFormTemplate />
+          </template>
+        </UDrawer>
       </div>
     </section>
 
