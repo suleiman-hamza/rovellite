@@ -182,7 +182,7 @@ function toggleAmountVisibility() {
 }
 
 .embla__dot--selected {
-  background-color: #1177FE;
+  background-color: #fff;
   border-radius: 50%;
   opacity: 1;
 }
