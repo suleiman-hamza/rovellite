@@ -12,20 +12,20 @@ definePageMeta({
   middleware: 'auth',
   keepalive: true,
 })
-const { data: availableDiscos, error: fetcherror, refresh, status } = await useFetch('/api/electricity', {
+const { data: availableDiscos, error: fetcherror, refresh, status } = await useLazyFetch('/api/electricity', {
   key: 'disco-list',
   immediate: !!getUser(),
   watch: false,
 })
 
-if (import.meta.client) {
-  const stop = watch(() => getUser(), (user) => {
-    if (user && !availableDiscos.value) {
-      refresh()
-      stop()
-    }
-  }, { immediate: true })
-}
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !availableDiscos.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 </script>
 
 <template>
@@ -34,10 +34,13 @@ if (import.meta.client) {
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
     </div>
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+    <div v-if="fetcherror" class="flex items-center space-x-4">
       <p>{{ fetcherror }}</p>
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
     </div>
-    <section v-else class="rounded-[20px] bg-white">
+    <section v-else-if="availableDiscos" class="rounded-[20px] bg-white">
       <NuxtImg
         src="/images/electricity/electricity-banner.png"
         loading="eager"

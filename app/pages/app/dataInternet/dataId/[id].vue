@@ -33,20 +33,20 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 }
 
-const { data: result, error: fetcherror, refresh } = await useFetch(`/api/data/${route.params.id}`, {
+const { data: result, error: fetcherror, refresh, status } = await useLazyFetch(`/api/data/${route.params.id}`, {
   key: 'data-plan-details',
   immediate: !!getUser(),
   watch: false,
 })
 
-if (import.meta.client) {
-  const stop = watch(() => getUser(), (user) => {
-    if (user && !result.value) {
-      refresh()
-      stop()
-    }
-  }, { immediate: true })
-}
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !result.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 
 const selectPlan = computed(() => {
   if (!result.value) {
@@ -59,14 +59,6 @@ const selectPlan = computed(() => {
     }
   })
 })
-
-// if (error.value) {
-//   pageerror.value = error.value
-//   console.error('Error fetching data:', error.value)
-// }
-// else {
-//   dataPackage.value = result.value
-// }
 
 // loading state for add to cart button
 const loading = ref(false)
@@ -85,8 +77,19 @@ function addToCart() {
 </script>
 
 <template>
-  <main class="bg-white font-openSans rounded-lg md:p-7 ">
-    <section v-if="result" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
+  <main class="bg-white font-openSans rounded-lg md:p-7">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="status === 'pending'" class="flex items-center space-x-4">
+      <span>Loading...</span>
+    </div>
+
+    <div v-if="fetcherror">
+      {{ fetcherror }}
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
+    </div>
+    <section v-else-if="result" class="border border-[#E3EDF0] max-w-200 mx-auto rounded-lg">
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <UButton icon="i-lucide-arrow-left" to="/app/dataInternet" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
         <div class="flex gap-4 md:gap-8 items-center">
@@ -127,14 +130,5 @@ function addToCart() {
         </div>
       </div>
     </section>
-
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <span>Loading...</span>
-    </div>
-
-    <div v-if="fetcherror">
-      {{ fetcherror }}
-    </div>
   </main>
 </template>

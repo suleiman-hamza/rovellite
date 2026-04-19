@@ -10,20 +10,20 @@ const { getUser } = useAuth()
 
 // const isLoading = ref(false)
 
-const { data: dataValue, error: fetcherror, refresh, status } = await useFetch('/api/data', {
+const { data: dataValue, error: fetcherror, refresh, status } = await useLazyFetch('/api/data', {
   key: 'data-plans',
   immediate: !!getUser(),
   watch: false,
 })
 
-if (import.meta.client) {
-  const stop = watch(() => getUser(), (user) => {
-    if (user && !dataValue.value) {
-      refresh()
-      stop()
-    }
-  }, { immediate: true })
-}
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !dataValue.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 
 // Now 'data' and 'error' are reactive and will update automatically
 </script>
@@ -34,10 +34,13 @@ if (import.meta.client) {
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
     </div>
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+    <div v-if="fetcherror" class="flex items-center space-x-4">
       <p>{{ fetcherror }}</p>
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
     </div>
-    <UPageGrid v-else class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
+    <UPageGrid v-else-if="dataValue" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
       <NuxtLink
         v-for="dataPlan in dataValue"
         :key="dataPlan.id"

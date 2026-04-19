@@ -13,25 +13,36 @@ definePageMeta({
 })
 const { getUser } = useAuth()
 
-const { data: bettingData, error: fetcherror, refresh } = await useFetch('/api/betting', {
+const { data: bettingData, error: fetcherror, refresh, status } = await useLazyFetch('/api/betting', {
   key: 'betting-provider',
   immediate: !!getUser(),
   watch: false,
 })
 
-if (import.meta.client) {
-  const stop = watch(() => getUser(), (user) => {
-    if (user && !bettingData.value) {
-      refresh()
-      stop()
-    }
-  }, { immediate: true })
-}
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !bettingData.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 </script>
 
 <template>
   <main class="min-h-full font-poppins">
-    <section v-if="bettingData" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 gap-y-4 md:gap-x-5 md:gap-y-7">
+    <!-- Loading Skeleton when data is fetching from the API -->
+    <div v-if="status === 'pending'" class="flex items-center space-x-4">
+      <p>loading...</p>
+    </div>
+    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+      <p>Error fetching betting data.</p>
+      <p>{{ fetcherror }}</p>
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
+    </div>
+    <section v-else-if="bettingData" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-x-5 md:gap-y-8">
       <NuxtLink
         v-for="betting in bettingData"
         :key="betting.id"
@@ -46,14 +57,5 @@ if (import.meta.client) {
         </div>
       </NuxtLink>
     </section>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
-      <p>Error fetching betting data.</p>
-      <p>{{ fetcherror }}</p>
-    </div>
-    <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-else class="flex items-center space-x-4">
-      <p>loading...</p>
-    </div>
   </main>
 </template>

@@ -17,20 +17,20 @@ useSeoMeta({
   description: () => 'This is a description for the page',
 })
 
-const { data: discoSlug, error: fetcherror, refresh, status } = await useFetch(`/api/electricity/${route.params.slug}`, {
+const { data: discoSlug, error: fetcherror, refresh, status } = await useLazyFetch(`/api/electricity/${route.params.slug}`, {
   key: 'disco-page-detail',
   immediate: !!getUser(),
   watch: false,
 })
 
-if (import.meta.client) {
-  const stop = watch(() => getUser(), (user) => {
-    if (user && !discoSlug.value) {
-      refresh()
-      stop()
-    }
-  }, { immediate: true })
-}
+// if (import.meta.client) {
+//   const stop = watch(() => getUser(), (user) => {
+//     if (user && !discoSlug.value) {
+//       refresh()
+//       stop()
+//     }
+//   }, { immediate: true })
+// }
 
 // form validation schema w/ zod
 const formSchema = z.object({
@@ -77,15 +77,18 @@ const selectPlan = computed(() => {
 </script>
 
 <template>
-  <main class="rounded-[20px] md:py-7 bg-white font-poppins">
+  <main class="rounded-[20px] md:py-7 bg-white font-poppins h-full">
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
     </div>
-    <div v-else-if="fetcherror" class="flex items-center space-x-4">
+    <div v-if="fetcherror" class="text-center p-4 flex flex-col justify-center gap-4 h-full items-center space-x-4">
       <p>{{ fetcherror }}</p>
+      <UButton variant="outline" @click="refresh()">
+        Retry
+      </UButton>
     </div>
-    <div v-else class="max-w-207 mx-auto border border-[#E3EDF0] rounded-lg">
+    <div v-else-if="discoSlug" class="max-w-207 mx-auto border border-[#E3EDF0] rounded-lg">
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
