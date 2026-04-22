@@ -236,7 +236,7 @@ async function createWallet() {
 
     <section class="mt-4 rounded-[20px]">
       <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 py-4 sm:px-6 gap-2 md:gap-4 rounded-[20px] grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary rounded-lg flex flex-col justify-center items-center p-4 truncate">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 truncate">
           <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
           </span>

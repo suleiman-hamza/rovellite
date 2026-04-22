@@ -33,7 +33,7 @@ const { data: tvDecoders, error: fetcherror, refresh, status } = await useLazyFe
           v-for="paytv in tvDecoders"
           :key="paytv.id"
           :to="`tvDecoders/tvSlug/${paytv.slug}`"
-          class="block p-2 sm:p-3 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-[#E3EDF0] transition-colors"
+          class="block p-2 sm:p-3 bg-white rounded-lg border-2 border-[#DBF4FF] hover:border-primary transition-colors"
         >
           <div class="flex items-center gap-2 flex-col">
             <NuxtImg :src="paytv.image" :alt="paytv.name" class="object-contain w-12 h-12 md:w-24 md:h-24" />

@@ -41,7 +41,21 @@ const { data: educationData, error: fetcherror, refresh, status } = await useLaz
       </UButton>
     </div>
     <section v-else-if="educationData">
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Error tempora atque, quis veritatis delectus iste cumque eligendi. Expedita earum optio sapiente, recusandae repudiandae qui quas dignissimos error iste. Saepe, dicta.</p>
+      <UPageGrid class="lg:grid-cols-4">
+        <NuxtLink
+          v-for="platform in educationData"
+          :key="platform.slug"
+          :to="`electricity/eduSlug/${platform.slug}`"
+          class="p-2 sm:p-4 bg-white rounded-lg border-2 border-[#DBF4FF] hover:border-primary transition-colors flex flex-col gap-2 items-center justify-center text-center"
+        >
+          <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5">
+            <NuxtImg :src="platform.logo" alt="Education Logo" class="object-contain" />
+          </span>
+          <h4 class="font-poppins text-[14px] md:text-[16px] text-[#676A6D] leading-[150%] tracking-[1%] sm:font-bold">
+            {{ platform.name }}
+          </h4>
+        </NuxtLink>
+      </UPageGrid>
     </section>
   </main>
 </template>
