@@ -94,7 +94,7 @@ async function logOut() {
 
 <template>
   <UDashboardGroup class="bg-[#F9F9FB]">
-    <UDashboardSidebar collapsible resizable :default-size="35" :ui="{ root: 'rounded-r-[16px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
+    <UDashboardSidebar collapsible :default-size="20" :ui="{ root: 'rounded-r-[16px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
       <template #header="{ collapsed }">
         <div v-if="!collapsed" class="w-auto h-(--ui-header-height) flex items-center justify-center py-2">
           <NuxtImg
