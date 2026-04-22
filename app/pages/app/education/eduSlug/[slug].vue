@@ -2,7 +2,6 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
-// import type { Package } from '@@/shared/types/biller-types'
 const route = useRoute()
 const toast = useToast()
 const { getUser } = useAuth()
@@ -13,19 +12,19 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: `Electricity - ${route.params.slug}` as string,
+  title: `Education - ${route.params.slug}` as string,
   description: () => 'This is a description for the page',
 })
 
-const { data: discoSlug, error: fetcherror, refresh, status } = await useLazyFetch(`/api/electricity/${route.params.slug}`, {
-  key: 'disco-page-detail',
+const { data: eduSlug, error: fetcherror, refresh, status } = await useLazyFetch(`/api/education/${route.params.slug}`, {
+  key: 'education-page-detail',
   immediate: !!getUser(),
   watch: false,
 })
 
 // if (import.meta.client) {
 //   const stop = watch(() => getUser(), (user) => {
-//     if (user && !discoSlug.value) {
+//     if (user && !eduSlug.value) {
 //       refresh()
 //       stop()
 //     }
@@ -34,10 +33,10 @@ const { data: discoSlug, error: fetcherror, refresh, status } = await useLazyFet
 
 // form validation schema w/ zod
 const formSchema = z.object({
-  package: z
+  plan: z
     .string(),
-  meterNumber: z.string()
-    .regex(/^\d{11}$/, 'Enter a valid 11-digit meter number'),
+  profileId: z.string()
+    .regex(/^\d{11}$/, 'Enter a valid 11-digit profile ID'),
   amount: z.string()
     .min(1, 'Amount is required.'),
   phoneNumber: z.string()
@@ -48,8 +47,8 @@ type Schema = z.output<typeof formSchema>
 
 // form initial values
 const state = reactive<Partial<Schema>>({
-  package: '',
-  meterNumber: '',
+  plan: '',
+  profileId: '',
   amount: '',
   phoneNumber: '',
 })
@@ -58,16 +57,16 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
   console.warn('Form submitted with values:', event.data)
   toast.add({
     title: 'Form Submitted',
-    description: `Package Selected: ${event.data.package}, Meter Number: ${event.data.meterNumber}, Amount: ${event.data.amount}`,
+    description: `Package Selected: ${event.data.plan}, Profile Number: ${event.data.profileId}, Amount: ${event.data.amount}`,
     duration: 4000,
   })
 }
 
 const selectPlan = computed(() => {
-  if (!discoSlug.value) {
+  if (!eduSlug.value) {
     return []
   }
-  return discoSlug.value.discoResponse.map((plan) => {
+  return eduSlug.value.platformResponse.map((plan) => {
     return {
       label: plan.name,
       value: plan.id,
@@ -78,47 +77,50 @@ const selectPlan = computed(() => {
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-              <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/education" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
     </div>
-    <div v-if="fetcherror" class="text-center p-4 flex flex-col justify-center gap-4 h-full items-center space-x-4">
+    <div v-if="fetcherror" class="flex items-center space-x-4">
       <p>{{ fetcherror }}</p>
       <UButton variant="outline" @click="refresh()">
         Retry
       </UButton>
     </div>
-    <div v-else-if="discoSlug" class="max-w-200 mx-auto border border-[#E3EDF0] rounded-lg">
+    <section v-else-if="eduSlug" class="max-w-180 mx-auto">
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
-          <span class="">
-            <NuxtImg :src="discoSlug?.image" class="object-contain w-16 h-auto md:w-24 md:h-auto" />
+          <UButton icon="i-lucide-arrow-left" to="/app/education" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <span class="rounded-full bg-white p-0.5 overflow-hidden">
+            <NuxtImg :src="eduSlug?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
           <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155] md:mr-auto">
-            {{ discoSlug?.name?.toUpperCase() }}
+            {{ eduSlug?.name?.toUpperCase() }}
           </p>
         </div>
       </div>
-      <div>
-        <div class="w-full sm:max-w-lg mx-auto mt-9 mb-17.5">
+      <!--form body-->
+      <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
+
+        <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
-              <UFormField name="package">
-                <USelect placeholder="Select Meter Type" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              <UFormField name="plan">
+                <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
-
-              <UFormField name="meterNumber">
-                <UInput v-model="state.meterNumber" size="xl" placeholder="Meter Number" class="w-full placeholder:text-[#4D5155]" />
-              </UFormField>
-
-              <UFormField name="amount">
-                <UInput v-model="state.amount" size="xl" placeholder="Amount" class="w-full placeholder:text-amber-200" />
+              
+              <UFormField name="profileId">
+                <UInput v-model="state.profileId" size="xl" placeholder="Profile ID" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <UFormField name="phoneNumber">
                 <UInput v-model="state.phoneNumber" size="xl" placeholder="Phone Number" class="w-full placeholder:text-amber-200" />
+              </UFormField>
+
+              <UFormField name="amount">
+                <UInput v-model="state.amount" size="xl" placeholder="Price" class="w-full placeholder:text-amber-200" />
               </UFormField>
 
               <div class="flex gap-4 md:justify-between px-0 sm:px-6">
@@ -131,14 +133,14 @@ const selectPlan = computed(() => {
                 <UButton
                   type="submit"
                   class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
-                >
+                  >
                   Checkout
                 </UButton>
               </div>
             </UForm>
           </div>
         </div>
-      </div>
-    </div>
+        </div>
+      </section>
   </main>
 </template>

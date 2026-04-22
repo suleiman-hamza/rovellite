@@ -45,7 +45,7 @@ const { data: educationData, error: fetcherror, refresh, status } = await useLaz
         <NuxtLink
           v-for="platform in educationData"
           :key="platform.slug"
-          :to="`electricity/eduSlug/${platform.slug}`"
+          :to="`education/eduSlug/${platform.slug}`"
           class="p-2 sm:p-4 bg-white rounded-lg border-2 border-[#DBF4FF] hover:border-primary transition-colors flex flex-col gap-2 items-center justify-center text-center"
         >
           <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5 p-1">
