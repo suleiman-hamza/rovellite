@@ -87,57 +87,57 @@ const selectPlan = computed(() => {
     </div>
 
     <section v-else-if="decodeInfo" class="max-w-180 mx-auto">
-      <!--blue banner/ header-->
+      <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
           <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
           <span class="rounded-full bg-white p-0.5 overflow-hidden">
             <NuxtImg :src="decodeInfo?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
-            <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155] md:mr-auto">
-              {{ decodeInfo?.name?.toUpperCase() }}
-            </p>
-          </div>
+          <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155] md:mr-auto">
+            {{ decodeInfo?.name?.toUpperCase() }}
+          </p>
         </div>
+      </div>
       <!-- form body -->
       <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
-      <div class="px-4 sm:px-6">
-        <UForm :state :schema="formSchema" class="space-y-5 md:space-y-8" @submit="onSubmit">
-          <UFormField class="w-full">
-            <USelect :items="selectPlan" placeholder="plan" size="xl" class="w-full placeholder:text-[#4D5155]" />
-          </UFormField>
+          <div class="px-4 sm:px-6">
+            <UForm :state :schema="formSchema" class="space-y-5 md:space-y-8" @submit="onSubmit">
+              <UFormField class="w-full">
+                <USelect :items="selectPlan" placeholder="plan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-          <UFormField class="w-full">
-            <UInput v-model="state.decoderNumber" placeholder="Decoder Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
-          </UFormField>
+              <UFormField class="w-full">
+                <UInput v-model="state.decoderNumber" placeholder="Decoder Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-          <UFormField class="w-full">
-            <UInput v-model="state.phoneNumber" placeholder="Phone Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
-          </UFormField>
+              <UFormField class="w-full">
+                <UInput v-model="state.phoneNumber" placeholder="Phone Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-          <UFormField class="w-full">
-            <UInput v-model="state.price" placeholder="Generated Price" size="xl" class="w-full placeholder:text-[#4D5155]" />
-          </UFormField>
+              <UFormField class="w-full">
+                <UInput v-model="state.price" placeholder="Generated Price" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-          <div class="flex gap-4 md:gap-8 items-center">
-            <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
-              <template #leading>
-                <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
-              </template>
-              Add to Cart
-            </UButton>
-            <UButton
-              type="submit"
-              class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
-            >
-              Checkout
-            </UButton>
+              <div class="flex gap-4 md:gap-8 items-center">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
+                  <template #leading>
+                    <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
+                  </template>
+                  Add to Cart
+                </UButton>
+                <UButton
+                  type="submit"
+                  class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
+                >
+                  Checkout
+                </UButton>
+              </div>
+            </UForm>
           </div>
-        </UForm>
         </div>
-        </div>
-        </div>
+      </div>
     </section>
   </main>
 </template>

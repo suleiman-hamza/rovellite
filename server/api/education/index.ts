@@ -1,8 +1,8 @@
-import { Biller } from "../../../shared/types/biller-types"
+import type { Biller } from '../../../shared/types/biller-types'
 
 const educationLogos: Record<string, string> = {
   waec: '/images/education/waec.png',
-  jamb: '/images/education/jamb.png'
+  jamb: '/images/education/jamb.png',
 }
 
 export default defineEventHandler(async (_event) => {

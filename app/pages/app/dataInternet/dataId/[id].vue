@@ -103,36 +103,36 @@ function addToCart() {
           </p>
         </div>
       </div>
-      <!--form body-->
+      <!-- form body -->
       <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
-          <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
-            <UFormField name="agent">
-              <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full" />
-              <p class="text-[14px] mt-2">
-                Minimum: #100 | Maximun: #100
-              </p>
-            </UFormField>
+            <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
+              <UFormField name="agent">
+                <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full" />
+                <p class="text-[14px] mt-2">
+                  Minimum: #100 | Maximun: #100
+                </p>
+              </UFormField>
 
-            <UFormField name="id">
-              <UInput size="xl" inputmode="numeric" maxlength="11" placeholder="Phone Number" class="w-full" />
-            </UFormField>
+              <UFormField name="id">
+                <UInput size="xl" inputmode="numeric" maxlength="11" placeholder="Phone Number" class="w-full" />
+              </UFormField>
 
-            <div class="flex gap-4 px-0 sm:px-6">
-              <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
-                Add to Cart
-              </UButton>
-              <UButton
-                type="submit"
-                class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
-              >
-                Checkout
-              </UButton>
-            </div>
-          </UForm>
+              <div class="flex gap-4 px-0 sm:px-6">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                  Add to Cart
+                </UButton>
+                <UButton
+                  type="submit"
+                  class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
+                >
+                  Checkout
+                </UButton>
+              </div>
+            </UForm>
+          </div>
         </div>
-      </div>
       </div>
     </section>
   </main>

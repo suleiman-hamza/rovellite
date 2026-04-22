@@ -1,4 +1,4 @@
-import { Biller } from "../../../shared/types/biller-types"
+import type { Biller } from '../../../shared/types/biller-types'
 
 const transportLogos: Record<string, string> = {
   lasg_cowry_card_wallet: '/images/transport/cowry.png',

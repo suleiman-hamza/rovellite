@@ -6,8 +6,8 @@ export default defineAppConfig({
     },
     input: {
       slots: {
-        base: 'ring-2 ring-inset ring-[#808385] rounded-lg' // customize border/ring here
-      }
-    }
+        base: 'ring-2 ring-inset ring-[#808385] rounded-lg', // customize border/ring here
+      },
+    },
   },
 })

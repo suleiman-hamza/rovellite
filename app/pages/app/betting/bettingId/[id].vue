@@ -102,51 +102,51 @@ function addToCart() {
           </p>
         </div>
       </div>
-      <!--form body-->
+      <!-- form body -->
       <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
-          <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
-            <UFormField name="agent">
-              <USelect v-model="state.agent" placeholder="Choose Wallet" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
-            </UFormField>
+            <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
+              <UFormField name="agent">
+                <USelect v-model="state.agent" placeholder="Choose Wallet" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-            <UFormField name="id">
-              <UInput v-model="state.id" size="xl" :placeholder="`${betPlatform?.name} User Id`" class="w-full placeholder:text-[#4D5155]" />
-            </UFormField>
+              <UFormField name="id">
+                <UInput v-model="state.id" size="xl" :placeholder="`${betPlatform?.name} User Id`" class="w-full placeholder:text-[#4D5155]" />
+              </UFormField>
 
-            <div class="flex items-center justify-between font-sourcePro">
-              <UCheckbox label="Save" size="xl" :ui="{ indicator: 'bg-[#1177FE]', label: 'text-[12px] md:text-[16px] text-[#333333]', root: 'items-center' }" />
-              <UButton variant="link" class="text-[#0045A5] text-[14px] py-0 px-0 w-auto leading-none">
-                Use Saved Beneficiary
-              </UButton>
-            </div>
+              <div class="flex items-center justify-between font-sourcePro">
+                <UCheckbox label="Save" size="xl" :ui="{ indicator: 'bg-[#1177FE]', label: 'text-[12px] md:text-[16px] text-[#333333]', root: 'items-center' }" />
+                <UButton variant="link" class="text-[#0045A5] text-[14px] py-0 px-0 w-auto leading-none">
+                  Use Saved Beneficiary
+                </UButton>
+              </div>
 
-            <UFormField name="amount">
-              <UInput v-model="state.amount" size="xl" placeholder="Amount" class="w-full placeholder:text-amber-200" />
-              <p class="text-[14px] mt-2">
-                Minimum: #100 | Maximun: #100
-              </p>
-            </UFormField>
+              <UFormField name="amount">
+                <UInput v-model="state.amount" size="xl" placeholder="Amount" class="w-full placeholder:text-amber-200" />
+                <p class="text-[14px] mt-2">
+                  Minimum: #100 | Maximun: #100
+                </p>
+              </UFormField>
 
-            <div class="flex gap-4 md:justify-between px-0 sm:px-6">
-              <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
-                <template #leading>
-                  <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
-                </template>
-                Add to Cart
-              </UButton>
-              <UButton
-                type="submit"
-                class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
-              >
-                Checkout
+              <div class="flex gap-4 md:justify-between px-0 sm:px-6">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                  <template #leading>
+                    <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
+                  </template>
+                  Add to Cart
+                </UButton>
+                <UButton
+                  type="submit"
+                  class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
+                >
+                  Checkout
                 <!-- <Icon name="ion:caret-down" width="512" height="512" /> -->
-              </UButton>
-            </div>
-          </UForm>
+                </UButton>
+              </div>
+            </UForm>
+          </div>
         </div>
-      </div>
       </div>
     </section>
   </main>

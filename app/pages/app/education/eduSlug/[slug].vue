@@ -101,16 +101,15 @@ const selectPlan = computed(() => {
           </p>
         </div>
       </div>
-      <!--form body-->
+      <!-- form body -->
       <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
-
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
               <UFormField name="plan">
                 <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
-              
+
               <UFormField name="profileId">
                 <UInput v-model="state.profileId" size="xl" placeholder="Profile ID" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
@@ -133,14 +132,14 @@ const selectPlan = computed(() => {
                 <UButton
                   type="submit"
                   class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
-                  >
+                >
                   Checkout
                 </UButton>
               </div>
             </UForm>
           </div>
         </div>
-        </div>
-      </section>
+      </div>
+    </section>
   </main>
 </template>

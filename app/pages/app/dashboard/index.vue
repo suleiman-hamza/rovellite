@@ -29,7 +29,7 @@ const items = [{
 }, {
   label: 'Betting',
   icon: '/images/dashboard/betting.svg',
-  to: '/app/betting'
+  to: '/app/betting',
 }, {
   label: 'eSim',
   icon: '/images/dashboard/eSim.svg',
