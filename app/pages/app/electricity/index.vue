@@ -52,9 +52,9 @@ const { data: availableDiscos, error: fetcherror, refresh, status } = await useL
           v-for="discos in availableDiscos"
           :key="discos.slug"
           :to="`electricity/discoSlug/${discos.slug}`"
-          class="p-2 sm:p-4 bg-white rounded-lg border-2 border-[#DBF4FF] hover:bg-[#E3EDF0] transition-colors flex flex-col gap-2 items-center justify-center text-center"
+          class="p-2 sm:p-4 bg-white rounded-lg border md:border-2 border-[#DBF4FF] hover:border-primary transition-colors flex flex-col gap-2 items-center justify-center text-center"
         >
-          <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5">
+          <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-9.5 sm:w-20 sm:h-12.5">
             <NuxtImg :src="discos.logo" alt="Education Logo" class="object-contain" />
           </span>
           <h4 class="font-poppins text-[14px] md:text-[16px] text-[#676A6D] leading-[150%] tracking-[1%] sm:font-bold">
