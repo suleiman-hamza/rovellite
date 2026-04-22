@@ -1,16 +1,12 @@
 import type { VirtualAccountCreateResponse } from '../../types/palmpay'
+import type { Database } from '../../types/supabase-schema'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { VirtualAccountInsert } from '../../types/supabase'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
-import { createClient } from '@supabase/supabase-js'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 
-export async function createVirtualAccount(event: any, input: { userId: string }) {
-  const config = useRuntimeConfig()
-
-  const adminSupabase = createClient(
-    config.public.supabaseUrl,
-    config.supabaseServiceRoleKey,
-  )
-
+export async function createVirtualAccount(supabase: SupabaseClient<Database>, input: { userId: string }) {
   const { userId } = input
 
   if (!userId) {
@@ -22,7 +18,7 @@ export async function createVirtualAccount(event: any, input: { userId: string }
 
   try {
     // Fetch user data from users table
-    const { data: profile, error: profileError } = await adminSupabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('full_name, email')
       .eq('user_id', userId)
@@ -33,11 +29,11 @@ export async function createVirtualAccount(event: any, input: { userId: string }
     }
 
     // Check if user already has a virtual account (duplicate prevention)
-    const { data: existing } = await adminSupabase
+    const { data: existing } = await supabase
       .from('virtual_accounts')
       .select('virtual_account_no')
       .eq('user_id', userId)
-      .single()
+      .maybeSingle()
 
     if (existing) {
       return apiResponse.error(
@@ -72,18 +68,20 @@ export async function createVirtualAccount(event: any, input: { userId: string }
 
     const vaData = response.data
 
+    const vaInsert: VirtualAccountInsert = {
+      user_id: userId,
+      provider: 'palmpay',
+      virtual_account_no: vaData.virtualAccountNo,
+      virtual_account_name: vaData.virtualAccountName,
+      status: vaData.status,
+      app_id: vaData.appId || '',
+      raw_response: vaData as any,
+    }
+
     // Save to db
-    const { error: dbError } = await adminSupabase
+    const { error: dbError } = await supabase
       .from('virtual_accounts')
-      .insert({
-        user_id: userId,
-        provider: 'palmpay',
-        virtual_account_no: vaData.virtualAccountNo,
-        virtual_account_name: vaData.virtualAccountName,
-        status: vaData.status,
-        app_id: vaData.appId,
-        raw_response: vaData,
-      })
+      .insert(vaInsert)
 
     if (dbError) {
       console.error('Supabase insert error:', dbError)
@@ -97,10 +95,6 @@ export async function createVirtualAccount(event: any, input: { userId: string }
     }, 'Virtual Account created successfully')
   }
   catch (error: any) {
-    // console.error('createVirtualAccount Error:', error)
-    return apiResponse.error(
-      error.message || 'Internal error while creating virtual account',
-      500,
-    )
+    return handleUtilityError(error, 'Internal error while creating virtual account')
   }
 }

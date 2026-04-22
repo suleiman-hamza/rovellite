@@ -1,16 +1,10 @@
-import process from 'node:process'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 import admin from 'firebase-admin'
 import { defineEventHandler, getCookie } from 'h3'
 
-// Dedicated admin client for server-side ops (bypasses RLS)
-const adminSupabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-)
-
 // Endpoint handler for authenticated users
 export default defineEventHandler(async (event) => {
+  const adminSupabase = createAdminSupabaseClient()
   const session = getCookie(event, '__session')
   if (!session) {
     return null // No session = not authenticated

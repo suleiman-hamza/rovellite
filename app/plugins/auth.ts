@@ -12,7 +12,7 @@ export default defineNuxtPlugin(async () => {
   if (data.value) {
     user.value = data.value // Set authUser to fetched profile
 
-    if (store.userProfile) {
+    if (data.value) {
       store.userProfile = data.value as Profile // Sync to profile store
     }
   }

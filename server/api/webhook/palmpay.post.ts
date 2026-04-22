@@ -2,6 +2,8 @@ import { apiResponse } from '#server/utils/api-response'
 import { verifyPalmpaySignature } from '#server/utils/palmpay-sign'
 import { palmpayWebhookSchema } from '#server/utils/palmpay-webhook-schema'
 import { processVirtualAccountCredit } from '#server/utils/process-virtual-account-credit'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -10,7 +12,6 @@ export default defineEventHandler(async (event) => {
     const { palmpayPrivateKey } = config
 
     if (!palmpayPrivateKey) {
-      // console.error('PalmPay private key is not configured')
       return apiResponse.error('Server configuration error', 500)
     }
 
@@ -18,7 +19,6 @@ export default defineEventHandler(async (event) => {
     const signatureCheck = verifyPalmpaySignature(event, body, palmpayPrivateKey)
 
     if (!signatureCheck.isValid) {
-      // console.error('[PalmPay Webhook] Invalid signature received')
       return apiResponse.error(signatureCheck.error ?? 'Invalid signature', 401)
     }
 
@@ -31,7 +31,9 @@ export default defineEventHandler(async (event) => {
     const reference = validated.reference
     const description = validated.description
 
-    const result = await processVirtualAccountCredit({
+    const adminSupabase = createAdminSupabaseClient()
+
+    const result = await processVirtualAccountCredit(adminSupabase, {
       virtualAccountNo,
       amount: amountNum,
       reference,
@@ -40,8 +42,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!result.success) {
-      // console.error(`[PalmPay Webhook] Processing failed for reference: ${reference} - ${result.message}`)
-      return apiResponse.error(result.message, result.statusCode)
+      return apiResponse.error(result.message, result.statusCode || 500)
     }
 
     return apiResponse.success(
@@ -49,8 +50,7 @@ export default defineEventHandler(async (event) => {
       'SUCCESS',
     )
   }
-  catch {
-    // console.error('PalmPay Webhook Error:', error)
-    return apiResponse.error('Internal server error processing webhook', 500)
+  catch (error: any) {
+    return handleUtilityError(error, 'Failed to process webhook')
   }
 })

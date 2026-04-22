@@ -1,5 +1,5 @@
 import type { Profile } from '../../types/supabase'
-
+import type { Database } from '../../types/supabase-schema'
 import { createClient } from '@supabase/supabase-js'
 import { useRuntimeConfig } from 'nuxt/app'
 import { useAuth } from '../composables/use-auth'
@@ -10,12 +10,10 @@ export const useProfileStore = defineStore('profile', () => {
   const { getUser } = useAuth()
 
   const userProfile = ref<Profile | null>(null)
-  // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
   const loading = ref(false)
 
   // Handle get supabase client
   const getSupabaseClient = () => {
-    // Access the flattened keys defined in nuxt.config.ts
     const url = config.public.supabaseUrl
     const key = config.public.supabaseAnonKey
 
@@ -23,15 +21,8 @@ export const useProfileStore = defineStore('profile', () => {
       throw new Error('Missing Supabase config in runtimeConfig')
     }
 
-    return createClient(url, key)
+    return createClient<Database>(url, key)
   }
-  // const getSupabaseClient = () => {
-  //   const { url, key } = config.public.supabase || {}
-  //   if (!url || !key)
-  //     throw new Error('Missing Supabase config in runtimeConfig')
-
-  //   return createClient(url, key)
-  // }
 
   const showError = (err: unknown) => {
     const message = err instanceof Error ? err.message : String(err)

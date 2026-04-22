@@ -1,5 +1,4 @@
 import crypto from 'node:crypto'
-import process from 'node:process'
 
 export function generatePalmPaySignature(
   payload: Record<string, any>,
@@ -14,10 +13,10 @@ export function generatePalmPaySignature(
     .map(key => `${key}=${payload[key]}`)
     .join('&')
 
-  // DEBUG LOGGING (only in development)
+  // logging for debugging purposes
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
-  //   console.log('🔍 [PalmPay Signature Debug] stringToSign', stringToSign)
-  //   console.log('🔑 [PalmPay Signature Debug] MD5 (uppercase)',
+  //   console.log('[PalmPay Signature Debug] stringToSign', stringToSign)
+  //   console.log('[PalmPay Signature Debug] MD5 (uppercase)',
   //     crypto.createHash('md5').update(stringToSign).digest('hex').toUpperCase()
   //   )
   // }
@@ -54,18 +53,18 @@ export function verifyPalmpaySignature(
     privateKey,
   )
 
-  // console.warn('   Received :', receivedSignature || '(missing)')
-  // console.warn('   Expected :', expectedSignature)
+  console.warn('   Received :', receivedSignature || '(missing)')
+  console.warn('   Expected :', expectedSignature)
 
   // DEV-MODE BYPASS
-  if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
-    console.warn('⚠️ [DEV MODE] Bypassing signature verification!')
-    return {
-      isValid: true,
-      expected: expectedSignature,
-      received: (receivedSignature as string) || 'dev-bypass',
-    }
-  }
+  // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
+  //   console.warn('[DEV MODE] Bypassing signature verification!')
+  //   return {
+  //     isValid: true,
+  //     expected: expectedSignature,
+  //     received: (receivedSignature as string) || 'dev-bypass',
+  //   }
+  // }
 
   if (!receivedSignature) {
     return {

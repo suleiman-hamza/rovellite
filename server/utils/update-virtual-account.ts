@@ -1,24 +1,20 @@
 import crypto from 'node:crypto'
+import type { Database } from '../../types/supabase-schema'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { VirtualAccountUpdate } from '../../types/supabase'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
-import { createClient } from '@supabase/supabase-js'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 
-export async function updateVirtualAccountStatus(event: any, input: {
+export async function updateVirtualAccountStatus(supabase: SupabaseClient<Database>, input: {
   virtualAccountNo: string
   status: 'Enabled' | 'Disabled'
 }) {
   const { virtualAccountNo, status } = input
 
   try {
-    const config = useRuntimeConfig()
-
-    const adminSupabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey,
-    )
-
     // Check if virtual account exists
-    const { data: existing, error: checkError } = await adminSupabase
+    const { data: existing, error: checkError } = await supabase
       .from('virtual_accounts')
       .select('user_id, status, raw_response')
       .eq('virtual_account_no', virtualAccountNo)
@@ -52,18 +48,19 @@ export async function updateVirtualAccountStatus(event: any, input: {
       )
     }
 
+    const vaUpdate: VirtualAccountUpdate = {
+      status,
+      raw_response: existing.raw_response as any, // Preserve existing raw_response or update if needed
+      updated_at: new Date().toISOString(),
+    }
+
     // Update database (only if PalmPay succeeded)
-    const { error: dbError } = await adminSupabase
+    const { error: dbError } = await supabase
       .from('virtual_accounts')
-      .update({
-        status,
-        raw_response: existing.raw_response,
-        updated_at: new Date().toISOString(),
-      })
+      .update(vaUpdate)
       .eq('virtual_account_no', virtualAccountNo)
 
     if (dbError) {
-      // console.error('Supabase update error:', dbError)
       return apiResponse.error(
         'Updated on PalmPay but failed to update local database',
         500,
@@ -76,10 +73,6 @@ export async function updateVirtualAccountStatus(event: any, input: {
     }, `Virtual account successfully updated to ${status}`)
   }
   catch (error: any) {
-    // console.error('Update VA Status Error:', error)
-    return apiResponse.error(
-      error.message || 'Failed to update virtual account status',
-      error.statusCode || 500,
-    )
+    return handleUtilityError(error, 'Failed to update virtual account status')
   }
 }

@@ -13,7 +13,8 @@
     "db:generate": "drizzle-kit generate --config ./server/database/drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config ./server/database/drizzle.config.ts",
     "db:push": "drizzle-kit push --config ./server/database/drizzle.config",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:types": "supabase gen types typescript --linked > types/supabase-schema.ts"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.98",

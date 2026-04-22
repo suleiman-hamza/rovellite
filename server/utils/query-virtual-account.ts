@@ -2,6 +2,7 @@ import type { VirtualAccountQueryResponse } from '../../types/palmpay'
 import crypto from 'node:crypto'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -37,15 +38,6 @@ export async function queryPalmPayVirtualAccount(virtualAccountNo: string) {
     return apiResponse.success(response.data, 'Virtual account queried successfully')
   }
   catch (error: any) {
-    console.error('Query PalmPay VA Error:', error)
-
-    if (error.name === 'ZodError') {
-      return apiResponse.error(error.errors[0].message, 400, 'VALIDATION_ERROR')
-    }
-
-    return apiResponse.error(
-      error.message || 'Failed to query virtual account',
-      error.statusCode || 500,
-    )
+    return handleUtilityError(error, 'Failed to query virtual account from PalmPay')
   }
 }

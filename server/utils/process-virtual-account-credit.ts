@@ -3,12 +3,14 @@ import type {
   VirtualAccountCreditParams,
   VirtualAccountCreditResult,
 } from '../../types/supabase'
-import { createAdminSupabaseClient } from '../../types/supabase'
+import type { Database } from '../../types/supabase-schema'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
 export async function processVirtualAccountCredit(
+  supabase: SupabaseClient<Database>,
   params: VirtualAccountCreditParams,
 ): Promise<VirtualAccountCreditResult> {
-  const adminSupabase = createAdminSupabaseClient()
+
   const { virtualAccountNo, amount, reference, description, metadata } = params
 
   if (Number.isNaN(amount) || amount <= 0) {
@@ -16,7 +18,7 @@ export async function processVirtualAccountCredit(
   }
 
   // Fetch Virtual account
-  const { data: vaData, error: vaError } = await adminSupabase
+  const { data: vaData, error: vaError } = await supabase
     .from('virtual_accounts')
     .select('id, user_id, virtual_account_no, status')
     .eq('virtual_account_no', virtualAccountNo.trim())
@@ -30,7 +32,7 @@ export async function processVirtualAccountCredit(
   const virtualAccount = vaData as { user_id: string, status: string }
 
   // Fetch Wallet & Verify active status
-  const { data: walletData, error: walletError } = await adminSupabase
+  const { data: walletData, error: walletError } = await supabase
     .from('wallets')
     .select('id, balance, status')
     .eq('user_id', virtualAccount.user_id)
@@ -49,7 +51,7 @@ export async function processVirtualAccountCredit(
   }
 
   // check if transaction already exists (Idempotency)
-  const { data: existingTx } = await adminSupabase
+  const { data: existingTx } = await supabase
     .from('transactions')
     .select('id')
     .eq('reference', reference)
@@ -72,9 +74,9 @@ export async function processVirtualAccountCredit(
     p_metadata: metadata,
   }
 
-  const { error: rpcError } = await (adminSupabase.rpc as any)(
+  const { error: rpcError } = await supabase.rpc(
     'credit_wallet_with_transaction',
-    rpcPayload,
+    rpcPayload as any,
   )
 
   if (rpcError) {

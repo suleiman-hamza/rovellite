@@ -1,5 +1,6 @@
-import { apiResponse } from '#server/utils/api-response'
 import { createVirtualAccount } from '#server/utils/create-virtual-account'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 import { z } from 'zod'
 
 const createVaSchema = z.object({
@@ -13,26 +14,12 @@ export default defineEventHandler(async (event) => {
     // Validate with Zod
     const { userId } = createVaSchema.parse(body)
 
-    const result = await createVirtualAccount(event, { userId })
+    const adminSupabase = createAdminSupabaseClient()
+    const result = await createVirtualAccount(adminSupabase, { userId })
 
     return result
   }
   catch (error: any) {
-    // console.error('VA Creation Error:', error)
-
-    // Handle Zod validation errors
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(
-        message,
-        400,
-        'VALIDATION_ERROR',
-      )
-    }
-
-    return apiResponse.error(
-      'Failed to create virtual account',
-      500,
-    )
+    return handleUtilityError(error, 'Failed to create virtual account')
   }
 })

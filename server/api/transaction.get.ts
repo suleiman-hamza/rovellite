@@ -1,5 +1,6 @@
-import { apiResponse } from '#server/utils/api-response'
 import { getRovelsubUserTransactions } from '#server/utils/transaction'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { handleUtilityError } from '#server/utils/utils-error-handler'
 import { z } from 'zod'
 
 const transactionsSchema = z.object({
@@ -12,18 +13,16 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const { userId, limit } = transactionsSchema.parse(query)
 
-    const result = await getRovelsubUserTransactions(event, userId, Number.parseInt(limit))
+    const adminSupabase = createAdminSupabaseClient()
+
+    const result = await getRovelsubUserTransactions(
+      adminSupabase,
+      userId,
+      Number.parseInt(limit)
+    )
 
     return result
-  }
-  catch (error: any) {
-    console.error('Transactions Route Error:', error)
-
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(message, 400, 'VALIDATION_ERROR')
-    }
-
-    return apiResponse.error('Failed to fetch transactions', 500)
+  } catch (error: any) {
+    return handleUtilityError(error, 'Failed to fetch transactions')
   }
 })
