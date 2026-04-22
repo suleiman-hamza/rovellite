@@ -16,6 +16,11 @@ export default defineEventHandler(async (event) => {
         'Content-Type': 'text/plain',
       },
     })
+
+    // is this redundant ?
+    if (response.error === true) {
+      return response.message
+    }
     return response.responseData
   }
   catch (error) {

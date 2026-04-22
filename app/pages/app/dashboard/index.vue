@@ -15,7 +15,7 @@ const items = [{
   icon: '/images/dashboard/giftcard.svg',
   to: '/app/giftCards',
 }, {
-  label: 'Data/Internet',
+  label: 'Data',
   icon: '/images/dashboard/data.svg',
   to: '/app/dataInternet',
 }, {
@@ -26,6 +26,14 @@ const items = [{
   label: 'TV/Decoders',
   icon: '/images/dashboard/tv-decoder.svg',
   to: '/app/tvDecoders',
+}, {
+  label: 'Betting',
+  icon: '/images/dashboard/betting.svg',
+  to: '/app/betting',
+}, {
+  label: 'eSim',
+  icon: '/images/dashboard/eSim.svg',
+  to: '/app/eSim',
 }, {
   label: 'Electricity',
   icon: '/images/dashboard/electricity.svg',
@@ -42,10 +50,6 @@ const items = [{
   label: 'Solar System',
   icon: '/images/dashboard/solar.svg',
   to: '/app/solarSystem',
-}, {
-  label: 'Withdraw Referral Earning',
-  icon: '/images/dashboard/referral.svg',
-  to: '',
 }]
 
 const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
@@ -132,7 +136,7 @@ async function createWallet() {
             <USeparator orientation="vertical" class="hidden md:inline h-4" />
             <span class="tracking-[1%]">{{ virtualAccountDetails?.data?.virtual_account_no }}</span>
           </div>
-          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold" :ui="{ base: 'text-[#1177FE] bg-white w-20 h-7 md:w-40 md:h-15 flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="copy(source)">
+          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white w-20 h-7 md:w-40 md:h-15 flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="copy(source)">
             <span v-if="!copied">Copy</span>
             <span v-else>Copied!</span>
           </UButton>
@@ -146,13 +150,10 @@ async function createWallet() {
       <!-- show create wallet option for users without a wallet -->
       <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 pt-5 sm:px-6">
         <p class="font-bold text-[18px] md:text-[24px] mb-2">
-          You do not have a wallet
+          You have no wallet
         </p>
         <DefineFormTemplate>
           <UForm :state="state" class="space-y-4">
-            <UFormField label="Email" name="email" required>
-              <UInput v-model="state.email" placeholder="shadcn@example.com" required />
-            </UFormField>
             <UFormField label="Full Name" name="fullname" required>
               <UInput v-model="state.fullname" placeholder="John Doe" required />
             </UFormField>
@@ -165,7 +166,7 @@ async function createWallet() {
         </DefineFormTemplate>
 
         <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
-          <UButton size="lg" class="text-[#1177FE] bg-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
           </UButton>
@@ -189,24 +190,24 @@ async function createWallet() {
     </section>
 
     <section class="mt-4 rounded-lg">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] py-5 px-3 sm:px-6 sm:py-4.5 md:px-10 gap-4 rounded-xl grid-cols-3 md:grid-cols-4">
-        <div class="col-span-3 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-4">
+      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] py-5 px-3 sm:px-4 sm:py-4.5 lg:px-6 gap-4 rounded-xl grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+        <div class="relative col-span-3 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-3">
           <div>
             <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
-              vvshsiahehk;ssio
+              vhehk;ssio
             </h3>
             <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
               Referral Code
             </h4>
           </div>
           <button
-            class="bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]" @click="copyReferralCode(refferalCode)"
+            class="absolute top-4 right-4 bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]" @click="copyReferralCode(refferalCode)"
           >
             <span v-if="!copiedReferralCode">Copy</span>
             <span v-else>Copied!</span>
           </button>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-4">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-3">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>
@@ -214,7 +215,7 @@ async function createWallet() {
             Referal Bonus
           </h4>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-4">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             0
           </h3>
@@ -222,10 +223,10 @@ async function createWallet() {
             Total Referrals
           </h4>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-4">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-            0
-          </h3>
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
+          <span>
+            <NuxtImg src="images/icons/lsicon_gift-filledreferals.svg" alt="Withdraw earnings" class="text-primary" />
+          </span>
           <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
             Withdraw Earning
           </h4>
@@ -235,7 +236,7 @@ async function createWallet() {
 
     <section class="mt-4 rounded-[20px]">
       <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 py-4 sm:px-6 gap-2 md:gap-4 rounded-[20px] grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:bg-[#E3EDF0] rounded-lg flex flex-col justify-center items-center p-4 truncate">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 truncate">
           <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
           </span>

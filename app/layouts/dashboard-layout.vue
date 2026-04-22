@@ -6,6 +6,7 @@ import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile'
 
 const toast = useToast()
+const route = useRoute()
 
 const { signOutUser } = useAuth()
 
@@ -15,58 +16,72 @@ const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
   icon: '/images/icons/dashboard.svg',
   to: '/app/dashboard',
+  // active: route.path.startsWith()
 }, {
   label: 'Gift cards',
   icon: '/images/icons/giftcard.svg',
   to: '/app/giftCards',
+  active: route.path.startsWith('/app/giftCards'),
 }, {
   label: 'Data/Internet',
   icon: '/images/icons/data.svg',
   to: '/app/dataInternet',
+  active: route.path.startsWith('/app/dataInternet'),
 }, {
   label: 'Airtime',
   icon: '/images/icons/airtime.svg',
   to: '/app/airtime',
+  active: route.path.startsWith('/app/airtime'),
 }, {
   label: 'TV/Decoders',
   icon: '/images/icons/tv-decoder.svg',
   to: '/app/tvDecoders',
+  active: route.path.startsWith('/app/tvDecoders'),
 }, {
   label: 'Betting',
   icon: '/images/icons/betting.svg',
   to: '/app/betting',
+  active: route.path.includes('/app/betting'),
 }, {
   label: 'eSim',
   icon: '/images/icons/eSim.svg',
   to: '/app/eSim',
+  active: route.path.startsWith('/app/eSim'),
 }, {
   label: 'Electricity',
   icon: '/images/icons/electricity.svg',
   to: '/app/electricity',
+  active: route.path.startsWith('/app/electricity'),
 }, {
   label: 'Education',
   icon: '/images/icons/education.svg',
   to: '/app/education',
+  active: route.path.startsWith('/app/education'),
 }, {
   label: 'Transportation',
   icon: 'images/icons/transportation.svg',
   to: '/app/transportation',
+  active: route.path.startsWith('/app/transportation'),
 }, {
   label: 'Solar System',
   icon: '/images/icons/solar.svg',
   to: '/app/solarSystem',
+  active: route.path.startsWith('/app/solarSystem'),
 }, {
   label: 'Fund wallet',
   icon: '/images/icons/fundwallet.svg',
   to: '/app/fundWallet',
+  active: route.path.startsWith('/app/fundWallet'),
 }, {
   label: 'Transactions',
   icon: '/images/icons/transactions.svg',
   to: '/app/transactions',
+  active: route.path.startsWith('/app/transactions'),
 }, {
   label: 'Settings',
   icon: '/images/icons/settings.svg',
   to: '/app/settings',
+  active: route.path.startsWith('/app/settings'),
 }]
 
 const loading = ref(false)
@@ -94,7 +109,7 @@ async function logOut() {
 
 <template>
   <UDashboardGroup class="bg-[#F9F9FB]">
-    <UDashboardSidebar collapsible resizable :default-size="35" :ui="{ root: 'rounded-r-[16px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
+    <UDashboardSidebar collapsible :default-size="20" :ui="{ root: 'rounded-r-[40px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
       <template #header="{ collapsed }">
         <div v-if="!collapsed" class="w-auto h-(--ui-header-height) flex items-center justify-center py-2">
           <NuxtImg
@@ -132,12 +147,6 @@ async function logOut() {
             </li>
           </ul>
         </nav>
-        <!-- <UNavigationMenu
-          :collapsed="collapsed"
-          :items="items"
-          orientation="vertical"
-          :ui="{ link: 'before:bg-transparent before:rounded-none', linkLeadingIcon: 'text-secondary data-active:border', linkLabel: 'border', item: '' }"
-        /> -->
       </template>
 
       <template #footer="{ collapsed }">
@@ -181,10 +190,11 @@ async function logOut() {
               </UButton>
               <UUser
                 :name="store.userProfile?.full_name" :avatar="{
-                  src: store.userProfile?.avatar_url || 'https://i.pravatar.cc/150?u=john-doe',
+                  src: store.userProfile?.avatar_url,
                   loading: 'lazy',
                   icon: 'i-lucide-image',
                 }"
+                :ui="{ avatar: 'border border-primary' }"
               />
             </div>
             <UChip :text="5" color="error" inset size="3xl" class="sm:hidden">

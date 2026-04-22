@@ -77,8 +77,8 @@ const selectPlan = computed(() => {
 </script>
 
 <template>
-  <main class="rounded-[20px] md:py-7 bg-white font-poppins h-full">
-    <!-- Loading Skeleton when data is fetching from the API -->
+  <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
+    <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
       <p>loading...</p>
     </div>
@@ -91,10 +91,10 @@ const selectPlan = computed(() => {
     <div v-else-if="discoSlug" class="max-w-200 mx-auto border border-[#E3EDF0] rounded-lg">
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
-        <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="subtle" class="justify-items-start" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
-        <div class="flex gap-8 items-center">
-          <span class="rounded-full">
-            <NuxtImg :src="discoSlug?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
+        <div class="flex gap-4 md:gap-8 items-center">
+          <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <span class="">
+            <NuxtImg :src="discoSlug?.image" class="object-contain w-16 h-auto md:w-24 md:h-auto" />
           </span>
           <p class="text-[18px] sm:text-[32px] font-bold text-[#4D5155] md:mr-auto">
             {{ discoSlug?.name?.toUpperCase() }}
