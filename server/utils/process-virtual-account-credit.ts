@@ -25,7 +25,7 @@ export async function processVirtualAccountCredit(
     .maybeSingle()
 
   if (vaError || !vaData) {
-    console.warn(`Virtual account not found: ${virtualAccountNo}`)
+    console.warn(JSON.stringify({ level: 'warn', service: 'webhook-credit', event: 'va_not_found', virtualAccountNo }))
     return { success: false, message: 'Virtual account not found', statusCode: 404 }
   }
 
@@ -39,14 +39,14 @@ export async function processVirtualAccountCredit(
     .single()
 
   if (walletError || !walletData) {
-    console.error(`Wallet not found for user: ${virtualAccount.user_id}`)
+    console.error(JSON.stringify({ level: 'error', service: 'webhook-credit', event: 'wallet_not_found', userId: virtualAccount.user_id }))
     return { success: false, message: 'Wallet not found for this account', statusCode: 404 }
   }
 
   const wallet = walletData as { id: string, status: string }
 
   if (wallet.status !== 'Active') {
-    console.warn(`Wallet is not active for user: ${virtualAccount.user_id}`)
+    console.warn(JSON.stringify({ level: 'warn', service: 'webhook-credit', event: 'wallet_inactive', userId: virtualAccount.user_id }))
     return { success: false, message: 'Wallet is not active', statusCode: 400 }
   }
 
@@ -59,7 +59,7 @@ export async function processVirtualAccountCredit(
     .maybeSingle()
 
   if (existingTx) {
-    console.warn(`[Webhook Credit] Transaction already processed: ${reference}`)
+    console.warn(JSON.stringify({ level: 'warn', service: 'webhook-credit', event: 'duplicate_webhook', reference }))
     return { success: true, message: 'Webhook already processed' }
   }
 
@@ -80,11 +80,11 @@ export async function processVirtualAccountCredit(
   )
 
   if (rpcError) {
-    console.error('RPC credit_wallet_with_transaction failed:', rpcError)
+    console.error(JSON.stringify({ level: 'error', service: 'webhook-credit', event: 'rpc_failed', reference, error: rpcError.message }))
     return { success: false, message: 'Failed to process wallet credit', statusCode: 500 }
   }
 
-  console.warn(`Webhook Credit Success | User: ${virtualAccount.user_id} | Amount: ₦${amount} | Ref: ${reference}`)
+  console.info(JSON.stringify({ level: 'info', service: 'webhook-credit', event: 'credit_success', userId: virtualAccount.user_id, amount, reference }))
 
   return { success: true, message: 'Webhook processed successfully' }
 }

@@ -1,6 +1,6 @@
 import { queryPalmPayVirtualAccount } from '#server/utils/query-virtual-account'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 import { z } from 'zod'
 
 const getVaSchema = z.object({
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
             .from('virtual_accounts')
             .update({
               status: freshData.status,
-              raw_response: freshData,
+              raw_response: { ...freshData },
             })
             .eq('virtual_account_no', vaData.virtual_account_no)
         }

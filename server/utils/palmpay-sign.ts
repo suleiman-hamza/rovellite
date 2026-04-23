@@ -39,7 +39,9 @@ export function generatePalmPaySignature(
   return sign.sign(formattedKey, 'base64')
 }
 
-// verify signature
+
+
+// Verify signature
 export function verifyPalmpaySignature(
   event: any,
   body: any,
@@ -53,8 +55,11 @@ export function verifyPalmpaySignature(
     privateKey,
   )
 
-  console.warn('   Received :', receivedSignature || '(missing)')
-  console.warn('   Expected :', expectedSignature)
+  // Only log signatures in development — NEVER in production (enables webhook forgery)
+  if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
+    console.warn('[PalmPay Signature Debug] Received:', receivedSignature || '(missing)')
+    console.warn('[PalmPay Signature Debug] Expected:', expectedSignature)
+  }
 
   // DEV-MODE BYPASS
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {

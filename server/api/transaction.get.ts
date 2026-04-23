@@ -1,6 +1,6 @@
 import { getRovelsubUserTransactions } from '#server/utils/transaction'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 import { z } from 'zod'
 
 const transactionsSchema = z.object({

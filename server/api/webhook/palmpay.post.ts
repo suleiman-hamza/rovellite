@@ -3,7 +3,7 @@ import { verifyPalmpaySignature } from '#server/utils/palmpay-sign'
 import { palmpayWebhookSchema } from '#server/utils/palmpay-webhook-schema'
 import { processVirtualAccountCredit } from '#server/utils/process-virtual-account-credit'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   try {

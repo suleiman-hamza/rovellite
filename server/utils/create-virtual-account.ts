@@ -1,10 +1,10 @@
-import type { VirtualAccountCreateResponse } from '../../types/palmpay'
+import type { VirtualAccountCreateResponse, VirtualAccountCreatePayload } from '../../types/palmpay'
 import type { Database } from '../../types/supabase-schema'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { VirtualAccountInsert } from '../../types/supabase'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export async function createVirtualAccount(supabase: SupabaseClient<Database>, input: { userId: string }) {
   const { userId } = input
@@ -17,7 +17,7 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
   }
 
   try {
-    // Fetch user data from users table
+    // Fetch user data from profiles table
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('full_name, email')
@@ -43,12 +43,11 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
       )
     }
 
-    // PalmPay payload using user data
-    const timestamp = Date.now()
-    const palmpayPayload = {
+    // PalmPay payload using user data — nonceStr/requestTime/version handled by palmPayRequest
+    const palmpayPayload: VirtualAccountCreatePayload = {
       customerName: profile.full_name || 'Unknown User',
       email: profile.email || 'noemail@example.com',
-      virtualAccountName: `RovelSubPoint-${profile.full_name || 'User'}-${timestamp}`,
+      virtualAccountName: `RovelSubPoint-${profile.full_name || 'User'}-${Date.now()}`,
       identityType: 'company',
       licenseNumber: 'dasd141234114123',
     }
@@ -74,7 +73,7 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
       virtual_account_no: vaData.virtualAccountNo,
       virtual_account_name: vaData.virtualAccountName,
       status: vaData.status,
-      app_id: vaData.appId || '',
+      app_id: vaData.appId as any,
       raw_response: vaData as any,
     }
 

@@ -7,7 +7,7 @@ export default defineNuxtPlugin(async () => {
   const store = useProfileStore()
 
   // Fetch user-profile
-  const { data } = await useFetch('/api/auth/me')
+  const { data } = await useFetch('/api/auth/user')
 
   if (data.value) {
     user.value = data.value // Set authUser to fetched profile

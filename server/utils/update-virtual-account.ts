@@ -1,10 +1,10 @@
-import crypto from 'node:crypto'
+import type { VirtualAccountUpdatePayload } from '../../types/palmpay'
 import type { Database } from '../../types/supabase-schema'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { VirtualAccountUpdate } from '../../types/supabase'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export async function updateVirtualAccountStatus(supabase: SupabaseClient<Database>, input: {
   virtualAccountNo: string
@@ -24,14 +24,8 @@ export async function updateVirtualAccountStatus(supabase: SupabaseClient<Databa
       return apiResponse.error('Virtual account not found', 404)
     }
 
-    // Update on PalmPay
-    const timestamp = Date.now()
-    const nonceStr = crypto.randomBytes(16).toString('hex')
-
-    const payload = {
-      requestTime: timestamp,
-      version: 'V2.0',
-      nonceStr,
+    // Update on PalmPay — nonceStr/requestTime/version handled by palmPayRequest
+    const payload: VirtualAccountUpdatePayload = {
       virtualAccountNo,
       status,
     }

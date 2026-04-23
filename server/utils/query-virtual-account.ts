@@ -1,8 +1,7 @@
-import type { VirtualAccountQueryResponse } from '../../types/palmpay'
-import crypto from 'node:crypto'
+import type { VirtualAccountQueryResponse, VirtualAccountQueryPayload } from '../../types/palmpay'
 import { apiResponse } from '#server/utils/api-response'
 import { palmPayRequest } from '#server/utils/palmpay-client'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 import { z } from 'zod'
 
 const querySchema = z.object({
@@ -13,13 +12,8 @@ export async function queryPalmPayVirtualAccount(virtualAccountNo: string) {
   try {
     const { virtualAccountNo: validatedNo } = querySchema.parse({ virtualAccountNo })
 
-    const timestamp = Date.now()
-    const nonceStr = crypto.randomBytes(16).toString('hex')
-
-    const payload = {
-      requestTime: timestamp,
-      version: 'V2.0',
-      nonceStr,
+    // nonceStr/requestTime/version handled by palmPayRequest
+    const payload: VirtualAccountQueryPayload = {
       virtualAccountNo: validatedNo,
     }
 

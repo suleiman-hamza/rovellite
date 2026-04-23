@@ -3,7 +3,30 @@ import type {
 } from '../../types/palmpay'
 import crypto from 'node:crypto'
 import { generatePalmPaySignature } from './palmpay-sign'
-import { apiResponse } from '#server/utils/api-response'
+
+// ─── Custom Error for non-retryable PalmPay client errors ────────────
+class PalmPayClientError extends Error {
+  statusCode: number
+  palmPayCode?: string
+
+  constructor(message: string, statusCode: number, palmPayCode?: string) {
+    super(message)
+    this.name = 'PalmPayClientError'
+    this.statusCode = statusCode
+    this.palmPayCode = palmPayCode
+  }
+}
+
+// ─── Custom Error for retryable PalmPay server errors ────────────────
+class PalmPayServerError extends Error {
+  statusCode: number
+
+  constructor(message: string, statusCode: number) {
+    super(message)
+    this.name = 'PalmPayServerError'
+    this.statusCode = statusCode
+  }
+}
 
 type RequestOptions = {
   retries?: number
@@ -14,7 +37,7 @@ type RequestOptions = {
 /**
  * PalmPay API request utility
  * @param endpoint - PalmPay endpoints (e.g. '/api/v2/virtual/account/create')
- * @param body - Request payload
+ * @param body - Request payload (typed per endpoint)
  */
 
 export async function palmPayRequest<T = PalmPayResponse>(
@@ -26,14 +49,16 @@ export async function palmPayRequest<T = PalmPayResponse>(
   const { palmpayPrivateKey, palmpayAppId, palmpayBaseUrl } = config
 
   if (!palmpayPrivateKey || !palmpayAppId) {
-    throw apiResponse.error('PalmPay configuration is missing in .env', 500)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'PalmPay configuration is missing in .env',
+    })
   }
 
-  // config
+  // ─── Idempotent request envelope (frozen ONCE, reused across retries) ───
   const retries = options.retries ?? 3
   const timeoutMs = options.timeoutMs ?? 10000
-  const idempotencyKey =
-    options.idempotencyKey ?? crypto.randomUUID()
+  const idempotencyKey = options.idempotencyKey ?? crypto.randomUUID()
 
   const requestTime = Date.now()
   const nonceStr = crypto.randomBytes(16).toString('hex')
@@ -53,8 +78,8 @@ export async function palmPayRequest<T = PalmPayResponse>(
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
   //   console.warn('[DEV MODE] Bypassing PalmPay API request!')
   //   return {
-  //     code: '000000',
-  //     message: 'success',
+  //     respCode: '00000000',
+  //     respMsg: 'success',
   //     data: {
   //       responseId: crypto.randomUUID(),
   //     },
@@ -62,13 +87,15 @@ export async function palmPayRequest<T = PalmPayResponse>(
   // }
 
   let attempt = 0
+  let lastError: Error | null = null
+  let wasTimeout = false
 
   while (attempt <= retries) {
     try {
       const controller = new AbortController()
       const timeout = setTimeout(() => controller.abort(), timeoutMs)
 
-      // const startTime = Date.now()
+      const startTime = Date.now()
 
       const res = await fetch(url, {
         method: 'POST',
@@ -84,44 +111,93 @@ export async function palmPayRequest<T = PalmPayResponse>(
       })
 
       clearTimeout(timeout)
-      // const duration = Date.now() - startTime
+      const duration = Date.now() - startTime
       const data = await res.json()
 
-      // logging (structured)
-      // console.info('[PalmPay Request]', {
-      //   endpoint,
-      //   status: res.status,
-      //   duration,
-      //   attempt,
-      //   idempotencyKey,
-      // })
+      // Structured logging — NEVER log body, signature, or keys
+      console.info(JSON.stringify({
+        level: 'info',
+        service: 'palmpay-client',
+        event: 'api_response',
+        endpoint,
+        httpStatus: res.status,
+        palmPayCode: data?.respCode,
+        durationMs: duration,
+        attempt,
+        maxRetries: retries,
+        idempotencyKey,
+      }))
 
       if (res.ok) return data as T
 
-      // DON'T RETRY ON CLIENT ERRORS (4xx)
+      // DON'T RETRY ON CLIENT ERRORS (4xx) — these are hard failures
       if (res.status >= 400 && res.status < 500) {
-        throw apiResponse.error(`PalmPay Client Error: ${data.message || res.status}`, res.status)
+        throw new PalmPayClientError(
+          `PalmPay Client Error: ${data?.respMsg || data?.message || res.statusText}`,
+          res.status,
+          data?.respCode,
+        )
       }
 
-      // SERVER ERRORS (5xx)
-      throw apiResponse.error(`Server Error ${res.status}`)
+      // SERVER ERRORS (5xx) — retryable
+      throw new PalmPayServerError(
+        `PalmPay Server Error ${res.status}: ${data?.respMsg || res.statusText}`,
+        res.status,
+      )
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error instanceof Error ? error : new Error(String(error))
       attempt++
+      lastError = err
 
-      const isRetryable = error.name === 'AbortError' || error.message.includes('Server Error')
+      // Track if this was a timeout (for Middle State logic)
+      if (err.name === 'AbortError') {
+        wasTimeout = true
+      }
+
+      const isRetryable =
+        err.name === 'AbortError'          // Our timeout fired
+        || err.name === 'PalmPayServerError' // 5xx from PalmPay
+        || err.name === 'TypeError'          // Network-level fetch failures
+        || err.name === 'FetchError'         // Node fetch variants
+        || (err as any).code === 'ECONNRESET'
+        || (err as any).code === 'ECONNREFUSED'
+        || (err as any).code === 'ENOTFOUND'
+
       const isLastAttempt = attempt > retries
 
-      // console.error('[PalmPay Error]', {
-      //   endpoint,
-      //   attempt,
-      //   retries,
-      //   idempotencyKey,
-      //   error: error?.message,
-      // })
+      // Structured error logging
+      console.error(JSON.stringify({
+        level: 'error',
+        service: 'palmpay-client',
+        event: 'api_error',
+        endpoint,
+        attempt,
+        maxRetries: retries,
+        idempotencyKey,
+        errorName: err.name,
+        errorMessage: err.message,
+        isRetryable,
+        isLastAttempt,
+      }))
 
-      if (!isRetryable || isLastAttempt) {
-        throw apiResponse.error(error.message || 'PalmPay request failed', 502)
+      // Hard failure — don't retry
+      if (!isRetryable) {
+        if (err instanceof PalmPayClientError) {
+          throw createError({
+            statusCode: err.statusCode,
+            statusMessage: err.message,
+          })
+        }
+        throw createError({
+          statusCode: 502,
+          statusMessage: err.message || 'PalmPay request failed',
+        })
+      }
+
+      // Last attempt exhausted
+      if (isLastAttempt) {
+        break
       }
 
       // Exponential Backoff with Jitter (Standard for Fintech)
@@ -130,6 +206,24 @@ export async function palmPayRequest<T = PalmPayResponse>(
     }
   }
 
-  // fallback (should never hit)
-  throw apiResponse.error('Unexpected PalmPay failure', 500)
+  // ─── All retries exhausted ─────────────────────────────────────────
+  // If timed out, the request status on PalmPay is UNKNOWN.
+  // We must NOT treat this as a definitive failure for mutating endpoints.
+  if (wasTimeout) {
+    console.warn(JSON.stringify({
+      level: 'warn',
+      service: 'palmpay-client',
+      event: 'timeout_exhaustion',
+      endpoint,
+      idempotencyKey,
+      message: 'All retries exhausted due to timeout. PalmPay status is UNKNOWN.',
+    }))
+  }
+
+  throw createError({
+    statusCode: 504,
+    statusMessage: wasTimeout
+      ? `PalmPay request timed out after ${retries + 1} attempts. Status unknown — verify via query endpoint. IdempotencyKey: ${idempotencyKey}`
+      : lastError?.message || 'PalmPay request failed after all retries',
+  })
 }

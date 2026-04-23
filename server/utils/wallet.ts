@@ -1,14 +1,13 @@
-import type { WalletRow, WalletInsert } from '../../types/supabase'
-import type { Database } from '../../types/supabase-schema'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import type { WalletInsert, WalletRow } from '../../types/supabase'
+import type { Database } from '../../types/supabase-schema'
 import { apiResponse } from '#server/utils/api-response'
 import { z } from 'zod'
-import { handleUtilityError } from './utils-error-handler'
+import { handleUtilityError } from './error-handler'
 
 const userIdSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
 })
-
 
 export async function createRovelsubUserWallet(supabase: SupabaseClient<Database>, userId: string) {
   try {
@@ -60,7 +59,8 @@ export async function createRovelsubUserWallet(supabase: SupabaseClient<Database
     }
 
     return apiResponse.success(data as WalletRow, 'Wallet created successfully')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     return handleUtilityError(error, 'Failed to create wallet')
   }
 }
@@ -74,7 +74,7 @@ export async function getRovelsubUserWallet(supabase: SupabaseClient<Database>, 
       .from('wallets')
       .select(`
         *,
-        profiles(full_name, email, avatar_url)
+        profiles(full_name, email, avatar_url, status, verified)
       `)
       .eq('user_id', validatedUserId)
       .single()
@@ -84,7 +84,8 @@ export async function getRovelsubUserWallet(supabase: SupabaseClient<Database>, 
     }
 
     return apiResponse.success(data, 'Wallet retrieved successfully')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     return handleUtilityError(error, 'Failed to fetch wallet')
   }
 }

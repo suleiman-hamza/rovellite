@@ -1,7 +1,7 @@
 import type { Database } from '../../types/supabase-schema'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { apiResponse } from '#server/utils/api-response'
-import { handleUtilityError } from '#server/utils/utils-error-handler'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export async function getRovelsubUserTransactions(
   supabase: SupabaseClient<Database>,

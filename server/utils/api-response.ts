@@ -1,12 +1,31 @@
+// ─── Typed API Response Helpers ──────────────────────────────────────
+
+export interface ApiSuccessResponse<T = unknown> {
+  success: true
+  message: string
+  data: T
+  timestamp: string
+}
+
+export interface ApiErrorResponse {
+  success: false
+  message: string
+  statusCode: number
+  error?: string
+  timestamp: string
+}
+
+export type ApiResponse<T = unknown> = ApiSuccessResponse<T> | ApiErrorResponse
+
 export const apiResponse = {
-  success: (data: any, message = 'Operation successful') => ({
+  success: <T>(data: T, message = 'Operation successful'): ApiSuccessResponse<T> => ({
     success: true,
     message,
     data,
     timestamp: new Date().toISOString(),
   }),
 
-  error: (message: string, statusCode = 500, errorCode?: string) => ({
+  error: (message: string, statusCode = 500, errorCode?: string): ApiErrorResponse => ({
     success: false,
     message,
     statusCode,
@@ -15,6 +34,6 @@ export const apiResponse = {
   }),
 }
 
-export function isSuccessResponse(res: any): res is { success: true, data: any } {
-  return res?.success === true && 'data' in res
+export function isSuccessResponse<T = unknown>(res: unknown): res is ApiSuccessResponse<T> {
+  return typeof res === 'object' && res !== null && 'success' in res && (res as any).success === true && 'data' in res
 }

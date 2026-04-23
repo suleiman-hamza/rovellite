@@ -16,7 +16,6 @@ export interface VirtualAccountData {
   status: string
   accountReference?: string | null
   appId?: string
-  [key: string]: any
 }
 
 /** Response from PalmPay Create Endpoint */
@@ -40,8 +39,29 @@ export interface VirtualAccountResponse {
 
 /** Generic fallback response */
 export interface PalmPayResponse extends PalmPayBaseResponse {
-  data?: any
-  [key: string]: any
+  data?: Record<string, unknown>
+}
+
+// ─── Request Payload Types ───────────────────────────────────────────
+
+/** Payload for creating a virtual account */
+export interface VirtualAccountCreatePayload {
+  customerName: string
+  email: string
+  virtualAccountName: string
+  identityType: string
+  licenseNumber: string
+}
+
+/** Payload for updating a virtual account status */
+export interface VirtualAccountUpdatePayload {
+  virtualAccountNo: string
+  status: 'Enabled' | 'Disabled'
+}
+
+/** Payload for querying a single virtual account */
+export interface VirtualAccountQueryPayload {
+  virtualAccountNo: string
 }
 
 /** Virtual Account joined with User Profile - Used in frontend responses */

@@ -1,19 +1,24 @@
 import type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './supabase-schema'
 
+// TABLE ROW TYPES
+
+// profiles table
 export type Profile = Tables<'profiles'>
 export type ProfileInsert = TablesInsert<'profiles'>
 export type ProfileUpdate = TablesUpdate<'profiles'>
 export type UserRole = Enums<'user_role'>
 
-// TABLE ROW TYPES
 
+// wallets table
 export type WalletRow = Tables<'wallets'>
 export type WalletInsert = TablesInsert<'wallets'>
 
+// virtual accounts table
 export type VirtualAccountRow = Tables<'virtual_accounts'>
 export type VirtualAccountInsert = TablesInsert<'virtual_accounts'>
 export type VirtualAccountUpdate = TablesUpdate<'virtual_accounts'>
 
+// transactions table
 export type TransactionRow = Tables<'transactions'>
 export type TransactionInsert = TablesInsert<'transactions'>
 
@@ -28,6 +33,7 @@ export interface CreditWalletWithTransactionArgs {
   p_metadata?: Json
 }
 
+// virtual account credit params
 export interface VirtualAccountCreditParams {
   virtualAccountNo: string
   amount: number
