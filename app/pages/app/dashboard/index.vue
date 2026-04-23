@@ -8,6 +8,7 @@ const store = useProfileStore()
 
 definePageMeta({
   middleware: ['auth'],
+  keepalive: true,
 })
 
 const items = [{
@@ -148,8 +149,8 @@ async function createWallet() {
       </div>
 
       <!-- show create wallet option for users without a wallet -->
-      <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 pt-5 sm:px-6">
-        <p class="font-bold text-[18px] md:text-[24px] mb-2">
+      <div v-else class="flex flex-row items-center gap-4 justify-between p-4 pt-5 sm:px-6">
+        <p class="font-bold text-white text-[18px] md:text-[24px] mb-2">
           You have no wallet
         </p>
         <DefineFormTemplate>
