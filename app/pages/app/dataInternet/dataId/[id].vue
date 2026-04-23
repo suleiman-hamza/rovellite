@@ -81,7 +81,7 @@ function addToCart() {
     <UButton icon="i-lucide-arrow-left" to="/app/dataInternet" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="flex items-center space-x-4">
-      <span>Loading...</span>
+      <SlugSkeleton />
     </div>
 
     <div v-if="fetcherror">

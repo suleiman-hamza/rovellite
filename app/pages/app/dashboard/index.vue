@@ -208,7 +208,7 @@ async function createWallet() {
             <span v-else>Copied!</span>
           </button>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-3">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>
@@ -224,9 +224,9 @@ async function createWallet() {
             Total Referrals
           </h4>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
           <span>
-            <NuxtImg src="images/icons/lsicon_gift-filledreferals.svg" alt="Withdraw earnings" class="text-primary" />
+            <NuxtImg src="images/dashboard/giftboxblue.svg" alt="Withdraw earnings" class="text-primary" />
           </span>
           <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
             Withdraw Earning
@@ -237,8 +237,8 @@ async function createWallet() {
 
     <section class="mt-4 rounded-[20px]">
       <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 py-4 sm:px-6 gap-2 md:gap-4 rounded-[20px] grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 truncate">
-          <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 text-center truncate">
+          <span class="bg-[#DBF4FF] p-2 px-3 rounded-lg mb-1">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
           </span>
           <h4 class="md:tracking-[5%] text-[12px] md:text-[16px] text-[#676A6D] font-normal truncate text-ellipsis">
@@ -246,6 +246,12 @@ async function createWallet() {
           </h4>
         </NuxtLink>
       </UPageGrid>
+    </section>
+
+    <section class="mt-4 rounded-[20px]">
+      <h2 class="text-[#4D5155] tracking-[2%] text-[20px] font-bold">
+        Recent Transactions
+      </h2>
     </section>
   </main>
 </template>

@@ -79,8 +79,8 @@ const selectPlan = computed(() => {
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
     <UButton icon="i-lucide-arrow-left" to="/app/education" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-if="status === 'pending'" class="flex items-center space-x-4">
-      <p>loading...</p>
+    <div v-if="status === 'pending'" class="">
+      <SlugSkeleton />
     </div>
     <div v-if="fetcherror" class="flex items-center space-x-4">
       <p>{{ fetcherror }}</p>

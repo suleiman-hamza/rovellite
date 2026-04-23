@@ -81,11 +81,11 @@ function toggleAmountVisibility() {
               :ui="{ container: 'p-0 sm:p-0 rounded-none bg-transparent', root: 'ring-0' }"
             >
               <template #default>
-                <div class="bg-white p-4 rounded-[20px]">
+                <div class="bg-white p-3 rounded-[20px]">
                   <div class="flex gap-2.5 items-center">
                     <!-- wallet icon -->
                     <span :class="card.bgColor" class="p-2.5 rounded-[8px]">
-                      <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
+                      <NuxtImg :src="card.icon" :alt="card.title" class="w-7 h-7" />
                     </span>
                     <!-- wallet balance -->
                     <div class="truncate">
