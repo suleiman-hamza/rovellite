@@ -1,12 +1,12 @@
-import type { Database } from '../../types/supabase-schema'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../../types/supabase-schema'
 import { apiResponse } from '#server/utils/api-response'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export async function getRovelsubUserTransactions(
   supabase: SupabaseClient<Database>,
   userId: string,
-  limit = 20
+  limit = 20,
 ) {
   try {
     // fetch user wallet
@@ -47,7 +47,8 @@ export async function getRovelsubUserTransactions(
     }
 
     return apiResponse.success(data || [], 'Transactions retrieved successfully')
-  } catch (error: any) {
+  }
+  catch (error: any) {
     return handleUtilityError(error, 'Failed to fetch transactions')
   }
 }

@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import process from 'node:process'
 
 export function generatePalmPaySignature(
   payload: Record<string, any>,
@@ -38,8 +39,6 @@ export function generatePalmPaySignature(
 
   return sign.sign(formattedKey, 'base64')
 }
-
-
 
 // Verify signature
 export function verifyPalmpaySignature(

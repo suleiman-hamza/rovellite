@@ -1,7 +1,7 @@
 import { queryPalmPayVirtualAccount } from '#server/utils/query-virtual-account'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '~~/server/utils/error-handler'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const getVaSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
@@ -74,12 +74,11 @@ export default defineEventHandler(async (event) => {
       return apiResponse.error('No wallet found for this user', 404)
     }
 
-    
     return apiResponse.success({
       ...vaData,
       palmPayFresh: freshData,
       transactions,
-      wallet: walletData
+      wallet: walletData,
     }, 'Virtual account retrieved successfully')
   }
   catch (error: any) {

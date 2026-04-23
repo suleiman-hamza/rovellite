@@ -1,16 +1,15 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type {
   CreditWalletWithTransactionArgs,
   VirtualAccountCreditParams,
   VirtualAccountCreditResult,
 } from '../../types/supabase'
 import type { Database } from '../../types/supabase-schema'
-import type { SupabaseClient } from '@supabase/supabase-js'
 
 export async function processVirtualAccountCredit(
   supabase: SupabaseClient<Database>,
   params: VirtualAccountCreditParams,
 ): Promise<VirtualAccountCreditResult> {
-
   const { virtualAccountNo, amount, reference, description, metadata } = params
 
   if (Number.isNaN(amount) || amount <= 0) {
@@ -84,7 +83,7 @@ export async function processVirtualAccountCredit(
     return { success: false, message: 'Failed to process wallet credit', statusCode: 500 }
   }
 
-  console.info(JSON.stringify({ level: 'info', service: 'webhook-credit', event: 'credit_success', userId: virtualAccount.user_id, amount, reference }))
+  console.warn(JSON.stringify({ level: 'info', service: 'webhook-credit', event: 'credit_success', userId: virtualAccount.user_id, amount, reference }))
 
   return { success: true, message: 'Webhook processed successfully' }
 }

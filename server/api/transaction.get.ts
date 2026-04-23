@@ -1,7 +1,7 @@
-import { getRovelsubUserTransactions } from '#server/utils/transaction'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import { getRovelsubUserTransactions } from '#server/utils/transaction'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const transactionsSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
@@ -18,11 +18,12 @@ export default defineEventHandler(async (event) => {
     const result = await getRovelsubUserTransactions(
       adminSupabase,
       userId,
-      Number.parseInt(limit)
+      Number.parseInt(limit),
     )
 
     return result
-  } catch (error: any) {
+  }
+  catch (error: any) {
     return handleUtilityError(error, 'Failed to fetch transactions')
   }
 })

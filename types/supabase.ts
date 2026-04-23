@@ -8,7 +8,6 @@ export type ProfileInsert = TablesInsert<'profiles'>
 export type ProfileUpdate = TablesUpdate<'profiles'>
 export type UserRole = Enums<'user_role'>
 
-
 // wallets table
 export type WalletRow = Tables<'wallets'>
 export type WalletInsert = TablesInsert<'wallets'>
@@ -137,8 +136,8 @@ export interface Database {
         Relationships: []
       }
     }
-    Views: { [_ in never]: never }                    
-    Enums: { [_ in never]: never }                   
+    Views: { [_ in never]: never }
+    Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }
     Functions: {
       credit_wallet_with_transaction: {

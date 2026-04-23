@@ -1,7 +1,7 @@
 import { createVirtualAccount } from '#server/utils/create-virtual-account'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { handleUtilityError } from '~~/server/utils/error-handler'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const createVaSchema = z.object({
   userId: z.string().min(1, 'userId is required'),

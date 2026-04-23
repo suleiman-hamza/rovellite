@@ -28,7 +28,7 @@ class PalmPayServerError extends Error {
   }
 }
 
-type RequestOptions = {
+interface RequestOptions {
   retries?: number
   timeoutMs?: number
   idempotencyKey?: string
@@ -43,7 +43,7 @@ type RequestOptions = {
 export async function palmPayRequest<T = PalmPayResponse>(
   endpoint: string,
   body: Record<string, any>,
-  options: RequestOptions = {}
+  options: RequestOptions = {},
 ): Promise<T> {
   const config = useRuntimeConfig()
   const { palmpayPrivateKey, palmpayAppId, palmpayBaseUrl } = config
@@ -115,7 +115,7 @@ export async function palmPayRequest<T = PalmPayResponse>(
       const data = await res.json()
 
       // Structured logging — NEVER log body, signature, or keys
-      console.info(JSON.stringify({
+      console.warn(JSON.stringify({
         level: 'info',
         service: 'palmpay-client',
         event: 'api_response',
@@ -128,7 +128,8 @@ export async function palmPayRequest<T = PalmPayResponse>(
         idempotencyKey,
       }))
 
-      if (res.ok) return data as T
+      if (res.ok)
+        return data as T
 
       // DON'T RETRY ON CLIENT ERRORS (4xx) — these are hard failures
       if (res.status >= 400 && res.status < 500) {
@@ -144,8 +145,8 @@ export async function palmPayRequest<T = PalmPayResponse>(
         `PalmPay Server Error ${res.status}: ${data?.respMsg || res.statusText}`,
         res.status,
       )
-
-    } catch (error: unknown) {
+    }
+    catch (error: unknown) {
       const err = error instanceof Error ? error : new Error(String(error))
       attempt++
       lastError = err
@@ -155,14 +156,14 @@ export async function palmPayRequest<T = PalmPayResponse>(
         wasTimeout = true
       }
 
-      const isRetryable =
-        err.name === 'AbortError'          // Our timeout fired
-        || err.name === 'PalmPayServerError' // 5xx from PalmPay
-        || err.name === 'TypeError'          // Network-level fetch failures
-        || err.name === 'FetchError'         // Node fetch variants
-        || (err as any).code === 'ECONNRESET'
-        || (err as any).code === 'ECONNREFUSED'
-        || (err as any).code === 'ENOTFOUND'
+      const isRetryable
+        = err.name === 'AbortError' // Our timeout fired
+          || err.name === 'PalmPayServerError' // 5xx from PalmPay
+          || err.name === 'TypeError' // Network-level fetch failures
+          || err.name === 'FetchError' // Node fetch variants
+          || (err as any).code === 'ECONNRESET'
+          || (err as any).code === 'ECONNREFUSED'
+          || (err as any).code === 'ENOTFOUND'
 
       const isLastAttempt = attempt > retries
 
