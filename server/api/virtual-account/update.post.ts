@@ -1,6 +1,7 @@
-import { apiResponse } from '#server/utils/api-response'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { updateVirtualAccountStatus } from '#server/utils/update-virtual-account'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const updateVaSchema = z.object({
   virtualAccountNo: z.string().min(1, 'virtualAccountNo is required'),
@@ -12,18 +13,12 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const { virtualAccountNo, status } = updateVaSchema.parse(body)
 
-    const result = await updateVirtualAccountStatus(event, { virtualAccountNo, status })
+    const adminSupabase = createAdminSupabaseClient()
+    const result = await updateVirtualAccountStatus(adminSupabase, { virtualAccountNo, status })
 
     return result
   }
   catch (error: any) {
-    // console.error('VA Update Route Error:', error)
-
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(message, 400, 'VALIDATION_ERROR')
-    }
-
-    return apiResponse.error('Failed to update virtual account status', 500)
+    return handleUtilityError(error, 'Failed to update virtual account status')
   }
 })

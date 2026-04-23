@@ -1,7 +1,7 @@
-import { apiResponse } from '#server/utils/api-response'
 import { queryPalmPayVirtualAccount } from '#server/utils/query-virtual-account'
-import { createClient } from '@supabase/supabase-js'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const getVaSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
@@ -12,11 +12,7 @@ export default defineEventHandler(async (event) => {
     const userId = getRouterParam(event, 'userId')
     const { userId: validatedUserId } = getVaSchema.parse({ userId })
 
-    const config = useRuntimeConfig()
-    const adminSupabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey,
-    )
+    const adminSupabase = createAdminSupabaseClient()
 
     // Get Virtual Account
     const { data: vaData, error: vaError } = await adminSupabase
@@ -47,7 +43,7 @@ export default defineEventHandler(async (event) => {
             .from('virtual_accounts')
             .update({
               status: freshData.status,
-              raw_response: freshData,
+              raw_response: { ...freshData },
             })
             .eq('virtual_account_no', vaData.virtual_account_no)
         }
@@ -57,19 +53,35 @@ export default defineEventHandler(async (event) => {
       console.warn('PalmPay status refresh failed:', palmError)
     }
 
+    // Get transactions for this virtual account
+    const { data: transactions, error: transactionsError } = await adminSupabase
+      .from('transactions')
+      .select('*')
+      .eq('virtual_account_no', vaData.virtual_account_no)
+
+    if (transactionsError) {
+      return apiResponse.error('Failed to fetch transactions', 500)
+    }
+
+    // Get user wallet
+    const { data: walletData, error: walletError } = await adminSupabase
+      .from('wallets')
+      .select('*')
+      .eq('user_id', validatedUserId)
+      .single()
+
+    if (walletError || !walletData) {
+      return apiResponse.error('No wallet found for this user', 404)
+    }
+
     return apiResponse.success({
       ...vaData,
       palmPayFresh: freshData,
+      transactions,
+      wallet: walletData,
     }, 'Virtual account retrieved successfully')
   }
   catch (error: any) {
-    // console.error('Get VA Error:', error)
-
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(message, 400, 'VALIDATION_ERROR')
-    }
-
-    return apiResponse.error('Failed to fetch virtual account', 500)
+    return handleUtilityError(error, 'Failed to fetch virtual account')
   }
 })

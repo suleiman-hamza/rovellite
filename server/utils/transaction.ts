@@ -1,38 +1,54 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { Database } from '../../types/supabase-schema'
 import { apiResponse } from '#server/utils/api-response'
-import { createClient } from '@supabase/supabase-js'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
-export async function getRovelsubUserTransactions(_event: any, userId: string, limit = 20) {
+export async function getRovelsubUserTransactions(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  limit = 20,
+) {
   try {
-    const config = useRuntimeConfig()
-    const adminSupabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey,
-    )
+    // fetch user wallet
+    const walletQuery = await supabase
+      .from('wallets')
+      .select('id')
+      .eq('user_id', userId)
+      .single()
 
-    const { data, error } = await adminSupabase
+    if (walletQuery.error) {
+      // console.error('Wallet fetch error:', walletQuery.error)
+      return apiResponse.error('Failed to fetch wallet', 500)
+    }
+
+    const walletId = walletQuery.data?.id
+
+    if (!walletId) {
+      return apiResponse.error('Wallet not found for user', 404)
+    }
+
+    // fetch transactions for the wallet
+    const { data, error } = await supabase
       .from('transactions')
       .select(`
         *,
-        wallet:wallets (
+        wallet:wallets!transactions_wallet_id_fkey (
           balance,
           currency
         )
       `)
-      .eq('wallet_id',
-        // Subquery to get wallet_id from user_id
-        (await adminSupabase.from('wallets').select('id').eq('user_id', userId).single()).data?.id)
+      .eq('wallet_id', walletId)
       .order('created_at', { ascending: false })
       .limit(limit)
 
     if (error) {
-      console.error('Transactions fetch error:', error)
+      // console.error('Transactions fetch error:', error)
       return apiResponse.error('Failed to fetch transactions', 500)
     }
 
     return apiResponse.success(data || [], 'Transactions retrieved successfully')
   }
   catch (error: any) {
-    console.error('Get Transactions Error:', error)
-    return apiResponse.error('Failed to fetch transactions', 500)
+    return handleUtilityError(error, 'Failed to fetch transactions')
   }
 }

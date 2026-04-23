@@ -14,10 +14,10 @@ export function generatePalmPaySignature(
     .map(key => `${key}=${payload[key]}`)
     .join('&')
 
-  // DEBUG LOGGING (only in development)
+  // logging for debugging purposes
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
-  //   console.log('🔍 [PalmPay Signature Debug] stringToSign', stringToSign)
-  //   console.log('🔑 [PalmPay Signature Debug] MD5 (uppercase)',
+  //   console.log('[PalmPay Signature Debug] stringToSign', stringToSign)
+  //   console.log('[PalmPay Signature Debug] MD5 (uppercase)',
   //     crypto.createHash('md5').update(stringToSign).digest('hex').toUpperCase()
   //   )
   // }
@@ -40,7 +40,7 @@ export function generatePalmPaySignature(
   return sign.sign(formattedKey, 'base64')
 }
 
-// verify signature
+// Verify signature
 export function verifyPalmpaySignature(
   event: any,
   body: any,
@@ -54,18 +54,21 @@ export function verifyPalmpaySignature(
     privateKey,
   )
 
-  // console.warn('   Received :', receivedSignature || '(missing)')
-  // console.warn('   Expected :', expectedSignature)
+  // Only log signatures in development — NEVER in production (enables webhook forgery)
+  if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
+    console.warn('[PalmPay Signature Debug] Received:', receivedSignature || '(missing)')
+    console.warn('[PalmPay Signature Debug] Expected:', expectedSignature)
+  }
 
   // DEV-MODE BYPASS
-  if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
-    console.warn('⚠️ [DEV MODE] Bypassing signature verification!')
-    return {
-      isValid: true,
-      expected: expectedSignature,
-      received: (receivedSignature as string) || 'dev-bypass',
-    }
-  }
+  // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
+  //   console.warn('[DEV MODE] Bypassing signature verification!')
+  //   return {
+  //     isValid: true,
+  //     expected: expectedSignature,
+  //     received: (receivedSignature as string) || 'dev-bypass',
+  //   }
+  // }
 
   if (!receivedSignature) {
     return {
