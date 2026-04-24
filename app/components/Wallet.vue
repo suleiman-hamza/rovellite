@@ -50,6 +50,7 @@ const cards = ref([
   },
 ])
 
+// const { data, error } = useFetch('/api/wallet')
 const isAmountVisible = ref(true)
 const balance = ref(12550.50)
 

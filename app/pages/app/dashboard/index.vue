@@ -112,6 +112,13 @@ async function createWallet() {
     loading.value = false
   }
 }
+
+const { data: walletData, error: walletError } = await useFetch('/api/wallet', {
+  query: { userId: store.userProfile?.user_id },
+})
+const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
+  query: { userId: store.userProfile?.user_id, limit: '3' },
+})
 </script>
 
 <template>
@@ -252,6 +259,17 @@ async function createWallet() {
       <h2 class="text-[#4D5155] tracking-[2%] text-[20px] font-bold">
         Recent Transactions
       </h2>
+      <Transactions />
+      <h2>Wallet Balance</h2>
+      <pre>{{ walletData }}</pre>
+      <p class="text-red-500">
+        {{ walletError }}
+      </p>
+      <h2>Transactions</h2>
+      <pre>{{ trxData }}</pre>
+      <p class="text-red-500">
+        {{ trxError }}
+      </p>
     </section>
   </main>
 </template>
