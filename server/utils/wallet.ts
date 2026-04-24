@@ -1,83 +1,80 @@
+import type { SupabaseClient } from '@supabase/supabase-js'
+import type { WalletInsert, WalletRow } from '../../types/supabase'
+import type { Database } from '../../types/supabase-schema'
 import { apiResponse } from '#server/utils/api-response'
-import { createClient } from '@supabase/supabase-js'
 import { z } from 'zod'
+import { handleUtilityError } from './error-handler'
 
 const userIdSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
 })
 
-export async function createRovelsubUserWallet(userId: string) {
+export async function createRovelsubUserWallet(supabase: SupabaseClient<Database>, userId: string) {
   try {
-    const config = useRuntimeConfig()
-    const adminSupabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey,
-    )
-
     const { userId: validatedUserId } = userIdSchema.parse({ userId })
 
-    // Check if wallet already exists
-    const { data: existing } = await adminSupabase
+    /**
+     * check is useful for UX, but NOT safe for concurrency.
+     * DB constraint must be the source of truth.
+     */
+    const { data: existing } = await supabase
       .from('wallets')
       .select('id, balance, status')
       .eq('user_id', validatedUserId)
-      .single()
+      .maybeSingle()
 
     if (existing) {
       return apiResponse.success(existing, 'Wallet already exists')
     }
 
-    // Create new wallet
-    const { data, error } = await adminSupabase
+    const walletInsert: WalletInsert = {
+      user_id: validatedUserId,
+      balance: 0,
+      currency: 'NGN',
+      status: 'Active',
+    }
+
+    const { data, error } = await supabase
       .from('wallets')
-      .insert({
-        user_id: validatedUserId,
-        balance: 0,
-        currency: 'NGN',
-        status: 'Active',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      .insert(walletInsert)
       .select()
       .single()
 
+    /**
+     * Handle unique constraint (idempotency safety)
+     */
     if (error) {
-      console.error('Wallet creation error:', error)
-      return apiResponse.error('Failed to create wallet', 500)
+      // Postgres unique violation
+      if (error.code === '23505') {
+        const { data: existingWallet } = await supabase
+          .from('wallets')
+          .select('id, balance, status')
+          .eq('user_id', validatedUserId)
+          .single()
+
+        return apiResponse.success(existingWallet, 'Wallet already exists')
+      }
+
+      throw error
     }
 
-    return apiResponse.success(data, 'Wallet created successfully')
+    return apiResponse.success(data as WalletRow, 'Wallet created successfully')
   }
   catch (error: any) {
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(
-        message || 'Validation error',
-        400,
-        'VALIDATION_ERROR',
-      )
-    }
-
-    console.error('Create Wallet Error:', error)
-    return apiResponse.error('Failed to create wallet', 500)
+    return handleUtilityError(error, 'Failed to create wallet')
   }
 }
 
-export async function getRovelsubUserWallet(_event: any, userId: string) {
+// get user wallet
+export async function getRovelsubUserWallet(supabase: SupabaseClient<Database>, userId: string) {
   try {
-    const config = useRuntimeConfig()
-    const adminSupabase = createClient(
-      config.public.supabaseUrl,
-      config.supabaseServiceRoleKey,
-    )
-
     const { userId: validatedUserId } = userIdSchema.parse({ userId })
 
-    const { data, error } = await adminSupabase
+    const { data, error } = await supabase
       .from('wallets')
       .select(`
         *,
-        profiles(full_name, email, avatar_url)
+        profiles(full_name, email, avatar_url, status, verified)
       `)
       .eq('user_id', validatedUserId)
       .single()
@@ -89,15 +86,6 @@ export async function getRovelsubUserWallet(_event: any, userId: string) {
     return apiResponse.success(data, 'Wallet retrieved successfully')
   }
   catch (error: any) {
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(
-        message || 'Validation error',
-        400,
-        'VALIDATION_ERROR',
-      )
-    }
-    console.error('Get Wallet Error:', error)
-    return apiResponse.error('Failed to fetch wallet', 500)
+    return handleUtilityError(error, 'Failed to fetch wallet')
   }
 }

@@ -1,6 +1,7 @@
-import { apiResponse } from '#server/utils/api-response'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { getRovelsubUserWallet } from '#server/utils/wallet'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const walletSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
@@ -11,17 +12,11 @@ export default defineEventHandler(async (event) => {
     const userId = getQuery(event).userId as string
     const { userId: validatedUserId } = walletSchema.parse({ userId })
 
-    const result = await getRovelsubUserWallet(event, validatedUserId)
+    const adminSupabase = createAdminSupabaseClient()
+    const result = await getRovelsubUserWallet(adminSupabase, validatedUserId)
     return result
   }
   catch (error: any) {
-    // console.error('Wallet Route Error:', error)
-
-    if (error.name === 'ZodError') {
-      const message = error.errors?.[0]?.message || 'Validation error'
-      return apiResponse.error(message, 400, 'VALIDATION_ERROR')
-    }
-
-    return apiResponse.error('Failed to fetch wallet', 500)
+    return handleUtilityError(error, 'Failed to fetch wallet')
   }
 })
