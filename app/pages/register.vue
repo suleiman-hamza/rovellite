@@ -25,9 +25,9 @@ const schema = z.object({
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  username: undefined,
-  email: undefined,
-  password: undefined,
+  username: '',
+  email: '',
+  password: '',
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
