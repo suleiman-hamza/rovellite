@@ -39,7 +39,7 @@ const { data: trxData, status } = await useLazyFetch('/api/transaction', {
 const columns: TableColumn<trx>[] = [
   {
     accessorKey: 'transactionId',
-    header: 'Transaction Id',
+    header: 'Id',
     cell: ({ row }) => `#${row.getValue('id')}`,
   },
   {
@@ -67,7 +67,7 @@ const columns: TableColumn<trx>[] = [
   },
   {
     accessorKey: 'paymentMethod',
-    header: 'Payment Method',
+    header: 'Method',
   },
   {
     accessorKey: 'date',
@@ -77,7 +77,7 @@ const columns: TableColumn<trx>[] = [
 </script>
 
 <template>
-  <UTable :data="trxData?.data" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'px-0 text-[#565252] tracking-[1%] text-[16px] font-bold', td: 'px-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+  <UTable :data="trxData?.data" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
     <template #empty>
       <div>
         <p>Your Transactions will appear here</p>

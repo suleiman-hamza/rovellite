@@ -61,7 +61,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: 'Welcome Back',
       description: 'You are now signed in.',
     })
-    console.warn(event.data)
   }
   catch (error: any) {
     loading.value = false

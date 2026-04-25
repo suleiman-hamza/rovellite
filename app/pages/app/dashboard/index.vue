@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
+// import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
+const toast = useToast()
 
 definePageMeta({
   middleware: ['auth'],
@@ -53,9 +54,9 @@ const items = [{
   to: '/app/solarSystem',
 }]
 
-const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
+// const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 
-const { data: VA, status, error: VAerror } = await useAsyncData(
+const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
   'virtual-account',
   () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
 )
@@ -63,31 +64,28 @@ const { data: VA, status, error: VAerror } = await useAsyncData(
 if (VAerror.value) {
   console.error('Error fetching virtual account:', VAerror.value)
 }
-else {
-  virtualAccountDetails.value = VA.value as VirtualAccountResponse
-}
 
 // what to copy to clipboard, in this case, the user's virtual account number
-const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
+const source = virtualAccountDetails.value?.data.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')
 const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
-const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
-const isDesktop = useMediaQuery('(min-width: 768px)')
+// const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
+// const isDesktop = useMediaQuery('(min-width: 768px)')
 
-const open = ref(false)
+// const open = ref(false)
 
-const state = reactive({
-  email: undefined,
-  fullname: undefined,
-  bvn: undefined,
-})
+// const state = reactive({
+//   email: undefined,
+//   fullname: undefined,
+//   bvn: undefined,
+// })
 
-const title = 'Create Wallet'
-const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
+// const title = 'Create Wallet'
+// const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
 
 async function createWallet() {
   loading.value = true
@@ -99,10 +97,16 @@ async function createWallet() {
       },
     })
     if (!response.success) {
-      console.error('Error creating wallet:', response.message)
+      toast.add({
+        title: 'Failed to create account number',
+        description: response.message,
+      })
     }
     else {
-      console.warn('Wallet created successfully')
+      toast.add({
+        title: 'Account Created Succesfully',
+      })
+      await refreshNuxtData('virtual-account') // the key passed is set when fetching VaAccount with useAsyncData()
     }
   }
   catch (error) {
@@ -149,15 +153,18 @@ async function createWallet() {
         <p class="tracking-[2%] text-[12px] md:text-[20px] leading-[150%] font-normal">
           Transfer to Fund wallet. #50 charge applies
         </p>
-        <!-- <p>{{ virtualAccountDetails?.data }}</p> -->
       </div>
 
       <!-- show create wallet option for users without a wallet -->
       <div v-else class="flex flex-row items-center gap-4 justify-between p-4 pt-5 sm:px-6">
-        <p class="font-bold text-white text-[16px] md:text-[24px] mb-2">
+        <p class="font-semibold md:font-bold text-white text-[14px] md:text-[24px] mb-2">
           You have no wallet
         </p>
-        <DefineFormTemplate>
+        <UButton class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
+          <span v-if="loading">Processing</span>
+          <span v-else>Create Wallet</span>
+        </UButton>
+        <!-- <DefineFormTemplate>
           <UForm :state="state" class="space-y-4">
             <UFormField label="Full Name" name="fullname" required>
               <UInput v-model="state.fullname" placeholder="John Doe" required />
@@ -168,10 +175,10 @@ async function createWallet() {
 
             <UButton label="Submit" :loading :disabled="loading" type="submit" />
           </UForm>
-        </DefineFormTemplate>
+        </DefineFormTemplate> -->
 
         <!-- create wallet btn for desktop activates modal for validating bvn -->
-        <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
+        <!-- <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
           <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
@@ -180,9 +187,10 @@ async function createWallet() {
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UModal>
+        </UModal> -->
+
         <!-- create wallet btn for mobile activates drawer for validating bvn -->
-        <UDrawer v-else v-model:open="open" :title="title" :description="description">
+        <!-- <UDrawer v-else v-model:open="open" :title="title" :description="description">
           <UButton :loading :disabled="loading" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
@@ -191,7 +199,7 @@ async function createWallet() {
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UDrawer>
+        </UDrawer> -->
       </div>
     </section>
 
