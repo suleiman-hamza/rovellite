@@ -113,12 +113,9 @@ async function createWallet() {
   }
 }
 
-const { data: walletData, error: walletError } = await useFetch('/api/wallet', {
-  query: { userId: store.userProfile?.user_id },
-})
-const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
-  query: { userId: store.userProfile?.user_id, limit: '3' },
-})
+// const { data: walletData, error: walletError } = await useFetch('/api/wallet', {
+//   query: { userId: store.userProfile?.user_id },
+// })
 </script>
 
 <template>
@@ -157,7 +154,7 @@ const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
 
       <!-- show create wallet option for users without a wallet -->
       <div v-else class="flex flex-row items-center gap-4 justify-between p-4 pt-5 sm:px-6">
-        <p class="font-bold text-white text-[18px] md:text-[24px] mb-2">
+        <p class="font-bold text-white text-[16px] md:text-[24px] mb-2">
           You have no wallet
         </p>
         <DefineFormTemplate>
@@ -173,8 +170,9 @@ const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
           </UForm>
         </DefineFormTemplate>
 
+        <!-- create wallet btn for desktop activates modal for validating bvn -->
         <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
-          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
           </UButton>
@@ -183,9 +181,9 @@ const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
             <ReuseFormTemplate />
           </template>
         </UModal>
-
+        <!-- create wallet btn for mobile activates drawer for validating bvn -->
         <UDrawer v-else v-model:open="open" :title="title" :description="description">
-          <UButton :loading :disabled="loading" size="lg" class="text-[#1177FE] bg-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+          <UButton :loading :disabled="loading" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
           </UButton>
@@ -255,21 +253,16 @@ const { data: trxData, error: trxError } = await useFetch('/api/transaction', {
       </UPageGrid>
     </section>
 
-    <section class="mt-4 rounded-[20px]">
-      <h2 class="text-[#4D5155] tracking-[2%] text-[20px] font-bold">
+    <section class="mt-4 rounded-[20px] bg-white p-3 py-4 sm:px-6 ">
+      <h2 class="text-[#4D5155] mb-2.5 tracking-[2%] text-[20px] font-bold">
         Recent Transactions
       </h2>
       <Transactions />
-      <h2>Wallet Balance</h2>
+      <!-- <h2>Wallet Balance</h2>
       <pre>{{ walletData }}</pre>
       <p class="text-red-500">
         {{ walletError }}
-      </p>
-      <h2>Transactions</h2>
-      <pre>{{ trxData }}</pre>
-      <p class="text-red-500">
-        {{ trxError }}
-      </p>
+      </p> -->
     </section>
   </main>
 </template>

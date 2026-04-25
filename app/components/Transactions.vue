@@ -1,43 +1,91 @@
 <script setup lang="ts">
-const data = ref([
+// import { h, resolveComponent } from 'vue'
+import type { TableColumn } from '@nuxt/ui'
+import { useProfileStore } from '@/stores/profile'
+
+const store = useProfileStore()
+
+// const UBadge = resolveComponent('UBadge')
+interface trx {
+  transactionId: string
+  description: string | null
+  amount: number
+  status: string
+  number: number
+  paymentMethod: string
+  date: string
+}
+
+// const data: {
+//     created_at: string;
+//     id: string;
+//     metadata: Json;
+//     reference: string;
+//     type: string;
+//     user_id: string;
+//     virtual_account_no: string;
+//     wallet_id: string;
+//     wallet: {
+//         balance: number;
+//         currency: string;
+//     };
+// }[]
+const { data: trxData, status } = await useLazyFetch('/api/transaction', {
+  query: { userId: store.userProfile?.user_id, limit: '3' },
+  key: 'transactions',
+  server: false,
+})
+
+const columns: TableColumn<trx>[] = [
   {
-    id: '4600',
-    date: '2024-03-11T15:30:00',
-    status: 'paid',
-    email: 'james.anderson@example.com',
-    amount: 594,
+    accessorKey: 'transactionId',
+    header: 'Transaction Id',
+    cell: ({ row }) => `#${row.getValue('id')}`,
   },
   {
-    id: '4599',
-    date: '2024-03-11T10:10:00',
-    status: 'failed',
-    email: 'mia.white@example.com',
-    amount: 276,
+    accessorKey: 'description',
+    header: 'Service',
   },
   {
-    id: '4598',
-    date: '2024-03-11T08:50:00',
-    status: 'refunded',
-    email: 'william.brown@example.com',
-    amount: 315,
+    accessorKey: 'amount',
+    header: 'Amount',
+    cell: ({ row }) => {
+      const amount = Number.parseFloat(row.getValue('amount'))
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'NGN',
+      }).format(amount)
+    },
   },
   {
-    id: '4597',
-    date: '2024-03-10T19:45:00',
-    status: 'paid',
-    email: 'emma.davis@example.com',
-    amount: 529,
+    accessorKey: 'number',
+    header: 'Number',
   },
   {
-    id: '4596',
-    date: '2024-03-10T15:55:00',
-    status: 'paid',
-    email: 'ethan.harris@example.com',
-    amount: 639,
+    accessorKey: 'status',
+    header: 'Status',
   },
-])
+  {
+    accessorKey: 'paymentMethod',
+    header: 'Payment Method',
+  },
+  {
+    accessorKey: 'date',
+    header: 'Date',
+  },
+]
 </script>
 
 <template>
-  <UTable :data="data" class="flex-1" />
+  <UTable :data="trxData?.data" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'px-0 text-[#565252] tracking-[1%] text-[16px] font-bold', td: 'px-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+    <template #empty>
+      <div>
+        <p>Your Transactions will appear here</p>
+      </div>
+    </template>
+  </UTable>
+  <!-- <pre>{{ trxData }}</pre> -->
+  <!-- <p class="text-red-500">
+    {{ trxError }}
+  </p> -->
 </template>
