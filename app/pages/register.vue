@@ -14,20 +14,53 @@ definePageMeta({
 const toast = useToast()
 const { signUp } = useAuth()
 
+interface PhoneCode {
+  name: string
+  code: string
+  emoji?: string
+  dialCode: string
+  mask: string
+}
+
+const countryCode = ref('NG')
+
+const { data: phoneCodes, status, execute } = await useLazyFetch<PhoneCode[]>('/api/phone-codes.json', {
+  key: 'api-phone-codes',
+  immediate: false,
+})
+
+const country = computed(() => phoneCodes.value?.find(c => c.code === countryCode.value))
+const dialCode = computed(() => country.value?.dialCode || '+234')
+const mask = computed(() => country.value?.mask || '### ### ####')
+
+function onOpen() {
+  if (!phoneCodes.value?.length) {
+    execute()
+  }
+}
+
 const loading = ref(false)
 
 const schema = z.object({
-  username: z.string().min(4, 'Username cannot be less than 4 characters'),
+  fullname: z.string().min(4, 'Username cannot be less than 4 characters'),
   email: z.email('Invalid email'),
+  phoneNumber: z.string(),
   password: z.string('Password is required').min(8, 'Must be at least 8 characters'),
+  refferalCode: z.string(),
 })
 
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  username: undefined,
-  email: undefined,
-  password: undefined,
+  fullname: '',
+  email: '',
+  phoneNumber: '',
+  refferalCode: '',
+  password: '',
+})
+
+watch(countryCode, () => {
+  state.phoneNumber = ''
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -38,7 +71,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       event.data.password,
     )
 
-    await updateProfile(firebaseUser, { displayName: event.data.username })
+    await updateProfile(firebaseUser, { displayName: event.data.fullname })
     toast.add({
       title: 'Registration Successful',
       description: 'You have successfully registered, verify your email to continue.',
@@ -79,8 +112,66 @@ function displayError(error: any) {
         Create a RovelSub Point Account Today
       </h3>
       <UForm :schema="schema" :state="state" class="space-y-6 mb-6" @submit="onSubmit">
-        <UFormField label="User Name" name="username" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UInput v-model="state.username" size="xl" placeholder="User123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+        <UFormField label="Full Name" name="fullname" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UInput v-model="state.fullname" size="xl" placeholder="" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+        </UFormField>
+
+        <UFormField label="Phone Number" name="phoneNumber" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UFieldGroup>
+            <USelectMenu
+              v-model="countryCode"
+              :items="phoneCodes"
+              size="xl"
+              value-key="code"
+              :search-input="{
+                placeholder: 'Search country...',
+                icon: 'i-lucide-search',
+                loading: status === 'pending',
+              }"
+              :filter-fields="['name', 'code', 'dialCode']"
+              :content="{ align: 'start' }"
+              :ui="{
+                base: 'pe-8',
+                content: 'w-48',
+                placeholder: 'hidden',
+                trailingIcon: 'size-4',
+              }"
+              trailing-icon="i-lucide-chevrons-up-down"
+              @update:open="onOpen"
+            >
+              <span class="size-5 flex items-center text-lg">
+                {{ country?.emoji || '\u{1F1FA}\u{1F1F8}' }}
+              </span>
+
+              <template #item-leading="{ item }">
+                <span class="size-5 flex items-center text-lg">
+                  {{ item.emoji }}
+                </span>
+              </template>
+
+              <template #item-label="{ item }">
+                {{ item.name }} ({{ item.dialCode }})
+              </template>
+            </USelectMenu>
+
+            <UInput
+              v-model="state.phoneNumber"
+              v-maska="mask"
+              type="tel"
+              size="xl"
+              :placeholder="mask.replaceAll('#', '_')"
+              :style="{ '--dial-code-length': `${dialCode.length + 1.5}ch` }"
+              class="w-full placeholder:text-[#999999]"
+              :ui="{
+                base: 'ps-(--dial-code-length) rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]',
+                leading: 'pointer-events-none text-base md:text-sm text-muted',
+              }"
+            >
+              <template #leading>
+                {{ dialCode }}
+              </template>
+            </UInput>
+          </UFieldGroup>
         </UFormField>
 
         <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
@@ -88,27 +179,19 @@ function displayError(error: any) {
         </UFormField>
 
         <UFormField label="Password" name="password" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UInput v-model="state.password" type="password" size="xl" placeholder="john@gmail.com" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+          <UInput v-model="state.password" type="password" size="xl" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+        </UFormField>
+
+        <UFormField label="Refferal Code" name="refferal" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UInput v-model="state.refferalCode" size="xl" placeholder="xyz123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
         <UButton type="submit" size="lg" :loading class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] w-full tracking-[2%] justify-center py-3">
           Register
         </UButton>
       </UForm>
-      <USeparator label="Or continue with" :ui="{ container: 'text-[#858585]', label: 'text-[#5D5B5C]' }" class="mb-6 tracking-[2%]" />
-      <div class="space-y-5">
-        <UButton type="submit" variant="outline" size="lg" :ui="{ base: 'ring-[#5D5B5C]' }" class="text-center rounded-sm text-[#3A3A3A] leading-[150%] text-[18px] w-full justify-center py-3">
-          <template #leading>
-            <NuxtImg src="/images/Google.svg" alt="google svg icon" />
-          </template>
-          Countinue with Google
-        </UButton>
-        <UButton type="submit" variant="outline" size="lg" :ui="{ base: 'ring-[#5D5B5C]' }" class="text-center rounded-sm text-[#3A3A3A] leading-[150%] text-[18px] w-full justify-center py-3">
-          <template #leading>
-            <NuxtImg src="/images/facebook.svg" alt="facebook svg icon" />
-          </template>
-          Countinue with Facebook
-        </UButton>
+
+      <div class="">
         <p class="text-center md:text-right text-[18px] leading-[150%] font-normal text-[#ADADAD]">
           Already have an account? <NuxtLink to="/login" class="text-[#1177FE]">
             Sign In

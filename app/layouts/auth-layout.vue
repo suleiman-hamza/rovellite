@@ -3,7 +3,7 @@
 <template>
   <section>
     <div class="bg-gray-50">
-      <div class="h-screen">
+      <div class="min-h-screen">
         <slot />
       </div>
     </div>

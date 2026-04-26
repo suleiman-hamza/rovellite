@@ -13,13 +13,8 @@ import {
 import { z } from 'zod'
 
 const syncUserSchema = z.object({
-  email: z.email().optional(),
-  name: z.string({ message: 'Name required' })
-    .min(8, 'Name must be at least 8 characters long')
-    .max(30, 'Name must be at most 30 characters long')
-    .regex(/^[a-z ]+$/i, 'Name can only contain letters and spaces')
-    .trim()
-    .toLowerCase(),
+  email: z.email(),
+  name: z.string({ message: 'Name required' }),
   role: z.enum(['user', 'admin']).default('user'),
   avatar_url: z.url().optional(),
   phone: z.string().optional(),
