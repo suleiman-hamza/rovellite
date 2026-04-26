@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 // import { h, resolveComponent } from 'vue'
-import { getPaginationRowModel } from '@tanstack/vue-table'
+// import { getPaginationRowModel } from '@tanstack/vue-table'
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
@@ -41,7 +41,7 @@ interface trx {
 const table = useTemplateRef('table')
 
 const { data: trxData, status } = await useLazyFetch('/api/transaction', {
-  query: { userId: store.userProfile?.user_id, limit: '3' },
+  query: { userId: store.userProfile?.user_id, limit: '10' },
   key: 'transactions',
   server: false,
 })
@@ -89,17 +89,17 @@ const columns: TableColumn<trx>[] = [
   },
 ]
 
-const pagination = ref({
-  pageIndex: 0,
-  pageSize: 5,
-})
+// const pagination = ref({
+//   pageIndex: 0,
+//   pageSize: 5,
+// })
 
 const globalFilter = ref('')
 </script>
 
 <template>
-  <main class="bg-white rounded-[20px]">
-    <div class="flex px-4 py-3.5 border-b border-accented">
+  <main class="bg-white rounded-[20px] p-4">
+    <div class="flex py-3.5 border-b border-accented">
       <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
     </div>
     <UTable ref="table" :data="trxData?.data" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">

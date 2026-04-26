@@ -55,10 +55,10 @@ const items = [{
 }]
 
 // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
-
+const userID = store.userProfile?.user_id
 const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
   'virtual-account',
-  () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
+  () => $fetch(`/api/virtual-account/${userID}`),
 )
 
 if (VAerror.value) {

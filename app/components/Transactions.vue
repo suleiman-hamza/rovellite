@@ -38,7 +38,7 @@ const { data: trxData, status } = await useLazyFetch('/api/transaction', {
 
 const columns: TableColumn<trx>[] = [
   {
-    accessorKey: 'transactionId',
+    accessorKey: 'id',
     header: 'Id',
     cell: ({ row }) => `#${row.getValue('id')}`,
   },
@@ -66,12 +66,22 @@ const columns: TableColumn<trx>[] = [
     header: 'Status',
   },
   {
-    accessorKey: 'paymentMethod',
+    accessorKey: 'type',
     header: 'Method',
   },
   {
-    accessorKey: 'date',
+    accessorKey: 'created_at',
     header: 'Date',
+    cell: ({ row }) => {
+      return new Date(row.getValue('created_at')).toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
+    },
   },
 ]
 </script>
@@ -84,7 +94,7 @@ const columns: TableColumn<trx>[] = [
       </div>
     </template>
   </UTable>
-  <!-- <pre>{{ trxData }}</pre> -->
+  <pre>{{ trxData }}</pre>
   <!-- <p class="text-red-500">
     {{ trxError }}
   </p> -->

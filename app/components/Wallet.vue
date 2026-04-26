@@ -29,8 +29,14 @@ watch(
   { immediate: true },
 )
 
+const store = useProfileStore()
+
 // const scrollPrev = () => emblaApi.value?.scrollPrev()
 // const scrollNext = () => emblaApi.value?.scrollNext()
+
+const { data: walletData } = await useFetch('/api/wallet', {
+  query: { userId: store.userProfile?.user_id },
+})
 
 const cards = ref([
   {
@@ -52,14 +58,14 @@ const cards = ref([
 
 // const { data, error } = useFetch('/api/wallet')
 const isAmountVisible = ref(true)
-const balance = ref(12550.50)
+// const balance = ref(12550.50)
 
-const displayedBalance = computed(() => {
+const displayedBalance = computed((): string => {
   if (isAmountVisible.value) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
-    }).format(balance.value)
+    }).format(walletData.value.data.balance)
   }
   return '••••'
 })
