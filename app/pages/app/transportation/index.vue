@@ -44,8 +44,8 @@ const { data: transportData, error: fetcherror, refresh, status } = await useLaz
       <UPageGrid class="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-y-6">
         <NuxtLink
           v-for="platform in transportData"
-          :key="platform.slug"
-          :to="`transportation/transportSlug/${platform.slug}`"
+          :key="platform.id"
+          :to="`transportation/transportId/${platform.id}`"
           class="p-2 sm:p-4 bg-white rounded-lg border-2 border-[#DBF4FF] hover:border-primary transition-colors flex flex-col gap-2 items-center justify-center text-center"
         >
           <span class="rounded-lg sm:p-2 flex items-center justify-center w-15 h-8.75 sm:w-20 sm:h-12.5 p-1">
