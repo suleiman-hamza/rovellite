@@ -1,6 +1,16 @@
 import type { BillerResponse } from '#shared/types/biller-types'
 import Buffer from 'node:buffer'
 
+// interface payTvresponse {
+//   id: number
+//   name: string
+//   slug: string
+//   amount: number
+//   billerId: number
+//   hasPending: boolean
+//   sequenceNumber: number
+// }
+
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
   console.warn(slug) // remove this in prod

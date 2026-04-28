@@ -64,8 +64,9 @@ const selectPlan = computed(() => {
   }
   return decodeInfo.value?.paytvResponse.map((plan) => {
     return {
-      label: plan.name,
-      value: plan.id,
+      name: plan.name,
+      amount: plan.amount,
+      id: plan.id,
     }
   })
 })
@@ -105,7 +106,19 @@ const selectPlan = computed(() => {
           <div class="px-4 sm:px-6">
             <UForm :state :schema="formSchema" class="space-y-5 md:space-y-8" @submit="onSubmit">
               <UFormField class="w-full">
-                <USelect :items="selectPlan" placeholder="plan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+                <USelect
+                  :items="selectPlan" value-key="id"
+                  label-key="name" placeholder="plan"
+                  size="xl" class="divide w-full placeholder:text-[#4D5155]"
+                  :ui="{ group: 'p-0 divide-y', item: 'data-disabled:cursor-not-allowed data-disabled:opacity-75 text-[#676A6D] hover:text-[#1177FE]' }"
+                >
+                  <template #item="{ item }">
+                    <p class="flex justify-between text-[#676A6D] text-[16px] md:text-[18px] w-full">
+                      <span>{{ item.name }}</span>
+                      <span>#{{ item.amount }}</span>
+                    </p>
+                  </template>
+                </USelect>
               </UFormField>
 
               <UFormField class="w-full">
