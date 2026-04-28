@@ -190,7 +190,7 @@ async function logOut() {
               </UButton>
               <UUser
                 :name="store.userProfile?.full_name" :avatar="{
-                  src: store.userProfile?.avatar_url,
+                  // src: store.userProfile?.avatar_url,
                   loading: 'lazy',
                   icon: 'i-lucide-image',
                 }"

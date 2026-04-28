@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-// import { h, resolveComponent } from 'vue'
+import { h, resolveComponent } from 'vue'
 // import { getPaginationRowModel } from '@tanstack/vue-table'
 import { useProfileStore } from '@/stores/profile'
 
@@ -10,34 +10,55 @@ definePageMeta({
   title: 'Transactions',
   layout: 'dashboard-layout',
   middleware: 'auth',
+  keepalive: true,
 })
 
-// const UBadge = resolveComponent('UBadge')
+const UBadge = resolveComponent('UBadge')
+// interface trx {
+//   id: number
+//   transactionId: string
+//   description: string | null
+//   amount: number
+//   status: string
+//   number: number
+//   paymentMethod: string
+//   date: string
+// }
+
+// types/transactions.ts
+// export interface Transaction {
+//   id: string
+//   amount: number
+//   type: string
+//   status: string
+//   reference: string
+//   created_at: string // Serialized dates are strings
+//   description: string | null
+//   user_id: string
+//   metadata: JSON
+//   virtual_account_no: string
+//   wallet_id: string
+//   wallet: {
+//     balance: number
+//     currency: string
+//   }
+
+// }
+
 interface trx {
-  id: number
-  transactionId: string
-  description: string | null
-  amount: number
-  status: string
-  number: number
-  paymentMethod: string
-  date: string
+  created_at: string
+  id: string
+  reference: string
+  type: string
+  user_id: string
+  virtual_account_no: string
+  wallet_id: string
+  wallet: {
+    balance: number
+    currency: string
+  }
 }
 
-// const data: {
-//     created_at: string;
-//     id: string;
-//     metadata: Json;
-//     reference: string;
-//     type: string;
-//     user_id: string;
-//     virtual_account_no: string;
-//     wallet_id: string;
-//     wallet: {
-//         balance: number;
-//         currency: string;
-//     };
-// }[]
 const table = useTemplateRef('table')
 
 const { data: trxData, status } = await useLazyFetch('/api/transaction', {
@@ -46,15 +67,22 @@ const { data: trxData, status } = await useLazyFetch('/api/transaction', {
   server: false,
 })
 
+const transactions = computed<trx[]>(() => {
+  if (trxData.value?.success) {
+    return trxData.value.data
+  }
+  return []
+})
+
 const columns: TableColumn<trx>[] = [
   {
     accessorKey: 'id',
     header: 'S/N',
+    cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: 'transactionId',
-    header: 'Id',
-    cell: ({ row }) => `#${row.getValue('id')}`,
+    accessorKey: 'reference',
+    header: 'Refrence',
   },
   {
     accessorKey: 'description',
@@ -72,20 +100,36 @@ const columns: TableColumn<trx>[] = [
     },
   },
   {
-    accessorKey: 'number',
-    header: 'Number',
-  },
-  {
     accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => {
+      const color = {
+        success: 'success' as const,
+        failed: 'error' as const,
+        refunded: 'neutral' as const,
+      }[row.getValue('status') as string]
+
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
+        row.getValue('status'))
+    },
   },
   {
-    accessorKey: 'paymentMethod',
+    accessorKey: 'type',
     header: 'Method',
   },
   {
-    accessorKey: 'date',
+    accessorKey: 'created_at',
     header: 'Date',
+    cell: ({ row }) => {
+      return new Date(row.getValue('created_at')).toLocaleString('en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+      })
+    },
   },
 ]
 
@@ -102,7 +146,7 @@ const globalFilter = ref('')
     <div class="flex py-3.5 border-b border-accented">
       <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
     </div>
-    <UTable ref="table" :data="trxData?.data" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+    <UTable ref="table" :data="transactions" :columns="columns" :loading="status === 'pending' || status === 'idle'" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
       <template #empty>
         <div>
           <p>Your Transactions will appear here</p>

@@ -56,6 +56,9 @@ const items = [{
 
 // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 const userID = store.userProfile?.user_id
+
+// const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
+
 const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
   'virtual-account',
   () => $fetch(`/api/virtual-account/${userID}`),
@@ -64,9 +67,12 @@ const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncDa
 if (VAerror.value) {
   console.error('Error fetching virtual account:', VAerror.value)
 }
+// else {
+//   virtualAccountDetails.value = VA.value as VirtualAccountResponse
+// }
 
 // what to copy to clipboard, in this case, the user's virtual account number
-const source = virtualAccountDetails.value?.data.virtual_account_no || ''
+const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')

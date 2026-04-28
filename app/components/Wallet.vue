@@ -65,7 +65,7 @@ const displayedBalance = computed((): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
-    }).format(walletData.value.data.balance)
+    }).format(walletData?.value?.data.balance)
   }
   return '••••'
 })
