@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import type { Row } from '@tanstack/vue-table'
+import { useClipboard } from '@vueuse/core'
 import { h, resolveComponent } from 'vue'
 // import { getPaginationRowModel } from '@tanstack/vue-table'
 import { useProfileStore } from '@/stores/profile'
@@ -13,37 +15,12 @@ definePageMeta({
   keepalive: true,
 })
 
-const UBadge = resolveComponent('UBadge')
-// interface trx {
-//   id: number
-//   transactionId: string
-//   description: string | null
-//   amount: number
-//   status: string
-//   number: number
-//   paymentMethod: string
-//   date: string
-// }
+const UButton = resolveComponent('UButton')
+// const UBadge = resolveComponent('UBadge')
+const UDropdownMenu = resolveComponent('UDropdownMenu')
 
-// types/transactions.ts
-// export interface Transaction {
-//   id: string
-//   amount: number
-//   type: string
-//   status: string
-//   reference: string
-//   created_at: string // Serialized dates are strings
-//   description: string | null
-//   user_id: string
-//   metadata: JSON
-//   virtual_account_no: string
-//   wallet_id: string
-//   wallet: {
-//     balance: number
-//     currency: string
-//   }
-
-// }
+const toast = useToast()
+const { copy } = useClipboard()
 
 interface trx {
   created_at: string
@@ -86,7 +63,7 @@ const columns: TableColumn<trx>[] = [
   },
   {
     accessorKey: 'description',
-    header: 'Service',
+    header: 'Description',
   },
   {
     accessorKey: 'amount',
@@ -103,14 +80,18 @@ const columns: TableColumn<trx>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const color = {
-        success: 'success' as const,
-        failed: 'error' as const,
-        refunded: 'neutral' as const,
-      }[row.getValue('status') as string]
-
-      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () =>
-        row.getValue('status'))
+      const status = row.getValue('status') as string
+      const colorMap = {
+        success: 'text-success',
+        failed: 'text-error',
+        refunded: 'text-warning',
+        processing: 'text-indigo-500',
+      }
+      return h(
+        'span',
+        { class: `font-semibold capitalize ${colorMap[status as keyof typeof colorMap]}` },
+        status,
+      )
     },
   },
   {
@@ -122,16 +103,68 @@ const columns: TableColumn<trx>[] = [
     header: 'Date',
     cell: ({ row }) => {
       return new Date(row.getValue('created_at')).toLocaleString('en-US', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
         hour: '2-digit',
         minute: '2-digit',
+        day: 'numeric',
+        month: 'short',
         hour12: true,
       })
     },
   },
+  {
+    header: 'Action',
+    id: 'actions',
+    cell: ({ row }) => {
+      return h(
+        UDropdownMenu,
+        {
+          'content': {
+            align: 'end',
+          },
+          'items': getRowItems(row),
+          'aria-label': 'Actions dropdown',
+        },
+        () =>
+          h(UButton, {
+            'icon': 'i-lucide-ellipsis-vertical',
+            'color': 'neutral',
+            'variant': 'ghost',
+            'aria-label': 'Actions dropdown',
+          }),
+      )
+    },
+  },
 ]
+
+function getRowItems(row: Row<trx>) {
+  return [
+    {
+      type: 'label',
+      label: 'Actions',
+    },
+    {
+      label: 'Copy Transaction Reference',
+      onSelect() {
+        copy(row.original.reference)
+
+        toast.add({
+          title: 'Payment Reference copied to clipboard!',
+          color: 'success',
+          icon: 'i-lucide-circle-check',
+        })
+      },
+    },
+    {
+      type: 'separator',
+    },
+    {
+      label: 'View customer',
+    },
+    {
+      label: 'View payment details',
+    },
+  ]
+}
 
 // const pagination = ref({
 //   pageIndex: 0,
@@ -143,10 +176,22 @@ const globalFilter = ref('')
 
 <template>
   <main class="bg-white rounded-[20px] p-4">
-    <div class="flex py-3.5 border-b border-accented">
-      <UInput v-model="globalFilter" class="max-w-sm" placeholder="Filter..." />
+    <div class="flex gap-4 items-center py-3.5 border border-accented">
+      <h2 class="text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
+        Transaction History
+      </h2>
+      <UInput v-model="globalFilter" size="lg" leading-icon="i-lucide-search" class="max-w-sm" placeholder="Search for transactions" />
+      <UPopover>
+        <UButton label="Filter" leading-icon="i-lucide-list-filter" size="lg" subtle variant="subtle" />
+
+        <template #content>
+          <div class="p-4">
+            <h2>Categories</h2>
+          </div>
+        </template>
+      </UPopover>
     </div>
-    <UTable ref="table" :data="transactions" :columns="columns" :loading="status === 'pending' || status === 'idle'" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+    <UTable ref="table" :data="transactions" :columns="columns" :loading="status === 'pending' || status === 'idle'" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }">
       <template #empty>
         <div>
           <p>Your Transactions will appear here</p>
