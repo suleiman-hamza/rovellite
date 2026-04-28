@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 // import type { Package } from '@@/shared/types/biller-types'
 const route = useRoute()
-// const toast = useToast()
+const toast = useToast()
 const { getUser } = useAuth()
 
 definePageMeta({
@@ -16,6 +16,8 @@ useSeoMeta({
   title: `TV/Decoders - ${route.params.slug}` as string,
   description: () => 'This is a description for the page',
 })
+
+const loadspinner = ref(false)
 
 const { data: decodeInfo, error: fetcherror, refresh, status } = await useLazyFetch(`/api/paytv/${route.params.slug}`, {
   key: 'decoder-page-detail',
@@ -41,7 +43,7 @@ const formSchema = z.object({
   phoneNumber: z.string()
     .min(1, 'Amount is required.'),
   price: z.string()
-    .min(10, 'Phone number must be at least 10 digits.'),
+    .min(3),
 })
 
 type Schema = z.output<typeof formSchema>
@@ -54,8 +56,40 @@ const state = reactive<Partial<Schema>>({
   price: '',
 })
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.warn('Form submitted with values:', event.data)
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  loadspinner.value = true
+  try {
+    const { data, error } = await useFetch('/api/coral-pay/customer-enquiry/customer', {
+      method: 'POST',
+      body: {
+        customerId: event.data.decoderNumber,
+        productName: event.data.plan,
+        billerSlug: route.params.slug,
+      },
+    })
+
+    if (error.value) {
+      toast.add({
+        title: 'Failed to create account number',
+      })
+      console.warn(error.value)
+    }
+    else if (data.value) {
+      toast.add({
+        title: 'Succesfully ran customer enquiry',
+      })
+    }
+  }
+  catch (error: any) {
+    throw createError(error)
+  }
+  finally {
+    state.decoderNumber = ''
+    state.phoneNumber = ''
+    state.plan = ''
+    state.price = ''
+    loadspinner.value = false
+  }
 }
 
 const selectPlan = computed(() => {
@@ -91,7 +125,7 @@ const selectPlan = computed(() => {
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
           <span class="rounded-full bg-white p-0.5 overflow-hidden">
             <NuxtImg :src="decodeInfo?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
@@ -105,15 +139,16 @@ const selectPlan = computed(() => {
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
             <UForm :state :schema="formSchema" class="space-y-5 md:space-y-8" @submit="onSubmit">
-              <UFormField class="w-full">
+              <UFormField class="w-full" name="plan">
                 <USelect
-                  :items="selectPlan" value-key="id"
-                  label-key="name" placeholder="plan"
+                  v-model="state.plan" :items="selectPlan"
+                  value-key="name" label-key="name"
+                  placeholder="plan"
                   size="xl" class="divide w-full placeholder:text-[#4D5155]"
-                  :ui="{ group: 'p-0 divide-y', item: 'data-disabled:cursor-not-allowed data-disabled:opacity-75 text-[#676A6D] hover:text-[#1177FE]' }"
+                  :ui="{ group: 'p-0 divide-y', item: 'text-[#676A6D] hover:text-primary data-disabled:cursor-not-allowed data-disabled:opacity-75' }"
                 >
                   <template #item="{ item }">
-                    <p class="flex justify-between text-[#676A6D] text-[16px] md:text-[18px] w-full">
+                    <p class="flex justify-between text-[16px] md:text-[18px] w-full">
                       <span>{{ item.name }}</span>
                       <span>#{{ item.amount }}</span>
                     </p>
@@ -121,20 +156,20 @@ const selectPlan = computed(() => {
                 </USelect>
               </UFormField>
 
-              <UFormField class="w-full">
+              <UFormField class="w-full" name="decoderNumber">
                 <UInput v-model="state.decoderNumber" placeholder="Decoder Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
-              <UFormField class="w-full">
+              <UFormField class="w-full" name="phoneNumber">
                 <UInput v-model="state.phoneNumber" placeholder="Phone Number" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
-              <UFormField class="w-full">
+              <UFormField class="w-full" name="price">
                 <UInput v-model="state.price" placeholder="Generated Price" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <div class="flex gap-4 md:gap-8 items-center">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
+                <UButton type="button" class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
                   <template #leading>
                     <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
                   </template>
@@ -142,11 +177,15 @@ const selectPlan = computed(() => {
                 </UButton>
                 <UButton
                   type="submit"
+                  :loading="loadspinner"
                   class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
                 >
                   Checkout
                 </UButton>
               </div>
+              <p>{{ state.plan }}</p>
+              <p>{{ state.decoderNumber }}</p>
+              <p>{{ state.phoneNumber }}</p>
             </UForm>
           </div>
         </div>
