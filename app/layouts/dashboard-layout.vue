@@ -185,7 +185,7 @@ async function logOut() {
               <!-- <UChip :text="5" color="error" inset size="3xl">
                 <UButton icon="i-lucide-mail" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
               </UChip> -->
-              <UButton icon="i-lucide-shopping-cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]' }">
+              <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]' }">
                 <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
               </UButton>
               <UUser

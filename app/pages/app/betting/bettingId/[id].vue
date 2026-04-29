@@ -31,7 +31,7 @@ const { data: betPlatform, error: fetcherror, refresh, status } = await useLazyF
 const formSchema = z.object({
   agent: z.string().min(1, 'Please select a package'),
   id: z.string().min(1, 'Enter a valid Betting Id'),
-  amount: z.string().min(1, 'Please enter an amount'),
+  amount: z.string().min(3, 'Please enter an amount'),
 })
 
 type Schema = z.output<typeof formSchema>
@@ -42,13 +42,42 @@ const state = reactive<Partial<Schema>>({
   amount: '',
 })
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.warn('Form submitted with values:', event.data)
-  toast.add({
-    title: 'Form Submitted',
-    description: `Package Selected: ${event.data.agent}, User ID: ${event.data.id}, Amount: ${event.data.amount}`,
-    duration: 4000,
-  })
+const loadspinner = ref(false)
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  loadspinner.value = true
+  try {
+    const { data, error } = await useFetch('/api/coral-pay/customer-enquiry/customer', {
+      method: 'POST',
+      body: {
+        customerId: event.data.id,
+        productName: event.data.agent,
+        billerId: route.params.id,
+      },
+    })
+
+    if (error.value) {
+      toast.add({
+        title: 'Failed to create account number',
+      })
+      console.warn(error.value)
+    }
+    else if (data.value) {
+      toast.add({
+        title: 'Succesfully ran customer enquiry',
+      })
+    }
+  }
+  catch (error: any) {
+    throw createError(error)
+  }
+  finally {
+    // state.decoderNumber = ''
+    state.agent = ''
+    state.amount = ''
+    state.id = ''
+    loadspinner.value = false
+  }
 }
 
 const selectPlan = computed(() => {
@@ -56,7 +85,10 @@ const selectPlan = computed(() => {
     return []
   }
   return betPlatform.value.bettinPlan.map((plan) => {
-    return plan.name
+    return {
+      label: plan.name,
+      id: plan.id,
+    }
   })
 })
 
@@ -108,7 +140,7 @@ function addToCart() {
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
               <UFormField name="agent">
-                <USelect v-model="state.agent" placeholder="Choose Wallet" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+                <USelect v-model="state.agent" placeholder="Choose Wallet" value-key="label" label-key="label" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <UFormField name="id">
@@ -138,6 +170,7 @@ function addToCart() {
                 </UButton>
                 <UButton
                   type="submit"
+                  :loading="loadspinner"
                   class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
                 >
                   Checkout
