@@ -25,7 +25,7 @@ const items = [
 
 <template>
   <main>
-    <div class="border">
+    <div class="">
       <h2 class="text-[18px] md:text-[32px] md:leading-[42px] font-bold text-[#34383D] mb-2.5 md:mb-5">
         Payment Method
       </h2>
@@ -33,7 +33,7 @@ const items = [
         Select a payment method
       </h3>
     </div>
-    <div>
+    <div class="mt-7">
       <UTabs
         :items="items"
         variant="pill"
@@ -41,7 +41,7 @@ const items = [
           root: 'items-start',
           list: 'bg-transparent gap-4 p-0 border w-fit',
           indicator: 'hidden',
-          trigger: 'flex items-center gap-2 before:content-[\'\'] before:size-4 before:rounded-full before:border-2 before:border-primary data-[state=active]:before:bg-primary data-[state=active]:before:border-primary data-[state=inactive]:before:bg-transparent data-[state=inactive]:text-[#4D5155] data-[state=active]:text-primary md:before:size-6',
+          trigger: 'flex items-center gap-2 before:content-[\'\'] before:size-4 before:rounded-full before:border-2 before:border-primary data-[state=active]:before:bg-primary data-[state=active]:before:border-primary data-[state=inactive]:before:bg-transparent data-[state=inactive]:text-[#4D5155] data-[state=active]:text-primary md:before:size-6 md:text-[24px]',
         }"
       >
         <template #wallet>
@@ -53,6 +53,11 @@ const items = [
             <div class="border-b p-3 flex justify-between">
               <p>Wallet Balance</p>
               <p>0.00</p>
+            </div>
+            <div class="mt-5 flex justify-center items-center">
+              <NuxtLink to="" class="bg-primary flex items-center justify-center text-white w-full max-w-[500px] mx-auto py-3 rounded-[40px] md:text-[24px] font-bold">
+                Continue Payment
+              </NuxtLink>
             </div>
           </div>
         </template>
