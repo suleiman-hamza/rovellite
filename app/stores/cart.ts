@@ -5,7 +5,7 @@
 export interface CartItemType {
   productName: string
   productId: number
-  image?: string
+  image: string
   amount: number | null
   billerId: number
   customerReference: string

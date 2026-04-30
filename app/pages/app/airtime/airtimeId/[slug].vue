@@ -67,7 +67,7 @@ const airtimeInfo = computed(() => {
 })
 
 function cart() {
-  // 2. Map the scattered data to your CartItemType
+  // Map the scattered data to your CartItemType
   cartStore.addToCart({
     productName: airtimeInfo.value?.productName as string,
     productId: airtimeInfo.value?.id as number,
