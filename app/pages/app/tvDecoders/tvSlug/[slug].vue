@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { useCartStore } from '#imports'
 import { z } from 'zod'
 
 // import type { Package } from '@@/shared/types/biller-types'
+const cartStore = useCartStore()
 const route = useRoute()
 const toast = useToast()
 const { getUser } = useAuth()
@@ -41,7 +43,7 @@ const formSchema = z.object({
   decoderNumber: z.string()
     .regex(/^\d{11}$/, 'Enter a valid 11-digit meter number'),
   phoneNumber: z.string()
-    .min(1, 'Amount is required.'),
+    .min(1, 'Phone Number is required'),
   price: z.string()
     .min(3),
 })
@@ -101,14 +103,46 @@ const selectPlan = computed(() => {
       name: plan.name,
       amount: plan.amount,
       id: plan.id,
+      billerId: plan.billerId,
     }
   })
 })
+
+function cart() {
+  const selectedPlanDetails = selectPlan.value.find(plan => plan.name === state.plan)
+
+  // Guard clause: Ensure a plan and decoder number are present
+  if (!selectedPlanDetails || !state.decoderNumber) {
+    toast.add({
+      title: 'Missing Information',
+      description: 'Please select a plan and enter a decoder number.',
+      icon: 'i-lucide-close',
+    })
+    return
+  }
+
+  // 2. Map the scattered data to your CartItemType
+  cartStore.addToCart({
+    productName: selectedPlanDetails.name,
+    productId: selectedPlanDetails.id,
+    amount: selectedPlanDetails.amount, // Safer than parsing the state.price string
+    billerId: selectedPlanDetails.billerId, // Fallback if slug isn't a number
+    customerReference: state.decoderNumber as string,
+    image: decodeInfo.value?.image, // Add if you have it in decodeInfo
+  })
+
+  // 4. Success Toast
+  toast.add({
+    title: 'Success',
+    description: `${selectedPlanDetails.name} added to cart`,
+    icon: 'i-lucide-check',
+  })
+}
 </script>
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="text-primary absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
@@ -125,7 +159,7 @@ const selectPlan = computed(() => {
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
+          <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="text-primary md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
           <span class="rounded-full bg-white p-0.5 overflow-hidden">
             <NuxtImg :src="decodeInfo?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
@@ -169,7 +203,7 @@ const selectPlan = computed(() => {
               </UFormField>
 
               <div class="flex gap-4 md:gap-8 items-center">
-                <UButton type="button" class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
+                <UButton type="button" class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart()">
                   <template #leading>
                     <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
                   </template>

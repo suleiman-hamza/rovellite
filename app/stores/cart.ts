@@ -1,4 +1,4 @@
-const toast = useToast()
+// const toast = useToast()
 // Extend your component's props to include a quantity tracker
 
 // This now perfectly matches your CartItem Props
@@ -6,8 +6,9 @@ export interface CartItemType {
   productName: string
   productId: number
   image?: string
-  amount: number
+  amount: number | null
   billerId: number
+  customerReference: string
 }
 
 export const useCartStore = defineStore('cart', () => {
@@ -33,9 +34,10 @@ export const useCartStore = defineStore('cart', () => {
       items.value.push(newItem)
     }
     else {
-      toast.add({
-        title: 'Item is already in cart',
-      })
+      console.warn('tem is already in cart')
+      // toast.add({
+      //   title: 'Item is already in cart',
+      // })
     }
   }
 

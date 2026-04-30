@@ -2,12 +2,12 @@ import type { PackagesResponse } from '#shared/types/biller-types' // types from
 import Buffer from 'node:buffer'
 
 export default defineEventHandler(async (event) => {
-  const slug = getRouterParam(event, 'slug') // extract slug from the URL parameters, which identifies the specific biller for which packages are being requested
-  console.warn(slug)
+  const id = event.context.params?.id // extract slug from the URL parameters, which identifies the specific biller for which packages are being requested
+  console.warn(id)
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
   const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64') // create a base64-encoded string for basic authentication using CoralPay credentials from runtime configuration
 
-  const response = await $fetch<PackagesResponse>(`https://sandbox1.coralpay.com/coralpay-vas/api/packages/biller/slug/${slug}`, {
+  const response = await $fetch<PackagesResponse>(`https://sandbox1.coralpay.com/coralpay-vas/api/packages/biller/${id}` as any, {
     method: 'GET',
     headers: {
       'Authorization': `Basic ${credentials}`,
