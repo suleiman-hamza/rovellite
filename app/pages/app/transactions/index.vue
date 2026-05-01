@@ -176,7 +176,7 @@ const globalFilter = ref('')
 
 <template>
   <main class="bg-white rounded-[20px] p-4">
-    <div class="flex gap-4 items-center py-3.5 border border-accented">
+    <div class="flex gap-4 items-center py-3.5 border-accented mb-4">
       <h2 class="text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
         Transaction History
       </h2>
@@ -198,7 +198,11 @@ const globalFilter = ref('')
         </div>
       </template>
     </UTable>
-    <div class="flex justify-end border-t border-default pt-4 px-4">
+    <div class="flex justify-between border-t border-default pt-4 px-4">
+      <div class="px-4 py-3.5 text-sm text-muted">
+        {{ table?.tableApi?.getRowCount() }} of
+        {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
+      </div>
       <UPagination
         :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
         :items-per-page="table?.tableApi?.getState().pagination.pageSize"

@@ -68,9 +68,9 @@ const items: NavigationMenuItem[] = [{
   to: '/app/solarSystem',
   active: route.path.startsWith('/app/solarSystem'),
 }, {
-  label: 'Fund wallet',
+  label: 'FundingHistory',
   icon: '/images/icons/fundwallet.svg',
-  to: '/app/fundWallet',
+  to: '/app/fundingHistory',
   active: route.path.startsWith('/app/fundWallet'),
 }, {
   label: 'Transactions',
