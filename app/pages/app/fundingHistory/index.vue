@@ -295,20 +295,30 @@ const globalFilter = ref('')
 
 <template>
   <main class="bg-white rounded-[20px] p-4">
-    <div class="flex gap-4 items-center py-3.5 border-accented mb-4">
-      <h2 class="text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
+    <h2 class="sm:hidden inline text-[#34383D] text-[14px] sm:text-[20px] font-bold leading-[150%] tracking-[2%]">
+      Funding History
+    </h2>
+    <div class="flex justify-between gap-2 items-center py-3.5 border-accented mb-4">
+      <h2 class="hidden sm:inline-block text-nowrap text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
         Funding History
       </h2>
-      <UInput v-model="globalFilter" size="lg" leading-icon="i-lucide-search" class="max-w-sm" placeholder="Search for transactions" />
+      <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-112.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search for transactions" />
       <UPopover>
-        <UButton label="Filter" leading-icon="i-lucide-list-filter" size="lg" subtle variant="subtle" />
-
+        <UButton label="Filter" leading-icon="i-lucide-list-filter" :ui="{ base: 'md:px-5 md:py-2.5 text-[#4D5155] bg-[#DBF4FF] rounded-[4px] md:rounded-[12px]', label: 'text-[#4D5155] font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }" />
         <template #content>
           <div class="p-4">
             <h2>Categories</h2>
           </div>
         </template>
       </UPopover>
+      <UPagination
+        :sibling-count="-1"
+        :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        :ui="{ first: 'hidden', last: 'hidden', list: 'gap-1 md:gap-3', prev: 'rounded-full', next: 'rounded-full' }"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
     </div>
     <UTable
       ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" :data="transactions"
@@ -323,12 +333,13 @@ const globalFilter = ref('')
       </template>
     </UTable>
 
-    <div class="flex justify-between border-t border-default pt-4 px-4">
-      <div class="px-4 py-3.5 text-sm text-muted">
+    <div class="flex justify-between border-t border-default pt-4">
+      <div class="py-3.5 text-sm text-muted">
         {{ table?.tableApi?.getRowCount() }} of
-        {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} row(s) selected.
+        {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} entries.
       </div>
       <UPagination
+        :show-controls="false"
         :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
         :items-per-page="table?.tableApi?.getState().pagination.pageSize"
         :total="table?.tableApi?.getFilteredRowModel().rows.length"

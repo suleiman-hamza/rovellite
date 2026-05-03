@@ -26,7 +26,7 @@ definePageMeta({
           Oooops ..... Your cart appears to be empty!
           Add items to your cart
         </p>
-        <NuxtLink to="/app/checkout" class="bg-primary flex items-center justify-center text-white w-full max-w-125 mx-auto py-3 rounded-[40px] md:text-[24px] font-bold">
+        <NuxtLink to="/app/dashboard" class="bg-primary flex items-center justify-center text-white w-full max-w-125 mx-auto py-3 rounded-[40px] md:text-[24px] font-bold">
           Back to Dashboard
         </NuxtLink>
       </div>
