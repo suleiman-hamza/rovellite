@@ -142,7 +142,7 @@ function cart() {
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="text-primary absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/tvDecoders" variant="outline" class="text-primary absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />

@@ -38,6 +38,13 @@ const columns: TableColumn<trx>[] = [
     accessorKey: 'id',
     header: 'Id',
     cell: ({ row }) => `#${row.getValue('id')}`,
+    size: 100,
+    meta: {
+      class: {
+        td: '',
+        th: '',
+      },
+    },
   },
   {
     accessorKey: 'description',

@@ -2,8 +2,9 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 // import type { VirtualAccountResponse } from '../../types/palmpay'
 
+import { useCartStore } from '#imports' // cart store
 import { useAuth } from '@/composables/use-auth'
-import { useProfileStore } from '@/stores/profile'
+import { useProfileStore } from '@/stores/profile' // profile store
 
 const toast = useToast()
 const route = useRoute()
@@ -11,6 +12,7 @@ const route = useRoute()
 const { signOutUser } = useAuth()
 
 const store = useProfileStore()
+const cartStore = useCartStore()
 
 const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
@@ -166,8 +168,8 @@ const firstName = parts[0]
       <template #header>
         <UDashboardNavbar>
           <template #title>
-            <span class="text-[16px] md:text-[24px] text-[#1177FE] font-normal">
-              Welcome, <span class="font-bold uppercase">{{ firstName }}</span>
+            <span class="text-[16px] md:text-[24px] font-normal">
+              Welcome, <span class="text-[#1177FE] font-bold uppercase">{{ firstName }}</span>
             </span>
           </template>
           <template #leading>
@@ -175,9 +177,11 @@ const firstName = parts[0]
           </template>
           <template #right>
             <div class="gap-3 flex">
-              <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
-                <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
-              </UButton>
+              <UChip size="3xl" color="error" :text="cartStore.cartItemCount > 0 ? cartStore.cartItemCount : undefined">
+                <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
+                  <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
+                </UButton>
+              </UChip>
               <UUser
                 :avatar="{
                   // src: store.userProfile?.avatar_url,

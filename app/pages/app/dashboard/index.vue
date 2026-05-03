@@ -59,10 +59,9 @@ const userID = store.userProfile?.user_id
 
 // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 
-const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
-  'virtual-account',
-  () => $fetch(`/api/virtual-account/${userID}`),
-)
+const { data: virtualAccountDetails, status, error: VAerror } = await useFetch<VirtualAccountResponse>(`/api/virtual-account/${userID}`, {
+  key: 'virtual-account',
+})
 
 if (VAerror.value) {
   console.error('Error fetching virtual account:', VAerror.value)

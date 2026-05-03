@@ -61,7 +61,7 @@ const isAmountVisible = ref(true)
 // const balance = ref(12550.50)
 
 const displayedBalance = computed((): string => {
-  if (isAmountVisible.value) {
+  if (isAmountVisible.value && walletData?.value?.success) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
