@@ -47,7 +47,7 @@ definePageMeta({
       </div>
       <div class="mt-5 flex justify-center items-center">
         <NuxtLink to="/app/checkout" class="bg-primary flex items-center justify-center text-white w-full max-w-100 mx-auto py-3 rounded-[40px] md:text-[24px] font-bold">
-          Transfer
+          Checkout
         </NuxtLink>
       </div>
     </div>

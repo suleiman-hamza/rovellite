@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
-import { getPaginationRowModel } from '@tanstack/vue-table'
+// import { getPaginationRowModel } from '@tanstack/vue-table'
 import { useClipboard } from '@vueuse/core'
 import { h, resolveComponent } from 'vue'
 import { useProfileStore } from '@/stores/profile'
@@ -178,6 +178,11 @@ function getRowItems(row: Row<trx>) {
     },
     {
       label: 'View payment details',
+      icon: 'i-lucide-arrow-right',
+      onSelect() {
+        // Navigate to the dynamic route using the transaction's ID
+        navigateTo(`/app/transactions/${row.original.id}`)
+      },
     },
   ]
 }
