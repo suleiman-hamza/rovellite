@@ -105,6 +105,15 @@ async function logOut() {
     loading.value = false
   }
 }
+
+const fullName = store.userProfile?.full_name as string
+
+// Trim whitespace and split
+const parts = fullName?.trim().split(' ')
+
+// Extract first name and join the rest as the last name
+const firstName = parts[0]
+// const lastName = parts.slice(1).join(" ");
 </script>
 
 <template>
@@ -158,38 +167,19 @@ async function logOut() {
         <UDashboardNavbar>
           <template #title>
             <span class="text-[16px] md:text-[24px] text-[#1177FE] font-normal">
-              Welcome Back, <span class="font-bold uppercase">{{ store.userProfile?.full_name }}</span>
+              Welcome, <span class="font-bold uppercase">{{ firstName }}</span>
             </span>
           </template>
           <template #leading>
             <UDashboardSidebarCollapse />
           </template>
           <template #right>
-            <div class="sm:flex gap-3 hidden">
-              <UPopover
-                arrow
-                :content="{
-                  align: 'center',
-                  side: 'bottom',
-                  sideOffset: 8,
-                }"
-              >
-                <UChip :text="5" color="error" inset size="3xl">
-                  <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-                </UChip>
-
-                <template #content>
-                  <UEmpty title="No Notification found" />
-                </template>
-              </UPopover>
-              <!-- <UChip :text="5" color="error" inset size="3xl">
-                <UButton icon="i-lucide-mail" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-              </UChip> -->
-              <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]' }">
+            <div class="gap-3 flex">
+              <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
                 <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
               </UButton>
               <UUser
-                :name="store.userProfile?.full_name" :avatar="{
+                :avatar="{
                   // src: store.userProfile?.avatar_url,
                   loading: 'lazy',
                   icon: 'i-lucide-image',
@@ -197,9 +187,6 @@ async function logOut() {
                 :ui="{ avatar: 'border border-primary' }"
               />
             </div>
-            <UChip :text="5" color="error" inset size="3xl" class="sm:hidden">
-              <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-            </UChip>
           </template>
         </UDashboardNavbar>
       </template>
