@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core'
-import { BarChart } from 'echarts/charts'
-import * as echarts from 'echarts/core'
+// import { BarChart } from 'echarts/charts'
+// import * as echarts from 'echarts/core'
+import VChart from 'nuxt-echarts'
 
-echarts.use([BarChart])
+// echarts.use([BarChart])
 
 // import { useProfileStore } from '@/stores/profile'
 

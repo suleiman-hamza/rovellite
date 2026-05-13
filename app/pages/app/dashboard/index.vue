@@ -59,7 +59,7 @@ const userID = store.userProfile?.user_id
 
 // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 
-const { data: virtualAccountDetails, status, error: VAerror } = await useFetch<VirtualAccountResponse>(`/api/virtual-account/${userID}`, {
+const { data: virtualAccountDetails, status, error: VAerror } = await useLazyFetch<VirtualAccountResponse>(`/api/virtual-account/${userID}`, {
   key: 'virtual-account',
 })
 
@@ -131,13 +131,15 @@ async function createWallet() {
   <main class="">
     <section class="rounded-[20px] bg-[#1177FE]">
       <Wallet />
-      <div v-if="status === 'pending'" class="flex items-center gap-4 border">
-        <USkeleton class="size-12 rounded-full" />
-
-        <div class="grid gap-2">
-          <USkeleton class="h-4 w-62" />
-          <USkeleton class="h-4 w-62" />
-        </div>
+      <div v-if="status === 'pending'" class="p-4">
+        <UPageGrid class="grid grid-cols-2 gap-3">
+          <div class="bg-white rounded-lg flex items-center justify-center w-full">
+            <USkeleton class="object-contain w-full h-10 rounded-lg" />
+          </div>
+          <div class="bg-white rounded-lg flex items-center justify-center w-full">
+            <USkeleton class="object-contain w-full h-10 rounded-lg" />
+          </div>
+        </UPageGrid>
       </div>
       <!-- show palmpay wallet for users with a wallet -->
       <div v-else-if="status === 'success' && virtualAccountDetails?.success" class="p-4 sm:px-6 text-white">

@@ -31,8 +31,21 @@ const { data: availableDiscos, error: fetcherror, refresh, status } = await useL
 <template>
   <main class="font-poppins">
     <!-- Loading Skeleton when data is fetching from the API -->
-    <div v-if="status === 'pending'" class="flex items-center space-x-4">
-      <p>loading...</p>
+    <div v-if="status === 'pending'" class="">
+      <UPageGrid class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-3 gap-y-4 md:gap-x-5 md:gap-y-7">
+        <div class="bg-white rounded-lg aspect-square flex items-center justify-center">
+          <USkeleton class="object-contain w-12 h-12 md:w-24 md:h-24 rounded-full" />
+        </div>
+        <div class="bg-white rounded-lg aspect-square flex items-center justify-center">
+          <USkeleton class="object-contain w-12 h-12 md:w-24 md:h-24 rounded-full" />
+        </div>
+        <div class="bg-white rounded-lg aspect-square flex items-center justify-center">
+          <USkeleton class="object-contain w-12 h-12 md:w-24 md:h-24 rounded-full" />
+        </div>
+        <div class="bg-white rounded-lg aspect-square flex items-center justify-center">
+          <USkeleton class="object-contain w-12 h-12 md:w-24 md:h-24 rounded-full" />
+        </div>
+      </UPageGrid>
     </div>
     <div v-if="fetcherror" class="flex items-center space-x-4">
       <p>{{ fetcherror }}</p>

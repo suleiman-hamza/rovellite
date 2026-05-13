@@ -178,7 +178,7 @@ const firstName = parts[0]
           <template #right>
             <div class="gap-3 flex">
               <UChip size="3xl" color="error" :text="cartStore.cartItemCount > 0 ? cartStore.cartItemCount : undefined">
-                <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
+                <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" class="router-link-active" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
                   <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
                 </UButton>
               </UChip>
