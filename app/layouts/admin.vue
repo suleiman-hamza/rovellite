@@ -1,0 +1,162 @@
+<script setup lang="ts">
+import type { NavigationMenuItem } from '@nuxt/ui'
+// import type { VirtualAccountResponse } from '../../types/palmpay'
+import { useAuth } from '@/composables/use-auth'
+import { useProfileStore } from '@/stores/profile' // profile store
+
+const toast = useToast()
+// const route = useRoute()
+
+const { signOutUser } = useAuth()
+
+const store = useProfileStore()
+
+const items: NavigationMenuItem[] = [{
+  label: 'Dashboard',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/dashboard',
+  // active: route.path.startsWith()
+}, {
+  label: 'User',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/user',
+  // active: route.path.startsWith()
+}, {
+  label: 'Products',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/products',
+  // active: route.path.startsWith()
+}]
+
+const loading = ref(false)
+async function logOut() {
+  loading.value = true
+  try {
+    const result = await signOutUser()
+    if (!result.success) {
+      throw new Error('Logout failed')
+    }
+    navigateTo('/login')
+  }
+  catch {
+    toast.add({
+      title: 'Logout Failed',
+      description: 'An error occurred while logging out. Please try again.',
+      color: 'error',
+    })
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+const fullName = store.userProfile?.full_name as string
+
+// Trim whitespace and split
+const parts = fullName?.trim().split(' ')
+
+// Extract first name and join the rest as the last name
+const firstName = parts[0]
+// const lastName = parts.slice(1).join(" ");
+</script>
+
+<template>
+  <UDashboardGroup class="bg-[#F9F9FB]">
+    <UDashboardSidebar collapsible :default-size="20" :ui="{ root: 'rounded-r-[40px] bg-white', footer: 'border-t border-default', header: 'flex items-center shrink justify-center p-1', body: 'px-0 py-4' }">
+      <template #header="{ collapsed }">
+        <div v-if="!collapsed" class="w-auto h-(--ui-header-height) flex items-center justify-center py-2">
+          <NuxtImg
+            loading="eager"
+            src="/images/landing-page/rovel-new-logo.svg"
+            width="100"
+            height="100"
+            alt="Rovelsub point header logo"
+            class="w-auto h-20 mx-auto"
+          />
+        </div>
+        <!-- Show a smaller logo when the sidebar is collapsed -->
+        <div v-else class="w-auto flex items-center justify-center">
+          <NuxtImg
+            loading="eager"
+            src="/images/landing-page/rovel-new-logo.svg"
+            width="100"
+            height="100"
+            alt="Rovelsub point header logo"
+            class="w-auto h-6 mx-auto"
+          />
+        </div>
+      </template>
+      <template #default="{ collapsed }">
+        <nav class="font-poppins">
+          <ul>
+            <li v-for="item in items" :key="item.label">
+              <NuxtLink v-if="collapsed" :to="item.to" class="flex gap-2 items-center p-2 text-sm font-medium text-gray-700 truncate">
+                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-5 h-5" />
+              </NuxtLink>
+              <NuxtLink v-else :to="item.to" class="flex gap-2 items-center px-6 p-2 text-sm font-medium text-gray-700 truncate">
+                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-8 h-8" />
+                <span class="text-[20px]">{{ item.label }}</span>
+              </NuxtLink>
+            </li>
+          </ul>
+        </nav>
+      </template>
+
+      <template #footer="{ collapsed }">
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
+      </template>
+    </UDashboardSidebar>
+    <UDashboardPanel resizable class="font-poppins">
+      <template #header>
+        <UDashboardNavbar>
+          <template #title>
+            <span class="text-[16px] md:text-[24px] font-normal">
+              Welcome, <span class="text-[#1177FE] font-bold uppercase">{{ firstName }}</span>
+            </span>
+          </template>
+          <template #leading>
+            <UDashboardSidebarCollapse />
+          </template>
+          <template #right>
+            <div class="gap-3 flex">
+              <UUser
+                :avatar="{
+                  // src: store.userProfile?.avatar_url,
+                  loading: 'lazy',
+                  icon: 'i-lucide-image',
+                }"
+                :ui="{ avatar: 'border border-primary' }"
+              />
+            </div>
+          </template>
+        </UDashboardNavbar>
+      </template>
+
+      <template #body>
+        <slot />
+      </template>
+    </UDashboardPanel>
+  </UDashboardGroup>
+</template>
+
+<style scoped>
+.scroll {
+  scrollbar-width: thin;
+}
+.router-link-active {
+  font-weight: 900;
+  color: #34383D;
+  background-color: #F2FBFF;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background-color: #1177FE;
+  }
+}
+</style>
