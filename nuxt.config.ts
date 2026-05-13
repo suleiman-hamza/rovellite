@@ -2,7 +2,7 @@
 import process from 'node:process'
 
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/google-fonts', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/google-fonts', '@nuxt/fonts', '@nuxt/image', '@pinia/nuxt', '@vueuse/nuxt', 'nuxt-echarts'],
   // configuration for components in pages folders
   pages: {
     pattern: ['**/*.vue', '!**/components/**'],
@@ -115,6 +115,11 @@ export default defineNuxtConfig({
         'maska/vue',
       ],
     },
+  },
+  echarts: {
+    renderer: ['svg', 'canvas'],
+    charts: ['PieChart'],
+    components: ['DatasetComponent', 'GridComponent', 'TooltipComponent'],
   },
 
   eslint: {

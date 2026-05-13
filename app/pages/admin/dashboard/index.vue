@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
+import { useClipboard } from '@vueuse/core'
+import { BarChart } from 'echarts/charts'
+import * as echarts from 'echarts/core'
+
+echarts.use([BarChart])
 
 // import { useProfileStore } from '@/stores/profile'
 
@@ -14,6 +18,23 @@ definePageMeta({
 // const userID = store.userProfile?.user_id
 const source = 'vhehk;ssio' // This would be your referral code or any text you want to copy
 const { copy } = useClipboard({ source, copiedDuring: 3000 })
+
+const option = ref<ECOption>({
+  dataset: {
+    dimensions: ['Product', '2015', '2016', '2017'],
+    source: [
+      {
+        Product: 'Matcha Latte',
+        2015: 54,
+        2016: 42,
+        2017: 23,
+      },
+    ],
+  },
+  xAxis: { type: 'category' },
+  yAxis: {},
+  series: [{ type: 'bar' }],
+})
 </script>
 
 <template>
@@ -65,6 +86,10 @@ const { copy } = useClipboard({ source, copiedDuring: 3000 })
           </h4>
         </div>
       </UPageGrid>
+    </section>
+
+    <section class="border p-4 bg-white">
+      <VChart :option="option" />
     </section>
   </main>
 </template>

@@ -17,14 +17,39 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/dashboard',
   // active: route.path.startsWith()
 }, {
-  label: 'User',
+  label: 'Users',
   icon: '/images/icons/dashboard.svg',
-  to: '/admin/user',
+  to: '/admin/users',
+  // active: route.path.startsWith()
+}, {
+  label: 'Transactions',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/transactions',
   // active: route.path.startsWith()
 }, {
   label: 'Products',
   icon: '/images/icons/dashboard.svg',
   to: '/admin/products',
+  // active: route.path.startsWith()
+}, {
+  label: 'Product Sales',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/product-sales',
+  // active: route.path.startsWith()
+}, {
+  label: 'Report',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/report',
+  // active: route.path.startsWith()
+}, {
+  label: 'Support',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/support',
+  // active: route.path.startsWith()
+}, {
+  label: 'Setings',
+  icon: '/images/icons/dashboard.svg',
+  to: '/admin/settings',
   // active: route.path.startsWith()
 }]
 

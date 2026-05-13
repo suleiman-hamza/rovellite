@@ -48,6 +48,7 @@
     "@vueuse/nuxt": "^14.2.1",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.0.3",
+    "nuxt-echarts": "^1.0.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.5"
