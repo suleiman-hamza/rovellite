@@ -31,7 +31,7 @@ export async function createRovelsubUserWallet(supabase: SupabaseClient<Database
       user_id: validatedUserId,
       balance: 0,
       currency: 'NGN',
-      status: 'Active',
+      status: 'active',
     }
 
     const { data, error } = await supabase

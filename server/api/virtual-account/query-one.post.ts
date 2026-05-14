@@ -1,5 +1,5 @@
 import { apiResponse, isSuccessResponse } from '#server/utils/api-response'
-import { queryPalmPayVirtualAccount } from '#server/utils/query-virtual-account'
+import { queryPalmPayVirtualAccount } from '#server/utils/virtual-account/query'
 import { z } from 'zod'
 
 const queryVaSchema = z.object({

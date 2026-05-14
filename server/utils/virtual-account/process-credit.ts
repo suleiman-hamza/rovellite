@@ -3,8 +3,8 @@ import type {
   CreditWalletWithTransactionArgs,
   VirtualAccountCreditParams,
   VirtualAccountCreditResult,
-} from '../../types/supabase'
-import type { Database } from '../../types/supabase-schema'
+} from '../../../types/supabase'
+import type { Database } from '../../../types/supabase-schema'
 
 export async function processVirtualAccountCredit(
   supabase: SupabaseClient<Database>,
@@ -44,7 +44,7 @@ export async function processVirtualAccountCredit(
 
   const wallet = walletData as { id: string, status: string }
 
-  if (wallet.status !== 'Active') {
+  if (wallet.status !== 'active') {
     console.warn(JSON.stringify({ level: 'warn', service: 'webhook-credit', event: 'wallet_inactive', userId: virtualAccount.user_id }))
     return { success: false, message: 'Wallet is not active', statusCode: 400 }
   }

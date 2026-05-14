@@ -1,8 +1,8 @@
-import type { VirtualAccountQueryPayload, VirtualAccountQueryResponse } from '../../types/palmpay'
-import { apiResponse } from '#server/utils/api-response'
-import { palmPayRequest } from '#server/utils/palmpay-client'
+import type { VirtualAccountQueryPayload, VirtualAccountQueryResponse } from '../../../types/palmpay'
 import { z } from 'zod'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import { apiResponse } from '../api-response'
+import { handleUtilityError } from '../error-handler'
+import { palmPayRequest } from '../palmpay/client'
 
 const querySchema = z.object({
   virtualAccountNo: z.string().min(1, 'virtualAccountNo is required'),

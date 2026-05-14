@@ -1,26 +1,22 @@
-import type { ProfileInsert, UserRole } from '../../../types/supabase'
 import { apiResponse } from '#server/utils/api-response'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
-import { createRovelsubUserWallet } from '#server/utils/wallet'
 import admin from 'firebase-admin'
 import {
-  createError,
   defineEventHandler,
   getHeader,
   readBody,
   setCookie,
 } from 'h3'
 import { z } from 'zod'
+import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const syncUserSchema = z.object({
-  email: z.email().optional(),
-  name: z.string({ message: 'Name required' })
-    .min(8, 'Name must be at least 8 characters long')
+  email: z.email(),
+  name: z.string()
+    .min(4, 'Name must be at least 4 characters long')
     .max(30, 'Name must be at most 30 characters long')
-    .regex(/^[a-z ]+$/i, 'Name can only contain letters and spaces')
-    .trim()
-    .toLowerCase(),
-  role: z.enum(['user', 'admin']).default('user'),
+    .regex(/^[a-z ]+$/i, 'Name can only contain letters and space ')
+    .trim(),
   avatar_url: z.url().optional(),
   phone: z.string().optional(),
   bio: z.string().optional(),
@@ -46,37 +42,26 @@ export default defineEventHandler(async (event) => {
     const rawBody = await readBody(event)
     const body = syncUserSchema.parse(rawBody || {})
 
-    const profilePayload: ProfileInsert = {
-      user_id: decodedToken.uid,
-      email: decodedToken.email!,
-      role: (body.role || 'user') as UserRole,
-      full_name: body.name,
-      avatar_url: body.avatar_url,
-      phone: body.phone,
-      bio: body.bio,
-      location: body.location,
-      verified: false,
-      referred_by: body.referredBy,
-      status: 'active',
-    }
-
     // Upsert into Supabase profiles table
-    const { data: profile, error: dbError } = await adminSupabase
-      .from('profiles')
-      .upsert(profilePayload, { onConflict: 'user_id' })
-      .select()
-      .single()
+    const { data: profile, error: rpcError } = await adminSupabase.rpc('sync_profile_with_wallet', {
+      p_user_id: decodedToken.uid,
+      p_email: decodedToken.email!,
+      p_full_name: body.name,
+      p_avatar_url: body.avatar_url,
+      p_phone: body.phone,
+      p_bio: body.bio,
+      p_location: body.location,
+      p_referred_by: body.referredBy,
+      p_role: 'user',
+      p_verified: false,
+      p_wallet_balance: 0,
+      p_wallet_currency: 'NGN',
+      p_wallet_status: 'active',
+    })
 
-    if (dbError) {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Database sync failed',
-        data: { message: dbError.message },
-      })
+    if (rpcError) {
+      return apiResponse.error(rpcError.message, 500)
     }
-
-    // Ensure user has a wallet
-    await createRovelsubUserWallet(adminSupabase, decodedToken.uid)
 
     // Generate Firebase Session Cookie (14 days)
     const expiresIn = 60 * 60 * 24 * 14 * 1000
@@ -94,13 +79,8 @@ export default defineEventHandler(async (event) => {
       profile,
     }, 'User profile and wallet synced successfully')
   }
-  catch (err: any) {
-    console.error('[sync-user] Error:', err)
-
-    if (err?.code === 'auth/id-token-expired' || err?.code === 'auth/invalid-id-token') {
-      return apiResponse.error('Invalid or expired token', 401)
-    }
-
-    return apiResponse.error('Sync failed', 500)
+  catch (error: any) {
+    console.error('[sync-user] Error:', error)
+    return handleUtilityError(error, 'Failed to sync user profile')
   }
 })

@@ -1,5 +1,5 @@
-import { queryPalmPayVirtualAccount } from '#server/utils/query-virtual-account'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { queryPalmPayVirtualAccount } from '#server/utils/virtual-account/query'
 import { z } from 'zod'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 

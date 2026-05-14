@@ -36,6 +36,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     const firebaseUser = await signUp(
       event.data.email,
       event.data.password,
+      event.data.username,
     )
 
     await updateProfile(firebaseUser, { displayName: event.data.username })
