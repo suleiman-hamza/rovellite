@@ -56,17 +56,22 @@ const items = [{
 
 // const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
 const userID = store.userProfile?.user_id
-const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
-  'virtual-account',
-  () => $fetch(`/api/virtual-account/${userID}`),
-)
+
+// const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
+
+const { data: virtualAccountDetails, status, error: VAerror } = await useFetch<VirtualAccountResponse>(`/api/virtual-account/${userID}`, {
+  key: 'virtual-account',
+})
 
 if (VAerror.value) {
   console.error('Error fetching virtual account:', VAerror.value)
 }
+// else {
+//   virtualAccountDetails.value = VA.value as VirtualAccountResponse
+// }
 
 // what to copy to clipboard, in this case, the user's virtual account number
-const source = virtualAccountDetails.value?.data.virtual_account_no || ''
+const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')
@@ -157,7 +162,7 @@ async function createWallet() {
 
       <!-- show create wallet option for users without a wallet -->
       <div v-else class="flex flex-row items-center gap-4 justify-between p-4 pt-5 sm:px-6">
-        <p class="font-semibold md:font-bold text-white text-[14px] md:text-[24px] mb-2">
+        <p class="font-semibold md:font-bold text-white text-[14px] md:text-[24px]">
           You have no wallet
         </p>
         <UButton class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
@@ -225,7 +230,7 @@ async function createWallet() {
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>
-          <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
+          <h4 class="text-[#565252] text-[12px] md:text-[16px] md:tracking-[5%]">
             Referal Bonus
           </h4>
         </div>
@@ -233,15 +238,15 @@ async function createWallet() {
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             0
           </h3>
-          <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
+          <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
             Total Referrals
           </h4>
         </div>
         <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
           <span>
-            <NuxtImg src="images/dashboard/giftboxblue.svg" alt="Withdraw earnings" class="text-primary" />
+            <NuxtImg src="images/dashboard/giftboxblue.svg" alt="Withdraw earnings" class="text-primary w-6 h-6" />
           </span>
-          <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
+          <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
             Withdraw Earning
           </h4>
         </div>

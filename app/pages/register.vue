@@ -118,7 +118,7 @@ function displayError(error: any) {
         </UFormField>
 
         <UFormField label="Phone Number" name="phoneNumber" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UFieldGroup>
+          <UFieldGroup class="w-full">
             <USelectMenu
               v-model="countryCode"
               :items="phoneCodes"
@@ -183,7 +183,7 @@ function displayError(error: any) {
           <UInput v-model="state.password" type="password" size="xl" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
-        <UFormField label="Refferal Code" name="refferal" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+        <UFormField label="Referral Code" hint="Optional" name="refferal" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
           <UInput v-model="state.refferalCode" size="xl" placeholder="xyz123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 

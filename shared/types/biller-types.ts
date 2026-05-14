@@ -16,7 +16,7 @@ export interface BillerResponse {
   status: string
   message: string
   responseCode: string
-  responseData: Biller[]
+  responseData: Biller[] | Package[]
 }
 
 export interface Package {

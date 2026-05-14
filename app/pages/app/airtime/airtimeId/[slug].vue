@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { useCartStore } from '#imports'
 import { z } from 'zod'
 
 const { getUser } = useAuth()
+const cartStore = useCartStore()
 const route = useRoute()
 const toast = useToast()
 
@@ -33,7 +35,7 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
   })
 }
 
-const { data: airtimeResult, error: fetcherror, refresh, status } = await useLazyFetch(`/api/data/${route.params.id}`, {
+const { data: airtimeResult, error: fetcherror, refresh, status } = await useLazyFetch(`/api/airtime/${route.params.slug}`, {
   key: 'airtime-plan-details',
   immediate: !!getUser(),
   watch: false,
@@ -48,25 +50,62 @@ const { data: airtimeResult, error: fetcherror, refresh, status } = await useLaz
 //   }, { immediate: true })
 // }
 
-// loading state for add to cart button
-const loading = ref(false)
+const airtimeInfo = computed(() => {
+  // 1. Guard against null or empty data
+  if (!airtimeResult.value || !airtimeResult.value.airtimeplan?.length) {
+    return null
+  }
 
-// Simulate adding to cart with a loading state
-function addToCart() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    toast.add({
-      title: 'Added to Cart',
-      description: 'The item has been added to your cart.',
-    })
-  }, 2000)
+  // 2. Reference the first plan in the array
+  const plan = airtimeResult.value.airtimeplan[0]
+
+  return {
+    id: plan?.id,
+    billerId: plan?.billerId,
+    productName: plan?.name, // "AIRTEL VTU"
+  }
+})
+
+function cart() {
+  // Map the scattered data to your CartItemType
+  cartStore.addToCart({
+    productName: airtimeInfo.value?.productName as string,
+    productId: airtimeInfo.value?.id as number,
+    amount: Number(state.amount), // Safer than parsing the state.price string
+    billerId: airtimeInfo.value?.billerId as number, // Fallback if slug isn't a number
+    customerReference: state.phoneNumber as string,
+    image: airtimeResult.value?.image, // Add if you have it in decodeInfo
+  })
+
+  // 4. Success Toast
+  toast.add({
+    title: 'Success',
+    description: `${airtimeInfo.value?.productName} added to cart`,
+    icon: 'i-lucide-check',
+  })
 }
+
+// loading state for add to cart button
+// const loading = ref(false)
+
+// function onSubmit(event: FormSubmitEvent<Schema>) {
+//   loading.value = true
+//   try {
+//     const { data, error } = await useFetch('/api/coral-pay/customer-enquiry/customer', {
+//       method: 'POST',
+//       body: {
+//         customerId: event.data.phoneNumber,
+//         productName: ,
+//         billerSlug: route.params.slug,
+//       },
+//     })
+//   }
+// }
 </script>
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/airtime" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/airtime" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex text-primary" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
@@ -82,7 +121,7 @@ function addToCart() {
       <!-- blue banner/ header -->
       <div class="rounded-t-[20px] flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/airtime" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <UButton icon="i-lucide-arrow-left" to="/app/airtime" variant="outline" class="md:hidden text-primary" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
           <span class="rounded-full bg-white p-0.5 overflow-hidden">
             <NuxtImg :src="airtimeResult?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
@@ -108,7 +147,7 @@ function addToCart() {
               </UFormField>
 
               <div class="flex gap-4 px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   Add to Cart
                 </UButton>
                 <UButton

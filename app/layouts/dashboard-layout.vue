@@ -2,8 +2,9 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 // import type { VirtualAccountResponse } from '../../types/palmpay'
 
+import { useCartStore } from '#imports' // cart store
 import { useAuth } from '@/composables/use-auth'
-import { useProfileStore } from '@/stores/profile'
+import { useProfileStore } from '@/stores/profile' // profile store
 
 const toast = useToast()
 const route = useRoute()
@@ -11,6 +12,7 @@ const route = useRoute()
 const { signOutUser } = useAuth()
 
 const store = useProfileStore()
+const cartStore = useCartStore()
 
 const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
@@ -68,9 +70,9 @@ const items: NavigationMenuItem[] = [{
   to: '/app/solarSystem',
   active: route.path.startsWith('/app/solarSystem'),
 }, {
-  label: 'Fund wallet',
+  label: 'FundingHistory',
   icon: '/images/icons/fundwallet.svg',
-  to: '/app/fundWallet',
+  to: '/app/fundingHistory',
   active: route.path.startsWith('/app/fundWallet'),
 }, {
   label: 'Transactions',
@@ -105,6 +107,15 @@ async function logOut() {
     loading.value = false
   }
 }
+
+const fullName = store.userProfile?.full_name as string
+
+// Trim whitespace and split
+const parts = fullName?.trim().split(' ')
+
+// Extract first name and join the rest as the last name
+const firstName = parts[0]
+// const lastName = parts.slice(1).join(" ");
 </script>
 
 <template>
@@ -157,49 +168,29 @@ async function logOut() {
       <template #header>
         <UDashboardNavbar>
           <template #title>
-            <span class="text-[16px] md:text-[24px] text-[#1177FE] font-normal">
-              Welcome Back, <span class="font-bold uppercase">{{ store.userProfile?.full_name }}</span>
+            <span class="text-[16px] md:text-[24px] font-normal">
+              Welcome, <span class="text-[#1177FE] font-bold uppercase">{{ firstName }}</span>
             </span>
           </template>
           <template #leading>
             <UDashboardSidebarCollapse />
           </template>
           <template #right>
-            <div class="sm:flex gap-3 hidden">
-              <UPopover
-                arrow
-                :content="{
-                  align: 'center',
-                  side: 'bottom',
-                  sideOffset: 8,
-                }"
-              >
-                <UChip :text="5" color="error" inset size="3xl">
-                  <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-                </UChip>
-
-                <template #content>
-                  <UEmpty title="No Notification found" />
-                </template>
-              </UPopover>
-              <!-- <UChip :text="5" color="error" inset size="3xl">
-                <UButton icon="i-lucide-mail" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-              </UChip> -->
-              <UButton icon="i-lucide-shopping-cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155]' }">
-                <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
-              </UButton>
+            <div class="gap-3 flex">
+              <UChip size="3xl" color="error" :text="cartStore.cartItemCount > 0 ? cartStore.cartItemCount : undefined">
+                <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
+                  <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
+                </UButton>
+              </UChip>
               <UUser
-                :name="store.userProfile?.full_name" :avatar="{
-                  src: store.userProfile?.avatar_url,
+                :avatar="{
+                  // src: store.userProfile?.avatar_url,
                   loading: 'lazy',
                   icon: 'i-lucide-image',
                 }"
                 :ui="{ avatar: 'border border-primary' }"
               />
             </div>
-            <UChip :text="5" color="error" inset size="3xl" class="sm:hidden">
-              <UButton icon="i-lucide-bell" size="md" color="primary" variant="ghost" :ui="{ leadingIcon: 'text-[#4D5155]' }" />
-            </UChip>
           </template>
         </UDashboardNavbar>
       </template>

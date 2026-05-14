@@ -31,7 +31,7 @@ const { data: betPlatform, error: fetcherror, refresh, status } = await useLazyF
 const formSchema = z.object({
   agent: z.string().min(1, 'Please select a package'),
   id: z.string().min(1, 'Enter a valid Betting Id'),
-  amount: z.string().min(1, 'Please enter an amount'),
+  amount: z.string().min(3, 'Please enter an amount'),
 })
 
 type Schema = z.output<typeof formSchema>
@@ -42,13 +42,42 @@ const state = reactive<Partial<Schema>>({
   amount: '',
 })
 
-function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.warn('Form submitted with values:', event.data)
-  toast.add({
-    title: 'Form Submitted',
-    description: `Package Selected: ${event.data.agent}, User ID: ${event.data.id}, Amount: ${event.data.amount}`,
-    duration: 4000,
-  })
+const loadspinner = ref(false)
+
+async function onSubmit(event: FormSubmitEvent<Schema>) {
+  loadspinner.value = true
+  try {
+    const { data, error } = await useFetch('/api/coral-pay/customer-enquiry/customer', {
+      method: 'POST',
+      body: {
+        customerId: event.data.id,
+        productName: event.data.agent,
+        billerId: route.params.id,
+      },
+    })
+
+    if (error.value) {
+      toast.add({
+        title: 'Failed to create account number',
+      })
+      console.warn(error.value)
+    }
+    else if (data.value) {
+      toast.add({
+        title: 'Succesfully ran customer enquiry',
+      })
+    }
+  }
+  catch (error: any) {
+    throw createError(error)
+  }
+  finally {
+    // state.decoderNumber = ''
+    state.agent = ''
+    state.amount = ''
+    state.id = ''
+    loadspinner.value = false
+  }
 }
 
 const selectPlan = computed(() => {
@@ -56,7 +85,10 @@ const selectPlan = computed(() => {
     return []
   }
   return betPlatform.value.bettinPlan.map((plan) => {
-    return plan.name
+    return {
+      label: plan.name,
+      id: plan.id,
+    }
   })
 })
 
@@ -78,7 +110,7 @@ function addToCart() {
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/betting" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/betting" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex text-primary" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
@@ -93,7 +125,7 @@ function addToCart() {
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/betting" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <UButton icon="i-lucide-arrow-left" to="/app/betting" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
           <span class="rounded-full bg-white p-0.5 overflow-hidden">
             <NuxtImg :src="betPlatform?.image" class="object-contain w-16 h-16 md:w-24 md:h-24" />
           </span>
@@ -108,7 +140,7 @@ function addToCart() {
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
               <UFormField name="agent">
-                <USelect v-model="state.agent" placeholder="Choose Wallet" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+                <USelect v-model="state.agent" placeholder="Choose Wallet" value-key="label" label-key="label" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <UFormField name="id">
@@ -138,6 +170,7 @@ function addToCart() {
                 </UButton>
                 <UButton
                   type="submit"
+                  :loading="loadspinner"
                   class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
                 >
                   Checkout

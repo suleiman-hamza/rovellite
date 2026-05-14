@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
   const DataBiller = await $fetch('/api/data')
 
-  // filter the betting provider from the list of all providers to get the image and name
+  // filter the data provider from the list of all providers to get the image and name
   const filter = DataBiller.find((provider) => {
     return provider.id === id
   })

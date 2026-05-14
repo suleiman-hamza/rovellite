@@ -78,7 +78,7 @@ const selectPlan = computed(() => {
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="absolute top-4 left-4 hidden md:inline-flex" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
     </div>
@@ -92,7 +92,7 @@ const selectPlan = computed(() => {
       <!-- blue banner/ header -->
       <div class="rounded-t-lg flex justify-start md:justify-center gap-4 md:gap-8 h-24 sm:h-40 items-center p-4 md:px-6 bg-[#DBF4FF] w-full">
         <div class="flex gap-4 md:gap-8 items-center">
-          <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-secondary hover:bg-primary/25' }" />
+          <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
           <span class="">
             <NuxtImg :src="discoSlug?.image" class="object-contain w-16 h-auto md:w-24 md:h-auto" />
           </span>

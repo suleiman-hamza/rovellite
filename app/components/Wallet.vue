@@ -61,11 +61,11 @@ const isAmountVisible = ref(true)
 // const balance = ref(12550.50)
 
 const displayedBalance = computed((): string => {
-  if (isAmountVisible.value) {
+  if (isAmountVisible.value && walletData?.value?.success) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
-    }).format(walletData.value.data.balance)
+    }).format(walletData?.value?.data.balance)
   }
   return '••••'
 })
@@ -133,15 +133,16 @@ function toggleAmountVisibility() {
     </section>
     <!-- desktop view -->
     <section class="hidden sm:block">
-      <UPageGrid class="bg-[#1177FE] p-5 md:px-7.5 rounded-[20px] gap-4">
+      <UPageGrid class="bg-[#1177FE] p-5 rounded-[20px] gap-4">
         <UPageCard
           v-for="(card, index) in cards"
           :key="index"
-          :ui="{ container: 'p-0 sm:p-0' }"
+          class="bg-white rounded-[20px] px-2 py-3.5"
+          :ui="{ container: 'p-0 sm:p-0 rounded-[20px]' }"
         >
           <template #default>
-            <div class="bg-white p-4 px-2  rounded-[20px]">
-              <div class="flex gap-2 items-center">
+            <div class="rounded-[20px]">
+              <div class="flex gap-2 items-center relative">
                 <span :class="card.bgColor" class="p-2.5 rounded-[8px]">
                   <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
                 </span>
@@ -154,8 +155,8 @@ function toggleAmountVisibility() {
                   </h3>
                 </div>
                 <!-- wallet actions show or hide balance -->
-                <div class="p-1 ml-auto">
-                  <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
+                <div class="absolute top-2 right-0 p-0.5 h-fit">
+                  <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-1.5 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
                     <UIcon v-if="isAmountVisible" name="i-lucide-eye" class="bg-[#34383D] size-5" />
                     <UIcon v-else name="i-lucide-eye-off" class="bg-[#34383D] size-5" />
                   </UButton>
