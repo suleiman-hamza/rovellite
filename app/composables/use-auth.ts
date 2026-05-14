@@ -16,7 +16,7 @@ export function useAuth() {
   const error = ref<string | null>(null)
 
   // Handle user sign up
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, name?: string) => {
     loading.value = true
 
     try {
@@ -36,7 +36,7 @@ export function useAuth() {
         },
         body: {
           email: userCredential.user.email || email,
-          name: userCredential.user.displayName || '',
+          name: userCredential.user.displayName || name || 'New User',
         },
       })
 
@@ -48,9 +48,9 @@ export function useAuth() {
 
       return userCredential.user
     }
-    catch (error: any) {
-      error.value = error.message
-      throw error
+    catch (err: any) {
+      error.value = err.message
+      throw err
     }
     finally {
       loading.value = false
@@ -116,9 +116,9 @@ export function useAuth() {
         return result
       }
     }
-    catch (error: any) {
-      error.value = error.message
-      throw error
+    catch (err: any) {
+      error.value = err.message
+      throw err
     }
     finally {
       loading.value = false

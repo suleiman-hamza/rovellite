@@ -1,8 +1,8 @@
 import type {
   PalmPayResponse,
-} from '../../types/palmpay'
+} from '../../../types/palmpay'
 import crypto from 'node:crypto'
-import { generatePalmPaySignature } from './palmpay-sign'
+import { generatePalmPaySignature } from './sign'
 
 // ─── Custom Error for non-retryable PalmPay client errors ────────────
 class PalmPayClientError extends Error {

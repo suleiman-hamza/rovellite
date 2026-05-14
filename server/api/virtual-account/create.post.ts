@@ -1,5 +1,5 @@
-import { createVirtualAccount } from '#server/utils/create-virtual-account'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { createVirtualAccount } from '#server/utils/virtual-account/create'
 import { z } from 'zod'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 

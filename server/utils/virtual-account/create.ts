@@ -1,10 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { VirtualAccountCreatePayload, VirtualAccountCreateResponse } from '../../types/palmpay'
-import type { VirtualAccountInsert } from '../../types/supabase'
-import type { Database } from '../../types/supabase-schema'
-import { apiResponse } from '#server/utils/api-response'
-import { palmPayRequest } from '#server/utils/palmpay-client'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import type { VirtualAccountCreatePayload, VirtualAccountCreateResponse } from '../../../types/palmpay'
+import type { VirtualAccountInsert } from '../../../types/supabase'
+import type { Database } from '../../../types/supabase-schema'
+import { apiResponse } from '../api-response'
+import { handleUtilityError } from '../error-handler'
+import { palmPayRequest } from '../palmpay/client'
 
 export async function createVirtualAccount(supabase: SupabaseClient<Database>, input: { userId: string }) {
   const { userId } = input
@@ -48,8 +48,8 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
       customerName: profile.full_name || 'Unknown User',
       email: profile.email || 'noemail@example.com',
       virtualAccountName: `RovelSubPoint-${profile.full_name || 'User'}-${Date.now()}`,
-      identityType: 'company',
-      licenseNumber: 'dasd141234114123',
+      identityType: 'personal_nin',
+      licenseNumber: '12345678901',
     }
 
     // Call PalmPay

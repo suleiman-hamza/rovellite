@@ -1,10 +1,10 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { VirtualAccountUpdatePayload } from '../../types/palmpay'
-import type { VirtualAccountUpdate } from '../../types/supabase'
-import type { Database } from '../../types/supabase-schema'
-import { apiResponse } from '#server/utils/api-response'
-import { palmPayRequest } from '#server/utils/palmpay-client'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import type { VirtualAccountUpdatePayload } from '../../../types/palmpay'
+import type { VirtualAccountUpdate } from '../../../types/supabase'
+import type { Database } from '../../../types/supabase-schema'
+import { apiResponse } from '../api-response'
+import { handleUtilityError } from '../error-handler'
+import { palmPayRequest } from '../palmpay/client'
 
 export async function updateVirtualAccountStatus(supabase: SupabaseClient<Database>, input: {
   virtualAccountNo: string

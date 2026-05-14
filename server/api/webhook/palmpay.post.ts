@@ -1,52 +1,59 @@
 import { apiResponse } from '#server/utils/api-response'
-import { verifyPalmpaySignature } from '#server/utils/palmpay-sign'
-import { palmpayWebhookSchema } from '#server/utils/palmpay-webhook-schema'
-import { processVirtualAccountCredit } from '#server/utils/process-virtual-account-credit'
+import { verifyPalmpaySignature } from '#server/utils/palmpay/sign'
+import { palmpayWebhookSchema } from '#server/utils/palmpay/webhook-schema'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
+import { processVirtualAccountCredit } from '#server/utils/virtual-account/process-credit'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
     const config = useRuntimeConfig()
-    const { palmpayPrivateKey } = config
+    const { palmpayPublicKey } = config
 
-    if (!palmpayPrivateKey) {
-      return apiResponse.error('Server configuration error', 500)
+    if (!palmpayPublicKey) {
+      return apiResponse.error('Server configuration error: PalmPay public key missing', 500)
     }
 
-    // Signature Verification
-    const signatureCheck = verifyPalmpaySignature(event, body, palmpayPrivateKey)
+    // Log raw body in development for debugging actual PalmPay payload shape
+    // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {
+    //   console.warn('[PalmPay Webhook] Raw body:', JSON.stringify(body, null, 2))
+    // }
+
+    // Signature Verification (uses public key + body.sign field)
+    const signatureCheck = verifyPalmpaySignature(event, body, palmpayPublicKey)
 
     if (!signatureCheck.isValid) {
+      // console.warn('[PalmPay Signature] ❌ Verification failed')
       return apiResponse.error(signatureCheck.error ?? 'Invalid signature', 401)
     }
 
+    // console.warn('[PalmPay Signature] ✅ Signature verified successfully')
+
     // validate payload
     const validated = palmpayWebhookSchema.parse(body)
-    const { data } = validated
+    const { virtualAccountNo, amount, reference, description, rawPayload } = validated
 
-    const virtualAccountNo = data.virtualAccountNo
-    const amountNum = data.amount
-    const reference = validated.reference
-    const description = validated.description
+    // console.warn(`[PalmPay Webhook] Processing credit → VA: ${virtualAccountNo}, Amount: ${amount}, Ref: ${reference}`)
 
     const adminSupabase = createAdminSupabaseClient()
 
     const result = await processVirtualAccountCredit(adminSupabase, {
       virtualAccountNo,
-      amount: amountNum,
+      amount,
       reference,
       description,
-      metadata: data,
+      metadata: rawPayload,
     })
 
     if (!result.success) {
       return apiResponse.error(result.message, result.statusCode || 500)
     }
 
+    // console.warn(`[PalmPay Webhook] ✅ Success → Ref: ${reference}, Amount: ${amount}`)
+
     return apiResponse.success(
-      { reference, amount: amountNum },
+      { reference, amount },
       'SUCCESS',
     )
   }

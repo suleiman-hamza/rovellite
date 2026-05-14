@@ -105,6 +105,9 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-15',
   vite: {
+    server: {
+      allowedHosts: ['handful-hangup-crushing.ngrok-free.dev'],
+    },
     optimizeDeps: {
       include: [
         'embla-carousel-vue',
@@ -116,7 +119,6 @@ export default defineNuxtConfig({
       ],
     },
   },
-
   eslint: {
     config: {
       standalone: false,

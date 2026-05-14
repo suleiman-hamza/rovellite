@@ -12,8 +12,13 @@ export const useProfileStore = defineStore('profile', () => {
   const userProfile = ref<Profile | null>(null)
   const loading = ref(false)
 
+  let supabaseClient: ReturnType<typeof createClient<Database>> | null = null
+
   // Handle get supabase client
   const getSupabaseClient = () => {
+    if (supabaseClient)
+      return supabaseClient
+
     const url = config.public.supabaseUrl
     const key = config.public.supabaseAnonKey
 
@@ -21,7 +26,8 @@ export const useProfileStore = defineStore('profile', () => {
       throw new Error('Missing Supabase config in runtimeConfig')
     }
 
-    return createClient<Database>(url, key)
+    supabaseClient = createClient<Database>(url, key)
+    return supabaseClient
   }
 
   const showError = (err: unknown) => {

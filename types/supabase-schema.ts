@@ -204,7 +204,7 @@ export interface Database {
           created_at: string
           currency: string
           id: string
-          status: string
+          status: Database['public']['Enums']['user_status']
           updated_at: string
           user_id: string
         }
@@ -213,7 +213,7 @@ export interface Database {
           created_at?: string
           currency?: string
           id?: string
-          status?: string
+          status?: Database['public']['Enums']['user_status']
           updated_at?: string
           user_id: string
         }
@@ -222,7 +222,7 @@ export interface Database {
           created_at?: string
           currency?: string
           id?: string
-          status?: string
+          status?: Database['public']['Enums']['user_status']
           updated_at?: string
           user_id?: string
         }
@@ -256,6 +256,46 @@ export interface Database {
       increment_balance: {
         Args: { p_amount: number, p_user_id: string }
         Returns: number
+      }
+      introspect_user_tables: { Args: never, Returns: Json }
+      sync_profile_with_wallet: {
+        Args: {
+          p_avatar_url?: string
+          p_bio?: string
+          p_email: string
+          p_full_name: string
+          p_location?: string
+          p_phone?: string
+          p_profile_status?: Database['public']['Enums']['user_status']
+          p_referred_by?: string
+          p_role?: Database['public']['Enums']['user_role']
+          p_user_id: string
+          p_verified?: boolean
+          p_wallet_balance?: number
+          p_wallet_currency?: string
+          p_wallet_status?: Database['public']['Enums']['user_status']
+        }
+        Returns: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          email: string
+          full_name: string
+          location: string | null
+          phone: string | null
+          referred_by: string | null
+          role: Database['public']['Enums']['user_role']
+          status: Database['public']['Enums']['user_status']
+          updated_at: string
+          user_id: string
+          verified: boolean
+        }
+        SetofOptions: {
+          from: '*'
+          to: 'profiles'
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {
