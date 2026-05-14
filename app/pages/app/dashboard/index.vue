@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
+// import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
+const toast = useToast()
 
 definePageMeta({
   middleware: ['auth'],
+  keepalive: true,
 })
 
 const items = [{
@@ -52,41 +54,38 @@ const items = [{
   to: '/app/solarSystem',
 }]
 
-const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
-
-const { data: VA, status, error: VAerror } = await useAsyncData(
+// const virtualAccountDetails = ref<VirtualAccountResponse | null>(null)
+const userID = store.userProfile?.user_id
+const { data: virtualAccountDetails, status, error: VAerror } = await useAsyncData<VirtualAccountResponse>(
   'virtual-account',
-  () => $fetch(`/api/virtual-account/${store.userProfile?.user_id}`),
+  () => $fetch(`/api/virtual-account/${userID}`),
 )
 
 if (VAerror.value) {
   console.error('Error fetching virtual account:', VAerror.value)
 }
-else {
-  virtualAccountDetails.value = VA.value as VirtualAccountResponse
-}
 
 // what to copy to clipboard, in this case, the user's virtual account number
-const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
+const source = virtualAccountDetails.value?.data.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
 const refferalCode = ref('vvshsiahehk;ssio')
 const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
-const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
-const isDesktop = useMediaQuery('(min-width: 768px)')
+// const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
+// const isDesktop = useMediaQuery('(min-width: 768px)')
 
-const open = ref(false)
+// const open = ref(false)
 
-const state = reactive({
-  email: undefined,
-  fullname: undefined,
-  bvn: undefined,
-})
+// const state = reactive({
+//   email: undefined,
+//   fullname: undefined,
+//   bvn: undefined,
+// })
 
-const title = 'Create Wallet'
-const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
+// const title = 'Create Wallet'
+// const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
 
 async function createWallet() {
   loading.value = true
@@ -98,10 +97,16 @@ async function createWallet() {
       },
     })
     if (!response.success) {
-      console.error('Error creating wallet:', response.message)
+      toast.add({
+        title: 'Failed to create account number',
+        description: response.message,
+      })
     }
     else {
-      console.warn('Wallet created successfully')
+      toast.add({
+        title: 'Account Created Succesfully',
+      })
+      await refreshNuxtData('virtual-account') // the key passed is set when fetching VaAccount with useAsyncData()
     }
   }
   catch (error) {
@@ -111,6 +116,10 @@ async function createWallet() {
     loading.value = false
   }
 }
+
+// const { data: walletData, error: walletError } = await useFetch('/api/wallet', {
+//   query: { userId: store.userProfile?.user_id },
+// })
 </script>
 
 <template>
@@ -144,15 +153,18 @@ async function createWallet() {
         <p class="tracking-[2%] text-[12px] md:text-[20px] leading-[150%] font-normal">
           Transfer to Fund wallet. #50 charge applies
         </p>
-        <!-- <p>{{ virtualAccountDetails?.data }}</p> -->
       </div>
 
       <!-- show create wallet option for users without a wallet -->
-      <div v-else class="flex md:flex-row flex-col items-center justify-between p-4 pt-5 sm:px-6">
-        <p class="font-bold text-[18px] md:text-[24px] mb-2">
+      <div v-else class="flex flex-row items-center gap-4 justify-between p-4 pt-5 sm:px-6">
+        <p class="font-semibold md:font-bold text-white text-[14px] md:text-[24px] mb-2">
           You have no wallet
         </p>
-        <DefineFormTemplate>
+        <UButton class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
+          <span v-if="loading">Processing</span>
+          <span v-else>Create Wallet</span>
+        </UButton>
+        <!-- <DefineFormTemplate>
           <UForm :state="state" class="space-y-4">
             <UFormField label="Full Name" name="fullname" required>
               <UInput v-model="state.fullname" placeholder="John Doe" required />
@@ -163,10 +175,11 @@ async function createWallet() {
 
             <UButton label="Submit" :loading :disabled="loading" type="submit" />
           </UForm>
-        </DefineFormTemplate>
+        </DefineFormTemplate> -->
 
-        <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
-          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+        <!-- create wallet btn for desktop activates modal for validating bvn -->
+        <!-- <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
+          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
           </UButton>
@@ -174,10 +187,11 @@ async function createWallet() {
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UModal>
+        </UModal> -->
 
-        <UDrawer v-else v-model:open="open" :title="title" :description="description">
-          <UButton :loading :disabled="loading" size="lg" class="text-[#1177FE] bg-white text-[16px] md:text-[20px]" :ui="{ label: '', base: 'bg-[#1177FE] px-6' }" @click="createWallet">
+        <!-- create wallet btn for mobile activates drawer for validating bvn -->
+        <!-- <UDrawer v-else v-model:open="open" :title="title" :description="description">
+          <UButton :loading :disabled="loading" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
             <span v-if="loading">Processing</span>
             <span v-else>Create Wallet</span>
           </UButton>
@@ -185,7 +199,7 @@ async function createWallet() {
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UDrawer>
+        </UDrawer> -->
       </div>
     </section>
 
@@ -207,7 +221,7 @@ async function createWallet() {
             <span v-else>Copied!</span>
           </button>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col justify-center items-center p-3">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
           <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
             #20,000
           </h3>
@@ -223,9 +237,9 @@ async function createWallet() {
             Total Referrals
           </h4>
         </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
+        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
           <span>
-            <NuxtImg src="images/icons/lsicon_gift-filledreferals.svg" alt="Withdraw earnings" class="text-primary" />
+            <NuxtImg src="images/dashboard/giftboxblue.svg" alt="Withdraw earnings" class="text-primary" />
           </span>
           <h4 class="text-[#565252] text-[14px] md:text-[16px] text-center md:tracking-[5%]">
             Withdraw Earning
@@ -236,8 +250,8 @@ async function createWallet() {
 
     <section class="mt-4 rounded-[20px]">
       <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] p-3 py-4 sm:px-6 gap-2 md:gap-4 rounded-[20px] grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 truncate">
-          <span class="bg-[#DBF4FF] p-2 px-4 rounded-lg mb-1">
+        <NuxtLink v-for="(item, index) in items" :key="index" :to="item.to" class="border border-[#DBF4FF] hover:border-primary transition-colors rounded-lg flex flex-col justify-center items-center p-4 text-center truncate">
+          <span class="bg-[#DBF4FF] p-2 px-3 rounded-lg mb-1">
             <NuxtImg :src="item.icon" alt="come svg for pool" class="w-6 h-6 md:w-10 md:h-10" />
           </span>
           <h4 class="md:tracking-[5%] text-[12px] md:text-[16px] text-[#676A6D] font-normal truncate text-ellipsis">
@@ -245,6 +259,18 @@ async function createWallet() {
           </h4>
         </NuxtLink>
       </UPageGrid>
+    </section>
+
+    <section class="mt-4 rounded-[20px] bg-white p-3 py-4 sm:px-6 ">
+      <h2 class="text-[#4D5155] mb-2.5 tracking-[2%] text-[20px] font-bold">
+        Recent Transactions
+      </h2>
+      <Transactions />
+      <!-- <h2>Wallet Balance</h2>
+      <pre>{{ walletData }}</pre>
+      <p class="text-red-500">
+        {{ walletError }}
+      </p> -->
     </section>
   </main>
 </template>

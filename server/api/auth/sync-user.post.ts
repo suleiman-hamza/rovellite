@@ -12,11 +12,8 @@ import { handleUtilityError } from '~~/server/utils/error-handler'
 
 const syncUserSchema = z.object({
   email: z.email(),
-  name: z.string()
-    .min(4, 'Name must be at least 4 characters long')
-    .max(30, 'Name must be at most 30 characters long')
-    .regex(/^[a-z ]+$/i, 'Name can only contain letters and space ')
-    .trim(),
+  name: z.string({ message: 'Name required' }),
+  role: z.enum(['user', 'admin']).default('user'),
   avatar_url: z.url().optional(),
   phone: z.string().optional(),
   bio: z.string().optional(),

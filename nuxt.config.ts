@@ -115,6 +115,7 @@ export default defineNuxtConfig({
         'firebase/app',
         'firebase/auth',
         '@supabase/supabase-js',
+        'maska/vue',
       ],
     },
   },

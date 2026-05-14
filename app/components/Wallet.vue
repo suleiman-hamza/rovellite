@@ -29,8 +29,14 @@ watch(
   { immediate: true },
 )
 
+const store = useProfileStore()
+
 // const scrollPrev = () => emblaApi.value?.scrollPrev()
 // const scrollNext = () => emblaApi.value?.scrollNext()
+
+const { data: walletData } = await useFetch('/api/wallet', {
+  query: { userId: store.userProfile?.user_id },
+})
 
 const cards = ref([
   {
@@ -50,15 +56,16 @@ const cards = ref([
   },
 ])
 
+// const { data, error } = useFetch('/api/wallet')
 const isAmountVisible = ref(true)
-const balance = ref(12550.50)
+// const balance = ref(12550.50)
 
-const displayedBalance = computed(() => {
+const displayedBalance = computed((): string => {
   if (isAmountVisible.value) {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'NGN',
-    }).format(balance.value)
+    }).format(walletData.value.data.balance)
   }
   return '••••'
 })
@@ -81,11 +88,11 @@ function toggleAmountVisibility() {
               :ui="{ container: 'p-0 sm:p-0 rounded-none bg-transparent', root: 'ring-0' }"
             >
               <template #default>
-                <div class="bg-white p-4 rounded-[20px]">
+                <div class="bg-white p-3 rounded-[20px]">
                   <div class="flex gap-2.5 items-center">
                     <!-- wallet icon -->
-                    <span :class="card.bgColor" class="p-2.5 rounded-[8px]">
-                      <NuxtImg :src="card.icon" :alt="card.title" class="w-8 h-8" />
+                    <span :class="card.bgColor" class="p-3 rounded-[8px]">
+                      <NuxtImg :src="card.icon" :alt="card.title" class="w-7 h-7" />
                     </span>
                     <!-- wallet balance -->
                     <div class="truncate">
