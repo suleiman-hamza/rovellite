@@ -70,7 +70,7 @@ const items: NavigationMenuItem[] = [{
   to: '/app/solarSystem',
   active: route.path.startsWith('/app/solarSystem'),
 }, {
-  label: 'FundingHistory',
+  label: 'Funding History',
   icon: '/images/icons/fundwallet.svg',
   to: '/app/fundingHistory',
   active: route.path.startsWith('/app/fundWallet'),
@@ -178,8 +178,8 @@ const firstName = parts[0]
           <template #right>
             <div class="gap-3 flex">
               <UChip size="3xl" color="error" :text="cartStore.cartItemCount > 0 ? cartStore.cartItemCount : undefined">
-                <UButton icon="i-lucide-shopping-cart" to="/app/cart" size="lg" class="router-link-active" variant="solid" :ui="{ base: 'bg-[#E6E6E7] text-[#4D5155] p-2' }">
-                  <span class="hidden sm:inline text-[#4D5155] font-semibold text-[16px] tracking-[2%]">My Cart</span>
+                <UButton icon="i-lucide-shopping-cart" to="/app/cart" active active-color="primary" size="lg" active-class="text-white" inactive-class="bg-secondary" class="p-2">
+                  <span class="hidden sm:inline font-semibold text-[16px] tracking-[2%]">My Cart</span>
                 </UButton>
               </UChip>
               <UUser
@@ -221,5 +221,10 @@ const firstName = parts[0]
     width: 8px;
     background-color: #1177FE;
   }
+}
+
+.cart-active.router-link-exact-active {
+  background-color: #3b82f6 !important; /* Example Blue */
+  color: white !important;
 }
 </style>
