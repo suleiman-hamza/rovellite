@@ -1,12 +1,13 @@
 import type { Enums, Json, Tables, TablesInsert, TablesUpdate } from './supabase-schema'
 
 // TABLE ROW TYPES
-
+//
 // profiles table
 export type Profile = Tables<'profiles'>
 export type ProfileInsert = TablesInsert<'profiles'>
 export type ProfileUpdate = TablesUpdate<'profiles'>
 export type UserRole = Enums<'user_role'>
+// export type UserStatus = Enums<'user_status'>
 
 // wallets table
 export type WalletRow = Tables<'wallets'>

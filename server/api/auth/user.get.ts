@@ -1,6 +1,6 @@
-import { createAdminSupabaseClient } from '#server/utils/supabase'
 import admin from 'firebase-admin'
 import { defineEventHandler, getCookie } from 'h3'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 // Endpoint handler for authenticated users
 export default defineEventHandler(async (event) => {

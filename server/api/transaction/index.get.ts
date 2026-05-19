@@ -1,7 +1,7 @@
+import { z } from 'zod'
 import { handleUtilityError } from '#server/utils/error-handler'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { getRovelsubUserTransactions } from '#server/utils/transaction/get-by-user'
-import { z } from 'zod'
 
 const transactionsSchema = z.object({
   userId: z.string().min(1, 'userId is required'),

@@ -40,7 +40,7 @@ export default defineCachedEventHandler(async () => {
   const bettingProviders = await $fetch<BillerResponse>(`/api/coral-pay/biller-group-id/${id}`)
 
   // modify the response to work well with the ui by looping through and adding the image property to each provider based on the slug, using the logos mapping
-  const final: Biller[] = bettingProviders.responseData.map(provider => ({
+  const final: Biller[] = (bettingProviders.responseData as Biller[]).map(provider => ({
     ...provider,
     images: logos[provider.slug?.toLowerCase()] || '/images/betting/default.png',
   }))

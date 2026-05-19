@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { useCartStore } from '#imports'
 import { z } from 'zod'
+import { useCartStore } from '#imports'
 
 const { getUser } = useAuth()
 const cartStore = useCartStore()
