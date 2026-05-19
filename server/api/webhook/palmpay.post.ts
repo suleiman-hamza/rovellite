@@ -1,9 +1,9 @@
+import { handleUtilityError } from '~~/server/utils/error-handler'
 import { apiResponse } from '#server/utils/api-response'
 import { verifyPalmpaySignature } from '#server/utils/palmpay/sign'
 import { palmpayWebhookSchema } from '#server/utils/palmpay/webhook-schema'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { processVirtualAccountCredit } from '#server/utils/virtual-account/process-credit'
-import { handleUtilityError } from '~~/server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   try {

@@ -32,7 +32,7 @@ definePageMeta({
       </div>
     </div>
     <div v-else class="p-4 md:p-5 lg:p-6">
-      <CartItem v-for="items in cartStore.items" :key="items.productId" :product-id="items.productId" :amount="items.amount" :biller-id="items.billerId" :product-name="items.productName" :image="items.image" :customer-reference="items.customerReference" />
+      <CartItem v-for="items in cartStore.items" :key="items.productId" :product-id="items.productId" :amount="items.amount || 0" :biller-id="items.billerId" :product-name="items.productName" :image="items.image" :customer-reference="items.customerReference" />
 
       <!-- should this section show if cart is empty -->
       <div class="mt-5 text-[#565252] font-bold">

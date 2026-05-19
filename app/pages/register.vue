@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { updateProfile } from 'firebase/auth' // firebase update profile
-import * as z from 'zod'
+import type { SignupInput } from '~~/shared/validations/auth'
+import { signupSchema } from '~~/shared/validations/auth'
 
 import { useAuth } from '@/composables/use-auth' // firebase auth store
 import { mapFirebaseError } from '@/utils/firebase-error'
@@ -41,38 +41,25 @@ function onOpen() {
 
 const loading = ref(false)
 
-const schema = z.object({
-  fullname: z.string().min(4, 'Username cannot be less than 4 characters'),
-  email: z.email('Invalid email'),
-  phoneNumber: z.string(),
-  password: z.string('Password is required').min(8, 'Must be at least 8 characters'),
-  refferalCode: z.string(),
-})
-
-type Schema = z.output<typeof schema>
-
-const state = reactive<Partial<Schema>>({
-  fullname: '',
+const state = reactive<Partial<SignupInput>>({
+  full_name: '',
   email: '',
-  phoneNumber: '',
-  refferalCode: '',
+  phone: '',
+  location: 'Nigeria',
+  referralCode: '',
   password: '',
+  confirmPassword: '',
 })
 
 watch(countryCode, () => {
-  state.phoneNumber = ''
+  state.phone = ''
 })
 
-async function onSubmit(event: FormSubmitEvent<Schema>) {
+async function onSubmit(event: FormSubmitEvent<SignupInput>) {
   try {
     loading.value = true
-    const firebaseUser = await signUp(
-      event.data.email,
-      event.data.password,
-      event.data.username,
-    )
+    await signUp(event.data)
 
-    await updateProfile(firebaseUser, { displayName: event.data.fullname })
     toast.add({
       title: 'Registration Successful',
       description: 'You have successfully registered, verify your email to continue.',
@@ -82,7 +69,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   catch (error: any) {
     loading.value = false
-    const message = mapFirebaseError(error)
+    const message = error.statusMessage || mapFirebaseError(error)
     displayError(message)
   }
   finally {
@@ -112,12 +99,12 @@ function displayError(error: any) {
       <h3 class="text-[#1177FE] tracking-[2%] leading-[150%] font-semibold text-[18px] mb-4">
         Create a RovelSub Point Account Today
       </h3>
-      <UForm :schema="schema" :state="state" class="space-y-6 mb-6" @submit="onSubmit">
-        <UFormField label="Full Name" name="fullname" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UInput v-model="state.fullname" size="xl" placeholder="" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+      <UForm :schema="signupSchema" :state="state" class="space-y-6 mb-6" @submit="onSubmit">
+        <UFormField label="Full Name" name="full_name" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UInput v-model="state.full_name" size="xl" placeholder="" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
-        <UFormField label="Phone Number" name="phoneNumber" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+        <UFormField label="Phone Number" name="phone" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
           <UFieldGroup class="w-full">
             <USelectMenu
               v-model="countryCode"
@@ -156,7 +143,7 @@ function displayError(error: any) {
             </USelectMenu>
 
             <UInput
-              v-model="state.phoneNumber"
+              v-model="state.phone"
               v-maska="mask"
               type="tel"
               size="xl"
@@ -183,8 +170,12 @@ function displayError(error: any) {
           <UInput v-model="state.password" type="password" size="xl" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
-        <UFormField label="Referral Code" hint="Optional" name="refferal" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UInput v-model="state.refferalCode" size="xl" placeholder="xyz123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+        <UFormField label="Confirm Password" name="confirmPassword" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UInput v-model="state.confirmPassword" type="password" size="xl" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
+        </UFormField>
+
+        <UFormField label="Referral Code" hint="Optional" name="referralCode" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
+          <UInput v-model="state.referralCode" size="xl" placeholder="xyz123" :ui="{ base: 'rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]' }" class="w-full placeholder:text-[#999999]" />
         </UFormField>
 
         <UButton type="submit" size="lg" :loading class="text-center bg-[#1177FE] rounded-full text-white leading-[150%] text-[16px] w-full tracking-[2%] justify-center py-3">

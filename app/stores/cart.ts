@@ -5,7 +5,7 @@
 export interface CartItemType {
   productName: string
   productId: number
-  image: string
+  image?: string
   amount: number | null
   billerId: number
   customerReference: string
@@ -21,7 +21,7 @@ export const useCartStore = defineStore('cart', () => {
 
   // The total is just the sum of the amounts
   const cartTotalAmount = computed(() => {
-    return items.value.reduce((total, item) => total + item.amount, 0)
+    return items.value.reduce((total, item) => total + (item.amount || 0), 0)
   })
 
   // Actions
