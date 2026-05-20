@@ -1,8 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { WalletInsert, WalletRow } from '../../types/supabase'
 import type { Database } from '../../types/supabase-schema'
-import { apiResponse } from '#server/utils/api-response'
 import { z } from 'zod'
+import { apiResponse } from '#server/utils/api-response'
 import { handleUtilityError } from './error-handler'
 
 const userIdSchema = z.object({

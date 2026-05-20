@@ -25,6 +25,14 @@ export function handleUtilityError(error: unknown, defaultMessage: string): ApiE
     return apiResponse.error(message, statusCode)
   }
 
+  // Catch Firebase Admin SDK errors (e.g. auth/email-already-exists)
+  if (error instanceof Error && 'code' in error && typeof (error as any).code === 'string') {
+    const firebaseErrorCode = (error as any).code
+    if (firebaseErrorCode === 'auth/email-already-exists' || firebaseErrorCode === 'auth/phone-number-already-exists') {
+      return apiResponse.error('An account with this email or phone number already exists.', 409)
+    }
+  }
+
   // if (typeof error === 'object' && error !== null && 'code' in error) {
   //   const firebaseError = error as { code: string, message?: string }
   //   if (firebaseError.code === 'auth/id-token-expired' || firebaseError.code === 'auth/invalid-id-token') {

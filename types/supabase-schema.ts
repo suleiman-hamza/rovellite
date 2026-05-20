@@ -46,8 +46,9 @@ export interface Database {
           created_at: string
           email: string
           full_name: string
-          location: string | null
-          phone: string | null
+          invite_code: string
+          location: string
+          phone: string
           referred_by: string | null
           role: Database['public']['Enums']['user_role']
           status: Database['public']['Enums']['user_status']
@@ -61,8 +62,9 @@ export interface Database {
           created_at?: string
           email: string
           full_name: string
-          location?: string | null
-          phone?: string | null
+          invite_code: string
+          location: string
+          phone: string
           referred_by?: string | null
           role?: Database['public']['Enums']['user_role']
           status?: Database['public']['Enums']['user_status']
@@ -76,8 +78,9 @@ export interface Database {
           created_at?: string
           email?: string
           full_name?: string
-          location?: string | null
-          phone?: string | null
+          invite_code?: string
+          location?: string
+          phone?: string
           referred_by?: string | null
           role?: Database['public']['Enums']['user_role']
           status?: Database['public']['Enums']['user_status']
@@ -86,6 +89,42 @@ export interface Database {
           verified?: boolean
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          inviter_user_id: string
+          referred_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inviter_user_id: string
+          referred_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inviter_user_id?: string
+          referred_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'referrals_inviter_user_id_fkey'
+            columns: ['inviter_user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['user_id']
+          },
+          {
+            foreignKeyName: 'referrals_referred_user_id_fkey'
+            columns: ['referred_user_id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['user_id']
+          },
+        ]
       }
       transactions: {
         Row: {
@@ -253,50 +292,136 @@ export interface Database {
         }
         Returns: undefined
       }
+      get_referral_lineage: { Args: { p_inviter: string }, Returns: Json }
       increment_balance: {
         Args: { p_amount: number, p_user_id: string }
         Returns: number
       }
       introspect_user_tables: { Args: never, Returns: Json }
-      sync_profile_with_wallet: {
-        Args: {
-          p_avatar_url?: string
-          p_bio?: string
-          p_email: string
-          p_full_name: string
-          p_location?: string
-          p_phone?: string
-          p_profile_status?: Database['public']['Enums']['user_status']
-          p_referred_by?: string
-          p_role?: Database['public']['Enums']['user_role']
-          p_user_id: string
-          p_verified?: boolean
-          p_wallet_balance?: number
-          p_wallet_currency?: string
-          p_wallet_status?: Database['public']['Enums']['user_status']
+      sync_profile_with_wallet:
+        | {
+          Args: {
+            p_avatar_url?: string
+            p_bio?: string
+            p_email: string
+            p_full_name: string
+            p_invite_code?: string
+            p_location?: string
+            p_phone?: string
+            p_profile_status?: Database['public']['Enums']['user_status']
+            p_referral_lineage?: Json
+            p_referred_by?: string
+            p_role?: Database['public']['Enums']['user_role']
+            p_user_id: string
+            p_verified?: boolean
+            p_wallet_balance?: number
+            p_wallet_currency?: string
+            p_wallet_status?: Database['public']['Enums']['user_status']
+          }
+          Returns: {
+            avatar_url: string | null
+            bio: string | null
+            created_at: string
+            email: string
+            full_name: string
+            invite_code: string
+            location: string
+            phone: string
+            referred_by: string | null
+            role: Database['public']['Enums']['user_role']
+            status: Database['public']['Enums']['user_status']
+            updated_at: string
+            user_id: string
+            verified: boolean
+          }
+          SetofOptions: {
+            from: '*'
+            to: 'profiles'
+            isOneToOne: true
+            isSetofReturn: false
+          }
         }
-        Returns: {
-          avatar_url: string | null
-          bio: string | null
-          created_at: string
-          email: string
-          full_name: string
-          location: string | null
-          phone: string | null
-          referred_by: string | null
-          role: Database['public']['Enums']['user_role']
-          status: Database['public']['Enums']['user_status']
-          updated_at: string
-          user_id: string
-          verified: boolean
+        | {
+          Args: {
+            p_avatar_url?: string
+            p_bio?: string
+            p_email: string
+            p_full_name: string
+            p_location?: string
+            p_phone?: string
+            p_profile_status?: Database['public']['Enums']['user_status']
+            p_referred_by?: string
+            p_role?: Database['public']['Enums']['user_role']
+            p_user_id: string
+            p_verified?: boolean
+            p_wallet_balance?: number
+            p_wallet_currency?: string
+            p_wallet_status?: Database['public']['Enums']['user_status']
+          }
+          Returns: {
+            avatar_url: string | null
+            bio: string | null
+            created_at: string
+            email: string
+            full_name: string
+            invite_code: string
+            location: string
+            phone: string
+            referred_by: string | null
+            role: Database['public']['Enums']['user_role']
+            status: Database['public']['Enums']['user_status']
+            updated_at: string
+            user_id: string
+            verified: boolean
+          }
+          SetofOptions: {
+            from: '*'
+            to: 'profiles'
+            isOneToOne: true
+            isSetofReturn: false
+          }
         }
-        SetofOptions: {
-          from: '*'
-          to: 'profiles'
-          isOneToOne: true
-          isSetofReturn: false
+        | {
+          Args: {
+            p_avatar_url?: string
+            p_bio?: string
+            p_email: string
+            p_full_name: string
+            p_invite_code?: string
+            p_location?: string
+            p_phone?: string
+            p_profile_status?: Database['public']['Enums']['user_status']
+            p_role?: Database['public']['Enums']['user_role']
+            p_used_invite_code?: string
+            p_user_id: string
+            p_verified?: boolean
+            p_wallet_balance?: number
+            p_wallet_currency?: string
+            p_wallet_status?: Database['public']['Enums']['user_status']
+          }
+          Returns: {
+            avatar_url: string | null
+            bio: string | null
+            created_at: string
+            email: string
+            full_name: string
+            invite_code: string
+            location: string
+            phone: string
+            referred_by: string | null
+            role: Database['public']['Enums']['user_role']
+            status: Database['public']['Enums']['user_status']
+            updated_at: string
+            user_id: string
+            verified: boolean
+          }
+          SetofOptions: {
+            from: '*'
+            to: 'profiles'
+            isOneToOne: true
+            isSetofReturn: false
+          }
         }
-      }
     }
     Enums: {
       user_role: 'user' | 'admin'

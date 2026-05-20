@@ -1,10 +1,8 @@
 import type { User } from 'firebase/auth'
+import type { SignupInput } from '~~/shared/validations/auth'
 import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
-
 } from 'firebase/auth'
 import { ref } from 'vue'
 
@@ -15,38 +13,17 @@ export function useAuth() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  // Handle user sign up
-  const signUp = async (email: string, password: string, name?: string) => {
+  // Handle user sign up (Server-Driven)
+  const signUp = async (payload: SignupInput) => {
     loading.value = true
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        firebaseAuth,
-        email,
-        password,
-      )
-
-      // Sync and set session cookie via server route
-      const idToken = await userCredential.user.getIdToken(true)
-      const response = await $fetch('/api/auth/sync-user', {
+      const response = await $fetch('/api/auth/signup', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: {
-          email: userCredential.user.email || email,
-          name: userCredential.user.displayName || name || 'New User',
-        },
+        body: payload,
       })
 
-      if (response.success) {
-        user.value = userCredential.user
-
-        await sendEmailVerification(userCredential.user)
-      }
-
-      return userCredential.user
+      return response
     }
     catch (err: any) {
       error.value = err.message
@@ -64,22 +41,17 @@ export function useAuth() {
     try {
       const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password)
 
-      // check if user is verified
+      // check if user is verified on client
       if (!userCredential.user.emailVerified) {
-        return userCredential.user
+        throw new Error('Email not verified. Please verify your email before logging in.')
       }
 
-      // Sync and set session cookie via server route
+      // Hit login endpoint to strictly verify on backend and get session
       const idToken = await userCredential.user.getIdToken(true)
-      const response = await $fetch('/api/auth/sync-user', {
+      const response = await $fetch('/api/auth/login', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${idToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: {
-          email: userCredential.user.email,
-          name: userCredential.user.displayName || '',
+          Authorization: `Bearer ${idToken}`,
         },
       })
 
@@ -88,6 +60,45 @@ export function useAuth() {
       }
 
       return userCredential.user
+    }
+    catch (err: any) {
+      error.value = err.message
+      // If the backend returns 403 because email isn't verified (even if client bypassed it)
+      if (err.response?.status === 403) {
+        error.value = 'Email not verified. Please verify your email before logging in.'
+      }
+      throw err
+    }
+    finally {
+      loading.value = false
+    }
+  }
+
+  // Handle account verification after clicking email link
+  const verifyAccount = async () => {
+    loading.value = true
+    try {
+      // Force reload the user to get the latest emailVerified status from Firebase
+      await firebaseAuth.currentUser?.reload()
+      const currentUser = firebaseAuth.currentUser
+
+      if (!currentUser || !currentUser.emailVerified) {
+        throw new Error('Email is still not verified. Check your inbox or try again.')
+      }
+
+      const idToken = await currentUser.getIdToken(true)
+      const response = await $fetch('/api/auth/verify', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      })
+
+      if (response.success) {
+        user.value = currentUser
+        return true
+      }
+      return false
     }
     catch (err: any) {
       error.value = err.message
@@ -125,11 +136,6 @@ export function useAuth() {
     }
   }
 
-  // Handle resend email verification
-  // const verifyEmail = async (user: User) => {
-  //   await sendEmailVerification(user);
-  // };
-
   // Check if email is verified
   const isEmailVerified = (u?: User) => {
     if (u)
@@ -142,6 +148,7 @@ export function useAuth() {
   return {
     signUp,
     signIn,
+    verifyAccount,
     signOutUser,
     isEmailVerified,
     getUser,

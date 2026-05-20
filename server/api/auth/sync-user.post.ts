@@ -1,5 +1,3 @@
-import { apiResponse } from '#server/utils/api-response'
-import { createAdminSupabaseClient } from '#server/utils/supabase'
 import admin from 'firebase-admin'
 import {
   defineEventHandler,
@@ -9,6 +7,8 @@ import {
 } from 'h3'
 import { z } from 'zod'
 import { handleUtilityError } from '~~/server/utils/error-handler'
+import { apiResponse } from '#server/utils/api-response'
+import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 const syncUserSchema = z.object({
   email: z.email(),

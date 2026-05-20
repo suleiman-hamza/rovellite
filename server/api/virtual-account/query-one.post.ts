@@ -1,6 +1,6 @@
+import { z } from 'zod'
 import { apiResponse, isSuccessResponse } from '#server/utils/api-response'
 import { queryPalmPayVirtualAccount } from '#server/utils/virtual-account/query'
-import { z } from 'zod'
 
 const queryVaSchema = z.object({
   virtualAccountNo: z.string().min(1, 'virtualAccountNo is required'),
