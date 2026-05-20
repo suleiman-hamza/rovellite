@@ -43,7 +43,7 @@ onMounted(async () => {
         title: 'Email Verified',
         description: 'Your email has been successfully verified! You are now logged in.',
       })
-      setTimeout(navigateTo, 2000, '/dashboard')
+      setTimeout(navigateTo, 4000, '/dashboard')
     }
     else {
       // If the user is on a different device or not logged in
@@ -53,7 +53,7 @@ onMounted(async () => {
         title: 'Email Verified',
         description: 'Your email has been successfully verified! Please log in.',
       })
-      setTimeout(navigateTo, 2000, '/login')
+      setTimeout(navigateTo, 4000, '/login')
     }
   }
   catch (error: any) {

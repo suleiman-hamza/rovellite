@@ -14,30 +14,8 @@ definePageMeta({
 const toast = useToast()
 const { signUp } = useAuth()
 
-interface PhoneCode {
-  name: string
-  code: string
-  emoji?: string
-  dialCode: string
-  mask: string
-}
-
-const countryCode = ref('NG')
-
-const { data: phoneCodes, status, execute } = await useLazyFetch<PhoneCode[]>('/api/phone-codes.json', {
-  key: 'api-phone-codes',
-  immediate: false,
-})
-
-const country = computed(() => phoneCodes.value?.find(c => c.code === countryCode.value))
-const dialCode = computed(() => country.value?.dialCode || '+234')
-const mask = computed(() => country.value?.mask || '### ### ####')
-
-function onOpen() {
-  if (!phoneCodes.value?.length) {
-    execute()
-  }
-}
+const dialCode = ref('+234')
+const mask = computed(() => '### ### ####')
 
 const loading = ref(false)
 
@@ -49,10 +27,6 @@ const state = reactive<Partial<SignupInput>>({
   referralCode: '',
   password: '',
   confirmPassword: '',
-})
-
-watch(countryCode, () => {
-  state.phone = ''
 })
 
 async function onSubmit(event: FormSubmitEvent<SignupInput>) {
@@ -105,61 +79,23 @@ function displayError(error: any) {
         </UFormField>
 
         <UFormField label="Phone Number" name="phone" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
-          <UFieldGroup class="w-full">
-            <USelectMenu
-              v-model="countryCode"
-              :items="phoneCodes"
-              size="xl"
-              value-key="code"
-              :search-input="{
-                placeholder: 'Search country...',
-                icon: 'i-lucide-search',
-                loading: status === 'pending',
-              }"
-              :filter-fields="['name', 'code', 'dialCode']"
-              :content="{ align: 'start' }"
-              :ui="{
-                base: 'pe-8',
-                content: 'w-48',
-                placeholder: 'hidden',
-                trailingIcon: 'size-4',
-              }"
-              trailing-icon="i-lucide-chevrons-up-down"
-              @update:open="onOpen"
-            >
-              <span class="size-5 flex items-center text-lg">
-                {{ country?.emoji || '\u{1F1FA}\u{1F1F8}' }}
-              </span>
-
-              <template #item-leading="{ item }">
-                <span class="size-5 flex items-center text-lg">
-                  {{ item.emoji }}
-                </span>
-              </template>
-
-              <template #item-label="{ item }">
-                {{ item.name }} ({{ item.dialCode }})
-              </template>
-            </USelectMenu>
-
-            <UInput
-              v-model="state.phone"
-              v-maska="mask"
-              type="tel"
-              size="xl"
-              :placeholder="mask.replaceAll('#', '_')"
-              :style="{ '--dial-code-length': `${dialCode.length + 1.5}ch` }"
-              class="w-full placeholder:text-[#999999]"
-              :ui="{
-                base: 'ps-(--dial-code-length) rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]',
-                leading: 'pointer-events-none text-base md:text-sm text-muted',
-              }"
-            >
-              <template #leading>
-                {{ dialCode }}
-              </template>
-            </UInput>
-          </UFieldGroup>
+          <UInput
+            v-model="state.phone"
+            v-maska="mask"
+            type="tel"
+            size="xl"
+            :placeholder="mask.replaceAll('#', '_')"
+            :style="{ '--dial-code-length': `${dialCode.length + 1.5}ch` }"
+            class="w-full placeholder:text-[#999999]"
+            :ui="{
+              base: 'ps-(--dial-code-length) rounded-sm ring-[#5C5B5C] focus-visible:ring-[#1177FE]',
+              leading: 'pointer-events-none text-base md:text-sm text-muted',
+            }"
+          >
+            <template #leading>
+              {{ dialCode }}
+            </template>
+          </UInput>
         </UFormField>
 
         <UFormField label="Email" name="email" :ui="{ label: 'font-normal text-[18px] text-[#3A3A3A]' }">
