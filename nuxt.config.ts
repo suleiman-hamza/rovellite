@@ -110,12 +110,13 @@ export default defineNuxtConfig({
     },
     optimizeDeps: {
       include: [
+        '@supabase/supabase-js',
+        '@tanstack/vue-table',
         'embla-carousel-vue',
-        'zod',
         'firebase/app',
         'firebase/auth',
-        '@supabase/supabase-js',
         'maska/vue',
+        'zod',
       ],
     },
   },

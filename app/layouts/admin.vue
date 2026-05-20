@@ -18,37 +18,37 @@ const items: NavigationMenuItem[] = [{
   // active: route.path.startsWith()
 }, {
   label: 'Users',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-users.svg',
   to: '/admin/users',
   // active: route.path.startsWith()
 }, {
   label: 'Transactions',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-transactions.svg',
   to: '/admin/transactions',
   // active: route.path.startsWith()
 }, {
   label: 'Products',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-total-product.svg',
   to: '/admin/products',
   // active: route.path.startsWith()
 }, {
   label: 'Product Sales',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-product-sales.svg',
   to: '/admin/product-sales',
   // active: route.path.startsWith()
 }, {
   label: 'Report',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-report.svg',
   to: '/admin/report',
   // active: route.path.startsWith()
 }, {
   label: 'Support',
-  icon: '/images/icons/dashboard.svg',
+  icon: '/images/admin-dashboard/admin-support.svg',
   to: '/admin/support',
   // active: route.path.startsWith()
 }, {
-  label: 'Setings',
-  icon: '/images/icons/dashboard.svg',
+  label: 'Settings',
+  icon: '/images/admin-dashboard/admin-settings.svg',
   to: '/admin/settings',
   // active: route.path.startsWith()
 }]
@@ -119,7 +119,7 @@ const firstName = parts[0]
                 <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-5 h-5" />
               </NuxtLink>
               <NuxtLink v-else :to="item.to" class="flex gap-2 items-center px-6 p-2 text-sm font-medium text-gray-700 truncate">
-                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-8 h-8" />
+                <NuxtImg :src="item.icon" :alt="item.label" width="24" height="24" class="w-6 h-6" />
                 <span class="text-[20px]">{{ item.label }}</span>
               </NuxtLink>
             </li>
