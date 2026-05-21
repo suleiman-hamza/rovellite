@@ -8,6 +8,7 @@ interface FinancialRecord {
   profit: number
 }
 const _props = defineProps<{ data: FinancialRecord[] }>()
+const height = 220
 
 // 1. Use the index 'i' for the X-axis mapping
 const x = (_d: FinancialRecord, i: number) => i
@@ -32,7 +33,10 @@ const items = computed(() => {
 
 <template>
   <div class="p-4">
-    <VisXYContainer :data="data">
+    <p class="text-[#4D5155] font-semibold md:font-bold text-[18px] md:text-[20px] font-poppins tracking-[2%] mb-2">
+      Statistical Report
+    </p>
+    <VisXYContainer :data="data" :height="height">
       <VisLine :x="x" :y="y[0]" color="blue" />
       <VisLine :x="x" :y="y[1]" color="red" />
       <VisLine :x="x" :y="y[2]" color="green" />

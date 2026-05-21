@@ -29,46 +29,30 @@ watch(
   { immediate: true },
 )
 
-const store = useProfileStore()
-
-// const scrollPrev = () => emblaApi.value?.scrollPrev()
-// const scrollNext = () => emblaApi.value?.scrollNext()
-
-const { data: walletData } = await useFetch('/api/wallet', {
-  query: { userId: store.userProfile?.user_id },
-})
-
 const cards = ref([
   {
     title: 'Total Expenses',
     icon: '/images/admin-dashboard/admin-wallet-expense.svg',
     bgColor: 'bg-[#FBABAB]',
+    value: '20,000',
   },
   {
     title: 'Total Profit',
     icon: '/images/admin-dashboard/admin-wallet-profit.svg',
     bgColor: 'bg-[#1ED760]',
+    value: '50,000',
   },
   {
     title: 'Total Products',
-    icon: '/images/admin-dashboard/admin-total-product.svg',
+    icon: '/images/admin-dashboard/admin-total-prd-white.svg',
     bgColor: 'bg-[#F9DB3F]',
+    value: '20',
   },
 ])
 
 // const { data, error } = useFetch('/api/wallet')
 const isAmountVisible = ref(true)
 // const balance = ref(12550.50)
-
-const displayedBalance = computed((): string => {
-  if (isAmountVisible.value && walletData?.value?.success) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'NGN',
-    }).format(walletData?.value?.data.balance)
-  }
-  return '••••'
-})
 
 function toggleAmountVisibility() {
   isAmountVisible.value = !isAmountVisible.value
@@ -97,7 +81,7 @@ function toggleAmountVisibility() {
                     <!-- wallet balance -->
                     <div class="truncate">
                       <p class="text-[18px] font-bold text-[#4D5155]">
-                        {{ displayedBalance }}
+                        {{ card.value }}
                       </p>
                       <h3 class="text-[16px] md:text-[18px] tracking-[5%] md:tracking-[10%] text-[#676A6D] font-regular">
                         {{ card.title }}
@@ -148,7 +132,7 @@ function toggleAmountVisibility() {
                 </span>
                 <div class="truncate">
                   <p class="text-[20px] font-bold text-[#4D5155]">
-                    {{ displayedBalance }}
+                    {{ card.value }}
                   </p>
                   <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
                     {{ card.title }}
