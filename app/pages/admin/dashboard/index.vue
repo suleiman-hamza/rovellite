@@ -10,6 +10,15 @@ const chartData = ref([
   { name: 'Non active users', value: 40 },
 ])
 
+const data = [
+  { month: 'Jan', revenue: 5000, expenses: 3000 },
+  { month: 'Feb', revenue: 7000, expenses: 4500 },
+  { month: 'Mar', revenue: 3000, expenses: 2500 },
+  { month: 'Apr', revenue: 5000, expenses: 4500 },
+  { month: 'May', revenue: 2000, expenses: 1000 },
+  { month: 'Jun', revenue: 6000, expenses: 4500 },
+]
+
 const isAmountVisible = ref(true)
 
 function toggleAmountVisibility() {
@@ -91,8 +100,9 @@ function toggleAmountVisibility() {
       </div>
     </section>
 
-    <section class="border border-red-500">
-      <UserDonuts class="bg-white rounded-[20px] w-fit max-w-80" :data="chartData" />
+    <section class="border border-red-500 flex gap-4 mt-6">
+      <StatisticalReport class="bg-white rounded-[20px] flex-1" :data="data" />
+      <UserDonuts class="bg-white rounded-[20px] w-fit max-w-80 flex-1" :data="chartData" />
     </section>
   </main>
 </template>
