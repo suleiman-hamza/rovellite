@@ -31,7 +31,7 @@ const items = computed(() => props.data.map(d => ({
       <VisSingleContainer :height="height" :data="data">
         <VisDonut
           :value="value"
-          central-label="1000"
+          central-label="100"
           :radius="100"
           :arc-width="34"
           corner-radius="20"
