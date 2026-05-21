@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { AvatarProps, TableColumn } from '@nuxt/ui'
+import type { TableColumn } from '@nuxt/ui'
+// import type { AvatarProps, TableColumn } from '@nuxt/ui'
 import type { Row } from '@tanstack/vue-table'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
@@ -199,12 +200,11 @@ const columns: TableColumn<UsersInfo>[] = [
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
         h(UAvatar, {
-          ...row.original.avatar,
           loading: 'lazy',
           size: 'lg',
         }),
         h('div', undefined, [
-          h('p', { class: 'font-medium text-highlighted' }, row.original.name),
+          h('p', { class: 'font-medium text-highlighted' }, row.original.email),
         ]),
       ])
     },
@@ -228,7 +228,7 @@ const columns: TableColumn<UsersInfo>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'Created at',
+    header: 'Sign Up Date',
     cell: ({ row }) => {
       return new Date(row.getValue('created_at')).toLocaleString('en-US', {
         day: 'numeric',
@@ -242,7 +242,7 @@ const columns: TableColumn<UsersInfo>[] = [
     accessorKey: 'last_seen',
     header: 'Last Login',
     cell: ({ row }) => {
-      return new Date(row.getValue('created_at')).toLocaleString('en-US', {
+      return new Date(row.getValue('last_seen')).toLocaleString('en-US', {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
@@ -297,7 +297,19 @@ function getRowItems(row: Row<UsersInfo>) {
         copy(row.original.email)
 
         toast.add({
-          title: 'Payment Email copied to clipboard!',
+          title: 'Email copied to clipboard!',
+          color: 'success',
+          icon: 'i-lucide-circle-check',
+        })
+      },
+    },
+    {
+      label: 'Copy User ID',
+      onSelect() {
+        copy(row.original.id)
+
+        toast.add({
+          title: 'User ID copied to clipboard!',
           color: 'success',
           icon: 'i-lucide-circle-check',
         })
@@ -307,10 +319,12 @@ function getRowItems(row: Row<UsersInfo>) {
       type: 'separator',
     },
     {
-      label: 'View customer',
-    },
-    {
-      label: 'View payment details',
+      label: 'View User',
+      icon: 'i-lucide-arrow-right',
+      onSelect() {
+        // Navigate to the dynamic route using the user's ID
+        navigateTo(`/admin/users/${row.original.id}`)
+      },
     },
   ]
 }

@@ -112,6 +112,8 @@ export default defineNuxtConfig({
       include: [
         '@supabase/supabase-js',
         '@tanstack/vue-table',
+        '@unovis/ts',
+        '@unovis/vue',
         'embla-carousel-vue',
         'firebase/app',
         'firebase/auth',

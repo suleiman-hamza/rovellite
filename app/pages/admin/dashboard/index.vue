@@ -1,37 +1,14 @@
 <script setup lang="ts">
-// import { useClipboard } from '@vueuse/core'
-// import { BarChart } from 'echarts/charts'
-// import * as echarts from 'echarts/core'
-// import VChart from 'nuxt-echarts'
-
-// echarts.use([BarChart])
-
-// import { useProfileStore } from '@/stores/profile'
-
-// const store = useProfileStore()
-// const toast = useToast()
-
 definePageMeta({
-  middleware: ['auth'],
+  // middleware: ['auth'],
   keepalive: true,
 })
 
-// const option = ref<ECOption>({
-//   dataset: {
-//     dimensions: ['Product', '2015', '2016', '2017'],
-//     source: [
-//       {
-//         Product: 'Matcha Latte',
-//         2015: 54,
-//         2016: 42,
-//         2017: 23,
-//       },
-//     ],
-//   },
-//   xAxis: { type: 'category' },
-//   yAxis: {},
-//   series: [{ type: 'bar' }],
-// })
+// Provide an array of numbers for the donut slices
+const chartData = ref([
+  { name: 'Active users', value: 60 },
+  { name: 'Non active users', value: 40 },
+])
 
 const isAmountVisible = ref(true)
 
@@ -61,7 +38,7 @@ function toggleAmountVisibility() {
           <!-- wallet actions show or hide balance -->
           <div class="ml-auto">
             <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
-              <NuxtImg src="/images/admin-dashboard/eyeicon" alt="eyeicon" />
+              <NuxtImg src="/images/admin-dashboard/eyeicon.svg" alt="eyeicon" />
             </UButton>
           </div>
         </div>
@@ -83,7 +60,7 @@ function toggleAmountVisibility() {
             <!-- wallet actions show or hide balance -->
             <div class="ml-auto">
               <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
-                <NuxtImg src="/images/admin-dashboard/eyeicon" alt="eyeicon" />
+                <NuxtImg src="/images/admin-dashboard/eyeicon.svg" alt="eyeicon" />
               </UButton>
             </div>
           </div>
@@ -105,7 +82,7 @@ function toggleAmountVisibility() {
               <!-- wallet actions show or hide balance -->
               <div class="ml-auto">
                 <UButton variant="soft" class="rounded-full" :ui="{ base: 'p-2 bg-[#DBF4FF]' }" @click="toggleAmountVisibility">
-                  <NuxtImg src="/images/admin-dashboard/eyeicon" alt="eyeicon" />
+                  <NuxtImg src="/images/admin-dashboard/eyeicon.svg" alt="eyeicon" />
                 </UButton>
               </div>
             </div>
@@ -114,8 +91,8 @@ function toggleAmountVisibility() {
       </div>
     </section>
 
-    <section class="border p-4 bg-white">
-      <!-- <VChart :option="option" /> -->
+    <section class="border border-red-500">
+      <UserDonuts class="bg-white rounded-[20px] w-fit max-w-80" :data="chartData" />
     </section>
   </main>
 </template>

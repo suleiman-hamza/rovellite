@@ -156,7 +156,7 @@ const firstName = parts[0]
                 <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-5 h-5" />
               </NuxtLink>
               <NuxtLink v-else :to="item.to" class="flex gap-2 items-center px-6 p-2 text-sm font-medium text-gray-700 truncate">
-                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-8 h-8" />
+                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-6 h-6" />
                 <span class="text-[20px]">{{ item.label }}</span>
               </NuxtLink>
             </li>
