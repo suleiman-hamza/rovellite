@@ -1,5 +1,5 @@
 import type { Profile } from '../../types/supabase'
-import { defineNuxtPlugin } from 'nuxt/app'
+import { defineNuxtPlugin, useRequestHeaders } from 'nuxt/app'
 import { useProfileStore } from '@/stores/profile'
 
 export default defineNuxtPlugin(async () => {
@@ -7,7 +7,8 @@ export default defineNuxtPlugin(async () => {
   const store = useProfileStore()
 
   // Fetch user-profile
-  const data = await $fetch<Profile | null>('/api/auth/user').catch(() => null)
+  const headers = useRequestHeaders(['cookie']) as Record<string, string>
+  const data = await $fetch<Profile | null>('/api/auth/user', { headers }).catch(() => null)
 
   user.value = data || null
   data ? (store.userProfile = data) : store.clearProfile()
