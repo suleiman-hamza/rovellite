@@ -1,5 +1,5 @@
 import admin from 'firebase-admin'
-import { defineEventHandler, getCookie, setCookie } from 'h3'
+import { defineEventHandler, getCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
   // Skip static assets, internal Nuxt calls, and the logout route
@@ -20,21 +20,13 @@ export default defineEventHandler(async (event) => {
     const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
 
     // Refresh the 14-day window on every active request
-    const expiresIn = 60 * 60 * 24 * 14 * 1000
-
-    setCookie(event, '__session', sessionCookie, {
-      httpOnly: true,
-      secure: !import.meta.dev,
-      sameSite: 'strict',
-      maxAge: expiresIn / 1000,
-      path: '/',
-    })
+    setFirebaseSessionCookie(event, sessionCookie)
 
     // Attach decoded user data to the event context for downstream use in API routes
     event.context.user = decodedClaims
   }
   catch {
-    setCookie(event, '__session', '', { maxAge: -1, path: '/' })
+    clearFirebaseSessionCookie(event)
 
     throw createError({
       statusCode: 401,

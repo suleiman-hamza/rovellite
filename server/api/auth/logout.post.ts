@@ -1,5 +1,5 @@
 import admin from 'firebase-admin'
-import { defineEventHandler, deleteCookie, getCookie } from 'h3'
+import { defineEventHandler, getCookie } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const session = getCookie(event, '__session')
@@ -15,6 +15,6 @@ export default defineEventHandler(async (event) => {
 
   }
 
-  deleteCookie(event, '__session')
+  clearFirebaseSessionCookie(event)
   return { success: true }
 })
