@@ -1,5 +1,6 @@
+import type { H3Event } from 'h3'
 import admin from 'firebase-admin'
-import { setCookie, type H3Event } from 'h3'
+import { setCookie } from 'h3'
 
 const EXPIRES_IN = 60 * 60 * 24 * 14 * 1000 // 14 days
 

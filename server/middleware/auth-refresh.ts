@@ -1,5 +1,7 @@
 import admin from 'firebase-admin'
 import { defineEventHandler, getCookie } from 'h3'
+import { handleUtilityError } from '~~/server/utils/error-handler'
+import { clearFirebaseSessionCookie, setFirebaseSessionCookie } from '~~/server/utils/session'
 
 export default defineEventHandler(async (event) => {
   // Skip static assets, internal Nuxt calls, and the logout route
@@ -25,12 +27,8 @@ export default defineEventHandler(async (event) => {
     // Attach decoded user data to the event context for downstream use in API routes
     event.context.user = decodedClaims
   }
-  catch {
+  catch (error: any) {
     clearFirebaseSessionCookie(event)
-
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Session cleared due to authentication error',
-    })
+    return handleUtilityError(error, 'Session cleared due to authentication error')
   }
 })

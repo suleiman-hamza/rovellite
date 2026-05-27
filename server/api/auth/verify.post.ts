@@ -1,7 +1,7 @@
-import admin from 'firebase-admin'
 import { defineEventHandler } from 'h3'
 import { verifyAuthToken } from '~~/server/utils/auth-verifier'
 import { handleUtilityError } from '~~/server/utils/error-handler'
+import { createAndSetFirebaseSessionCookie } from '~~/server/utils/session'
 import { apiResponse } from '#server/utils/api-response'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 

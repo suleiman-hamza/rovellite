@@ -6,6 +6,7 @@ import {
 } from 'h3'
 import { z } from 'zod'
 import { handleUtilityError } from '~~/server/utils/error-handler'
+import { createAndSetFirebaseSessionCookie } from '~~/server/utils/session'
 import { apiResponse } from '#server/utils/api-response'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
