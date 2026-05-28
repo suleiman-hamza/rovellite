@@ -1,17 +1,40 @@
-import type { ApiErrorResponse } from './api-response'
+import type { ApiErrorResponse, ApiValidationErrorItem } from './api-response'
+import * as z from 'zod'
 import { apiResponse } from './api-response'
 
+function toErrorCode(issue: { code?: string }) {
+  // map this however; this keeps it deterministic.
+  // Examples: "invalid_type" -> "INVALID_TYPE"
+  return (issue.code ?? 'custom').toUpperCase()
+}
+
 // error handler
-export function handleUtilityError(error: unknown, defaultMessage: string): ApiErrorResponse {
-  if (error instanceof Error && error.name === 'ZodError') {
-    const zodError = error as Error & { errors?: Array<{ message?: string }> }
-    const message = zodError.errors?.[0]?.message || 'Validation error'
-    return apiResponse.error(message, 400, 'VALIDATION_ERROR')
+export function handleUtilityError(
+  error: unknown,
+  defaultMessage: string,
+): ApiErrorResponse {
+  // Zod validation errors
+  if (error instanceof z.ZodError || (error && typeof error === 'object' && 'name' in error && (error as any).name === 'ZodError')) {
+    const zodError = error as { issues?: Array<{ message: string, path?: Array<string | number>, code?: string }> }
+    const issues = zodError.issues || (error as any).errors || []
+
+    const formattedErrors: ApiValidationErrorItem[] = issues.map((iss: any) => ({
+      field: iss.path?.length ? iss.path.join('.') : 'root',
+      message: iss.message || 'Validation error',
+      code: toErrorCode(iss),
+    }))
+
+    // render validation error
+    return apiResponse.validationError(formattedErrors)
   }
 
   // Supabase error instances
   if (error instanceof Error && error.name === 'PostgrestError') {
-    const supabaseError = error as Error & { code?: string, details?: string, hint?: string }
+    const supabaseError = error as Error & {
+      code?: string
+      details?: string
+      hint?: string
+    }
     const message = supabaseError.details || supabaseError.message || 'Database error'
     const statusCode = supabaseError.code === '23505' ? 409 : 500
     return apiResponse.error(message, statusCode)
@@ -28,17 +51,16 @@ export function handleUtilityError(error: unknown, defaultMessage: string): ApiE
   // Catch Firebase Admin SDK errors (e.g. auth/email-already-exists)
   if (error instanceof Error && 'code' in error && typeof (error as any).code === 'string') {
     const firebaseErrorCode = (error as any).code
-    if (firebaseErrorCode === 'auth/email-already-exists' || firebaseErrorCode === 'auth/phone-number-already-exists') {
-      return apiResponse.error('An account with this email or phone number already exists.', 409)
+    if (
+      firebaseErrorCode === 'auth/email-already-exists'
+      || firebaseErrorCode === 'auth/phone-number-already-exists'
+    ) {
+      return apiResponse.error(
+        'An account with this email or phone number already exists.',
+        409,
+      )
     }
   }
-
-  // if (typeof error === 'object' && error !== null && 'code' in error) {
-  //   const firebaseError = error as { code: string, message?: string }
-  //   if (firebaseError.code === 'auth/id-token-expired' || firebaseError.code === 'auth/invalid-id-token') {
-  //     return apiResponse.error('Invalid or expired token', 401)
-  //   }
-  // }
 
   // Nuxt/H3 createError instances
   if (typeof error === 'object' && error !== null && 'statusCode' in error) {
