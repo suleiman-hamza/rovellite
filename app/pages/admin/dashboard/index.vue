@@ -33,5 +33,9 @@ const data = [
       <StatisticalReportChart class="bg-white rounded-[20px] flex-1" :data="data" />
       <UserDonutChart class="bg-white rounded-[20px] w-fit max-w-80 flex-1" :data="chartData" />
     </section>
+    <section class="border border-red-500 flex gap-4 mt-6">
+      <UserDonutChart class="bg-white rounded-[20px] w-fit max-w-80 flex-1" :data="chartData" />
+      <TransactionsTable class="bg-white rounded-[20px] flex-1" />
+    </section>
   </main>
 </template>
