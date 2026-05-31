@@ -1,38 +1,135 @@
 <script setup lang="ts">
-import { VisAxis, VisGroupedBar, VisXYContainer } from '@unovis/vue'
+import { GroupedBar } from '@unovis/ts'
+
+import {
+  VisAxis, // 3. The X and Y axes
+  VisGroupedBar, // 2. The actual bars
+  VisTooltip, // 4. Hover tooltips
+  VisXYContainer, // 1. The chart wrapper
+} from '@unovis/vue'
 
 interface DataRecord {
   x: number
-  y: number // Revenue
-  y1: number // Expenses
-  y2: number // Profit
+  value: number
+  label: string
+  color: string
 }
 
-const data: DataRecord[] = [
-  { x: 0, y: 120, y1: 80, y2: 40 },
-  { x: 1, y: 95, y1: 70, y2: 25 },
-  { x: 2, y: 150, y1: 90, y2: 60 },
-  { x: 3, y: 200, y1: 110, y2: 90 },
-  { x: 4, y: 175, y1: 100, y2: 75 },
-  { x: 5, y: 220, y1: 130, y2: 90 },
-]
+const categories = ['Gift Cards', 'Data', 'Airtime', 'TV/Decoder', 'Betting', 'Esim', 'Electricity', 'Education', 'Transportation', 'Solar']
 
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+const colors = ['#378ADD', '#E24B4A', '#EF9F27', '#5DCAA5', '#D4537E', '#2C2C2A', '#F0997B', '#7F77DD', '#D85A30', '#ED93B1']
 
+const data: DataRecord[] = categories.map((label, i) => ({
+  x: i,
+  value: [60000, 40000, 68000, 78000, 67000, 50000, 40000, 65000, 78000, 65000][i],
+  label,
+  color: colors[i],
+}))
+
+// Single x accessor — positional index
 const x = (d: DataRecord) => d.x
-const y = [
-  (d: DataRecord) => d.y,
-  (d: DataRecord) => d.y1,
-  (d: DataRecord) => d.y2,
-]
 
-const xTickFormat = (i: number) => months[i] ?? ''
+// Single y accessor — each bar reads its own value
+const y = (d: DataRecord) => d.value
+
+// Color per bar — reads the color field directly from the datum
+const color = (d: DataRecord) => d.color
+
+const yTickFormat = (v: number) => `#${v.toLocaleString()}`
+const xTickFormat = () => ''
+
+const triggers = {
+  [GroupedBar.selectors.bar]: (d: DataRecord) =>
+    `<b>${d.label}</b>: ${d.value.toLocaleString()}`,
+}
 </script>
 
 <template>
-  <VisXYContainer :data="data" :height="300">
-    <VisGroupedBar :x="x" :y="y" />
-    <VisAxis type="x" :tick-format="xTickFormat" />
-    <VisAxis type="y" />
+  <!--
+    VisXYContainer
+    ──────────────
+    The root container. Everything lives inside it.
+    Props:
+      :data       → the array of DataRecord objects. All child components inherit this.
+      :height     → pixel height of the chart area (number). Default is 300.
+      :width      → optional pixel width. Defaults to 100% of parent.
+      :padding    → { top, right, bottom, left } in pixels — inner spacing
+      :xDomain    → [min, max] to manually set X range (auto-calculated by default)
+      :yDomain    → [min, max] to manually set Y range (auto-calculated by default)
+  -->
+  <VisXYContainer
+    :data="data"
+    :height="300"
+    :padding="{ top: 10, right: 10, bottom: 40, left: 60 }"
+  >
+    <!--
+      VisGroupedBar
+      ─────────────
+      Renders the grouped (or individual) bars.
+      Props:
+        :x        → accessor fn: (d) => d.x — which field is the X position
+        :y        → array of accessor fns, one per series/color group
+                    Each fn reads one "layer" of bars at each X position
+        :color    → fn(d, seriesIndex) => string — color per series
+        :barPadding → 0–1 gap between bars within a group (default 0.1)
+        :groupPadding → 0–1 gap between groups (default 0.1)
+        :roundedCorners → px radius on bar tops (number or boolean)
+        :barMinHeight → minimum rendered bar height in px (prevents invisible bars)
+        :dataStep   → spacing between X positions if not auto-inferred
+    -->
+    <VisGroupedBar
+      :x="x"
+      :y="y"
+      :color="color"
+      :rounded-corners="2"
+      :bar-padding="0.05"
+      :group-padding="0.2"
+    />
+
+    <!--
+      VisAxis (X)
+      ───────────
+      Renders the horizontal axis at the bottom.
+      Props:
+        type        → 'x' or 'y' — which axis to render
+        :tickFormat → fn(value) => string — formats each tick label
+        :numTicks   → how many ticks to show (Unovis auto-picks if omitted)
+        :tickValues → explicit array of values to tick at
+        :gridLine   → true/false — show/hide horizontal grid lines
+        :label      → axis title string (shows below/beside axis)
+        :tickPadding → px gap between tick mark and label
+    -->
+    <VisAxis
+      type="x"
+      :tick-format="xTickFormat"
+      :grid-line="false"
+    />
+
+    <!--
+      VisAxis (Y)
+      ───────────
+      Renders the vertical axis on the left.
+      Same props as X axis above.
+    -->
+    <VisAxis
+      type="y"
+      :tick-format="yTickFormat"
+      :num-ticks="6"
+      :grid-line="true"
+    />
+
+    <!--
+      VisTooltip
+      ──────────
+      Shows a popover on bar hover.
+      Props:
+        :triggers → object mapping CSS selectors to content fns
+                    VisGroupedBar.selectors.bar = the CSS selector for bar elements
+                    The fn receives the data point and returns an HTML string
+        :container → DOM element to render tooltip into (defaults to chart container)
+        horizontalPlacement → 'auto' | 'left' | 'right' | 'center'
+        verticalPlacement   → 'auto' | 'top' | 'bottom' | 'center'
+    -->
+    <VisTooltip :triggers="triggers" />
   </VisXYContainer>
 </template>
