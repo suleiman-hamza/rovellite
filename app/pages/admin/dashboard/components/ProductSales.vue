@@ -2,10 +2,11 @@
 import { GroupedBar } from '@unovis/ts'
 
 import {
-  VisAxis, // 3. The X and Y axes
-  VisGroupedBar, // 2. The actual bars
-  VisTooltip, // 4. Hover tooltips
-  VisXYContainer, // 1. The chart wrapper
+  VisAxis,
+  VisBulletLegend,
+  VisGroupedBar,
+  VisTooltip,
+  VisXYContainer,
 } from '@unovis/vue'
 
 interface DataRecord {
@@ -21,9 +22,9 @@ const colors = ['#378ADD', '#E24B4A', '#EF9F27', '#5DCAA5', '#D4537E', '#2C2C2A'
 
 const data: DataRecord[] = categories.map((label, i) => ({
   x: i,
-  value: [60000, 40000, 68000, 78000, 67000, 50000, 40000, 65000, 78000, 65000][i],
+  value: [45000, 62000, 68000, 78000, 67000, 50000, 40000, 65000, 78000, 55000][i]!,
   label,
-  color: colors[i],
+  color: colors[i]!,
 }))
 
 // Single x accessor — positional index
@@ -36,7 +37,9 @@ const y = (d: DataRecord) => d.value
 const color = (d: DataRecord) => d.color
 
 const yTickFormat = (v: number) => `#${v.toLocaleString()}`
-const xTickFormat = () => ''
+const xTickFormat = (tick: number) => data[Number(tick)]?.label
+
+const items = categories.map((name, i) => ({ name, color: colors[i] }))
 
 const triggers = {
   [GroupedBar.selectors.bar]: (d: DataRecord) =>
@@ -45,7 +48,11 @@ const triggers = {
 </script>
 
 <template>
-  <!--
+  <div class="p-4">
+    <p class="text-[#4D5155] font-semibold md:font-bold text-[18px] md:text-[20px] font-poppins tracking-[2%] mb-2">
+      Product Sales
+    </p>
+    <!--
     VisXYContainer
     ──────────────
     The root container. Everything lives inside it.
@@ -57,16 +64,16 @@ const triggers = {
       :xDomain    → [min, max] to manually set X range (auto-calculated by default)
       :yDomain    → [min, max] to manually set Y range (auto-calculated by default)
   -->
-  <VisXYContainer
-    :data="data"
-    :height="300"
-    :padding="{ top: 10, right: 10, bottom: 40, left: 60 }"
-  >
-    <!--
-      VisGroupedBar
-      ─────────────
-      Renders the grouped (or individual) bars.
-      Props:
+    <VisXYContainer
+      :height="300"
+      :data="data"
+      :padding="{ top: 10, right: 10, bottom: 10, left: 10 }"
+    >
+      <!--
+    VisGroupedBar
+    ─────────────
+    Renders the grouped (or individual) bars.
+    Props:
         :x        → accessor fn: (d) => d.x — which field is the X position
         :y        → array of accessor fns, one per series/color group
                     Each fn reads one "layer" of bars at each X position
@@ -77,16 +84,16 @@ const triggers = {
         :barMinHeight → minimum rendered bar height in px (prevents invisible bars)
         :dataStep   → spacing between X positions if not auto-inferred
     -->
-    <VisGroupedBar
-      :x="x"
-      :y="y"
-      :color="color"
-      :rounded-corners="2"
-      :bar-padding="0.05"
-      :group-padding="0.2"
-    />
+      <VisGroupedBar
+        :x="x"
+        :y="y"
+        :color="color"
+        :rounded-corners="2"
+        :bar-padding="0.05"
+        :group-padding="0.2"
+      />
 
-    <!--
+      <!--
       VisAxis (X)
       ───────────
       Renders the horizontal axis at the bottom.
@@ -99,26 +106,26 @@ const triggers = {
         :label      → axis title string (shows below/beside axis)
         :tickPadding → px gap between tick mark and label
     -->
-    <VisAxis
-      type="x"
-      :tick-format="xTickFormat"
-      :grid-line="false"
-    />
+      <VisAxis
+        type="x"
+        :tick-format="xTickFormat"
+        :tick-values="data.map(d => d.x)"
+        :grid-line="true"
+      />
 
-    <!--
+      <!--
       VisAxis (Y)
       ───────────
       Renders the vertical axis on the left.
       Same props as X axis above.
     -->
-    <VisAxis
-      type="y"
-      :tick-format="yTickFormat"
-      :num-ticks="6"
-      :grid-line="true"
-    />
+      <VisAxis
+        type="y"
+        :tick-format="yTickFormat"
+        :grid-line="true"
+      />
 
-    <!--
+      <!--
       VisTooltip
       ──────────
       Shows a popover on bar hover.
@@ -130,6 +137,8 @@ const triggers = {
         horizontalPlacement → 'auto' | 'left' | 'right' | 'center'
         verticalPlacement   → 'auto' | 'top' | 'bottom' | 'center'
     -->
-    <VisTooltip :triggers="triggers" />
-  </VisXYContainer>
+      <VisTooltip :triggers="triggers" />
+    </VisXYContainer>
+    <VisBulletLegend :items="items" />
+  </div>
 </template>
