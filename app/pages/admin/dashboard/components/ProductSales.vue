@@ -37,7 +37,7 @@ const y = (d: DataRecord) => d.value
 const color = (d: DataRecord) => d.color
 
 const yTickFormat = (v: number) => `#${v.toLocaleString()}`
-const xTickFormat = (tick: number) => data[Number(tick)]?.label
+const xTickFormat = (_tick: number) => ''
 
 const items = categories.map((name, i) => ({ name, color: colors[i] }))
 
@@ -67,7 +67,7 @@ const triggers = {
     <VisXYContainer
       :height="300"
       :data="data"
-      :padding="{ top: 10, right: 10, bottom: 10, left: 10 }"
+      :padding="{ top: 2, right: 2, bottom: 2, left: 2 }"
     >
       <!--
     VisGroupedBar

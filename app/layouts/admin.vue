@@ -39,7 +39,7 @@ const items: NavigationMenuItem[] = [{
 }, {
   label: 'Report',
   icon: '/images/admin-dashboard/admin-report.svg',
-  to: '/admin/report',
+  to: '/admin/reports',
   // active: route.path.startsWith()
 }, {
   label: 'Support',

@@ -20,13 +20,13 @@ const y = [
   (d: FinancialRecord) => d.profit,
 ]
 
-const items = computed(() => {
-  // Define the keys you want to show in your legend
-  const keys: ('revenue' | 'expenses' | 'profit')[] = ['revenue', 'expenses', 'profit']
+const seriesColors = { revenue: 'blue', expenses: 'red', profit: 'green' }
 
+const items = computed(() => {
+  const keys: ('revenue' | 'expenses' | 'profit')[] = ['revenue', 'expenses', 'profit']
   return keys.map(key => ({
-    // Capitalize the first letter for a clean display name (e.g., "Revenue")
     name: key.charAt(0).toUpperCase() + key.slice(1),
+    color: seriesColors[key],
   }))
 })
 </script>
@@ -43,7 +43,7 @@ const items = computed(() => {
       <VisAxis type="x" :tick-format="(tick: number) => data[tick]?.month" :num-ticks="data.length" />
       <VisAxis type="y" />
     </VisXYContainer>
-    <div class="mt-2 border p-1">
+    <div class="mt-2 p-1">
       <VisBulletLegend :items="items" />
     </div>
   </div>

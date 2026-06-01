@@ -27,15 +27,15 @@ const data = [
 </script>
 
 <template>
-  <main class="">
-    <MetricCard />
-    <section class="flex gap-4 mt-6">
-      <StatisticalReportChart class="bg-white rounded-[20px] flex-1" :data="data" />
+  <div>
+    <section class="mt-6">
       <UserDonutChart class="bg-white rounded-[20px] w-fit max-w-80 flex-1" :data="chartData" />
     </section>
-    <section class="flex gap-4 mt-6">
-      <ProductSales class="bg-white rounded-[20px] w-fit max-w-100 flex-1" />
-      <TransactionsTable class="bg-white rounded-[20px] flex-1" />
+    <section class="mt-6">
+      <StatisticalReportChart class="bg-white rounded-[20px] flex-1" :data="data" />
     </section>
-  </main>
+    <section class="mt-6">
+      <ProductSales class="bg-white rounded-[20px] w-fit max-w-80 flex-1" />
+    </section>
+  </div>
 </template>
