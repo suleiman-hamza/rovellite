@@ -1,9 +1,13 @@
+import type { Database } from '~~/types/supabase-schema'
+import { getAuth } from 'firebase-admin/auth'
 import { defineEventHandler } from 'h3'
 import { verifyAuthToken } from '~~/server/utils/auth-verifier'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 import { createAndSetFirebaseSessionCookie } from '~~/server/utils/session'
 import { apiResponse } from '#server/utils/api-response'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
+
+type UserRole = Database['public']['Enums']['user_role']
 
 export default defineEventHandler(async (event) => {
   try {
@@ -41,11 +45,34 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Generate and set Firebase Session Cookie
+    // Sync Supabase Role to Firebase Custom Claims
+    const currentClaimRole = decodedToken.role as UserRole | undefined
+    const actualDbRole: UserRole = profile.role
+    let claimsUpdated: boolean = false
+
+    if (currentClaimRole !== actualDbRole) {
+      // Inject the database role into the Firebase JWT
+      await getAuth().setCustomUserClaims(decodedToken.uid, { role: actualDbRole })
+      claimsUpdated = true
+    }
+
+    // Generate/mint and set Firebase Session Cookie
     await createAndSetFirebaseSessionCookie(event, idToken)
+
+    // --- TERMINAL TESTING LOGGER ---
+    // console.warn('\n======================================================')
+    // console.warn('⚡ [AUTH GATEWAY] PROCESSING LOGIN DISPATCH')
+    // console.warn(`   User UID:      ${decodedToken.uid}`)
+    // console.warn(`   User Email:    ${decodedToken.email}`)
+    // console.warn(`   Supabase Role: ${actualDbRole.toUpperCase()}`)
+    // console.warn(`   Claims Sync:   ${claimsUpdated ? '⚠️ OUT OF SYNC (FIXED)' : '✅ PERFECT'}`)
+    // console.warn(`   Target Route:  ${actualDbRole === 'admin' ? '/admin/dashboard' : '/dashboard'}`)
+    // console.warn('======================================================\n')
 
     return apiResponse.success({
       profile,
+      role: actualDbRole,
+      claimsUpdated,
     }, 'Login successful')
   }
   catch (error: any) {

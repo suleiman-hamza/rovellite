@@ -13,6 +13,14 @@ export function useAuth() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  // Define dashboard paths for role-based redirection
+  const ADMIN_DASHBOARD_PATH = '/admin/dashboard'
+  const USER_DASHBOARD_PATH = '/app/dashboard'
+
+  // Check email verification status
+  const EMAIL_NOT_VERIFIED_MESSAGE
+    = 'Email not verified. Please verify your email before logging in.'
+
   // Handle user sign up (Server-Driven)
   const signUp = async (payload: SignupInput) => {
     loading.value = true
@@ -43,7 +51,7 @@ export function useAuth() {
 
       // check if user is verified on client
       if (!userCredential.user.emailVerified) {
-        throw new Error('Email not verified. Please verify your email before logging in.')
+        throw new Error(EMAIL_NOT_VERIFIED_MESSAGE)
       }
 
       // Hit login endpoint to strictly verify on backend and get session
@@ -55,19 +63,46 @@ export function useAuth() {
         },
       })
 
-      if (response.success) {
+      // Use a structural type guard ('data' in response) to satisfy compiler
+      if (response.success && 'data' in response) {
         user.value = userCredential.user
+
+        // Handle manual database overrides seamlessly
+        if (response.data.claimsUpdated) {
+          const freshToken = await userCredential.user.getIdToken(true)
+
+          await $fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${freshToken}` },
+          })
+        }
+
+        // Role-based Redirection, Deterministic and instant
+        const userRole = response.data.role
+        const redirectPath = userRole === 'admin'
+          ? ADMIN_DASHBOARD_PATH
+          : USER_DASHBOARD_PATH
+
+        // --- FRONTEND REDIRECTION PROOF ---
+        // console.warn(`[Frontend Router] Handoff successful. Attempting navigation to: ${redirectPath}`)
+
+        // Temporary guard for non-existent admin page during development
+        // if (userRole === 'admin') {
+        //   console.warn(`Success! REDIRECTING TO ADMIN: The system gracefully calculated the role and is now executing a push to: ${redirectPath}`)
+        // }
+
+        await navigateTo(redirectPath)
       }
 
       return userCredential.user
     }
-    catch (err: any) {
-      error.value = err.message
+    catch (error: any) {
+      error.value = error.message
       // If the backend returns 403 because email isn't verified (even if client bypassed it)
-      if (err.response?.status === 403) {
-        error.value = 'Email not verified. Please verify your email before logging in.'
+      if (error.response?.status === 403) {
+        error.value = EMAIL_NOT_VERIFIED_MESSAGE
       }
-      throw err
+      throw error
     }
     finally {
       loading.value = false

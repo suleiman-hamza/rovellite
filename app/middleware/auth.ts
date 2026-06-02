@@ -31,4 +31,13 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo('/login')
     }
   }
+
+  // Role-Based Access Guard
+  const currentProfile = profileStore.getProfile().value
+  const isAdminRoute = to.path.startsWith('/admin')
+
+  // If a standard user tries to access an admin route, boot them to the standard dashboard
+  if (isAdminRoute && currentProfile?.role !== 'admin') {
+    return navigateTo('/app/dashboard') // Redirect non-admins to user dashboard
+  }
 })
