@@ -1,7 +1,19 @@
+import type { Database } from '~~/types/supabase-schema'
 import admin from 'firebase-admin'
 import { defineEventHandler, getCookie } from 'h3'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 import { clearFirebaseSessionCookie, setFirebaseSessionCookie } from '~~/server/utils/session'
+
+type UserRole = Database['public']['Enums']['user_role']
+
+// Extend H3's runtime context type interface so event.context.user is globally known
+declare module 'h3' {
+  interface H3EventContext {
+    user?: admin.auth.DecodedIdToken & {
+      role?: UserRole
+    }
+  }
+}
 
 export default defineEventHandler(async (event) => {
   // Skip static assets, internal Nuxt calls, and the logout route
@@ -19,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Verify the session cookie and check for revocation
-    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
+    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true) as admin.auth.DecodedIdToken & { role?: UserRole }
 
     // Refresh the 14-day window on every active request
     setFirebaseSessionCookie(event, sessionCookie)
@@ -29,6 +41,10 @@ export default defineEventHandler(async (event) => {
   }
   catch (error: any) {
     clearFirebaseSessionCookie(event)
+
+    event.context.user = undefined
+
+    // console.warn('Session automatically revoked:', error.message)
     return handleUtilityError(error, 'Session cleared due to authentication error')
   }
 })
