@@ -6,13 +6,13 @@ import { apiResponse } from '../api-response'
 import { handleUtilityError } from '../error-handler'
 import { palmPayRequest } from '../palmpay/client'
 
-export async function createVirtualAccount(supabase: SupabaseClient<Database>, input: { userId: string }) {
-  const { userId } = input
+export async function createVirtualAccount(supabase: SupabaseClient<Database>, input: { userId: string, bvn: string }) {
+  const { userId, bvn } = input
 
-  if (!userId) {
+  if (!userId || !bvn) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'userId is required',
+      statusMessage: 'userId and bvn are required',
     })
   }
 
@@ -26,6 +26,21 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
 
     if (profileError || !profile) {
       return apiResponse.error('User profile not found', 404)
+    }
+
+    // Check BVN verification status
+    const { data: bvnVerification } = await supabase
+      .from('bvn_verifications')
+      .select('status, name_match_result')
+      .eq('user_id', userId)
+      .single()
+
+    if (!bvnVerification || bvnVerification.status !== 'verified') {
+      return apiResponse.error(
+        'BVN verification required before creating a virtual account',
+        403,
+        'BVN_NOT_VERIFIED',
+      )
     }
 
     // Check if user already has a virtual account (duplicate prevention)
@@ -48,8 +63,8 @@ export async function createVirtualAccount(supabase: SupabaseClient<Database>, i
       customerName: profile.full_name || 'Unknown User',
       email: profile.email || 'noemail@example.com',
       virtualAccountName: `RovelSubPoint-${profile.full_name || 'User'}-${Date.now()}`,
-      identityType: 'personal_nin',
-      licenseNumber: '12345678901',
+      identityType: 'personal_bvn',
+      licenseNumber: bvn,
     }
 
     // Call PalmPay

@@ -32,6 +32,8 @@ interface RequestOptions {
   retries?: number
   timeoutMs?: number
   idempotencyKey?: string
+  baseUrl?: string
+  version?: string
 }
 
 /**
@@ -67,12 +69,12 @@ export async function palmPayRequest<T = PalmPayResponse>(
     ...body,
     requestTime,
     nonceStr,
-    version: 'V2.0',
+    version: options.version ?? 'V2.0',
   }
 
   const signature = generatePalmPaySignature(fullBody, palmpayPrivateKey)
 
-  const url = `${palmpayBaseUrl}${endpoint}`
+  const url = `${options.baseUrl ?? palmpayBaseUrl}${endpoint}`
 
   // dev-mode bypass
   // if (process.env.NODE_ENV === 'development' || process.env.NITRO_ENV === 'development') {

@@ -70,6 +70,7 @@ export default defineNuxtConfig({
     palmpayBaseUrl: process.env.PALMPAY_BASE_URL ?? '',
     palmpayPrivateKey: process.env.PALMPAY_PRIVATE_KEY ?? '',
     palmpayPublicKey: process.env.PALMPAY_PUBLIC_KEY ?? '',
+    easeidBaseUrl: process.env.EASEID_BASE_URL ?? '',
     // Firebase Admin SDK
     // Private keys (Server-side only)
     firebaseAdminServiceAccount: process.env.FIREBASE_SERVICE_ACCOUNT_JSON

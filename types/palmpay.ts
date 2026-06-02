@@ -86,3 +86,30 @@ export interface VirtualAccountWithProfile {
 
   palmPayFresh?: VirtualAccountData // Latest live data from PalmPay
 }
+
+// ─── EaseID BVN Verification Types ──────────────────────────────────
+
+/** Payload for EaseID Basic BVN Enquiry */
+export interface BvnVerifyPayload {
+  bvn: string // 11-digit number starting with '22'
+  firstName: string
+  middleName?: string
+  lastName: string
+  gender?: 'Male' | 'Female'
+  birthday?: string // Format: yyyy-MM-dd
+  phoneNumber?: string
+}
+
+/** Response data from EaseID BVN Enquiry */
+export interface BvnVerifyData {
+  nameMatchRlt: 'Exactly Match' | 'Partial Match' | 'No Match'
+  namesMatchPercentage: string
+  birthdayMatchRlt?: 'Exactly Match' | 'No Match'
+  genderMatchRlt?: 'Exactly Match' | 'No Match'
+  phoneNumberMatchRlt?: 'Exactly Match' | 'No Match'
+}
+
+/** Full response from EaseID BVN Enquiry */
+export interface BvnVerifyResponse extends PalmPayBaseResponse {
+  data: BvnVerifyData
+}
