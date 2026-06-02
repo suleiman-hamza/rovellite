@@ -1,10 +1,7 @@
-import admin from 'firebase-admin'
-import {
-  defineEventHandler,
-  setCookie,
-} from 'h3'
+import { defineEventHandler } from 'h3'
 import { verifyAuthToken } from '~~/server/utils/auth-verifier'
 import { handleUtilityError } from '~~/server/utils/error-handler'
+import { createAndSetFirebaseSessionCookie } from '~~/server/utils/session'
 import { apiResponse } from '#server/utils/api-response'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
@@ -44,17 +41,8 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    // Generate Firebase Session Cookie (14 days)
-    const expiresIn = 60 * 60 * 24 * 14 * 1000
-    const sessionCookie = await admin.auth().createSessionCookie(idToken, { expiresIn })
-
-    setCookie(event, '__session', sessionCookie, {
-      httpOnly: true,
-      secure: !import.meta.dev, // False in local dev, true in production
-      sameSite: 'strict',
-      maxAge: expiresIn / 1000,
-      path: '/',
-    })
+    // Generate and set Firebase Session Cookie
+    await createAndSetFirebaseSessionCookie(event, idToken)
 
     return apiResponse.success({
       profile,
