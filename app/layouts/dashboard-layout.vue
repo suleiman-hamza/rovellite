@@ -84,10 +84,6 @@ const items: NavigationMenuItem[] = [{
   icon: '/images/icons/settings.svg',
   to: '/app/settings',
   active: route.path.startsWith('/app/settings'),
-}, {
-  label: 'Admin',
-  icon: '/images/icons/settings.svg',
-  to: '/admin/dashboard',
 }]
 
 const loading = ref(false)
