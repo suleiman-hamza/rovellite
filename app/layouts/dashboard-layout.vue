@@ -153,7 +153,7 @@ const firstName = parts[0]
               </NuxtLink>
               <NuxtLink v-else :to="item.to" class="flex gap-2 items-center px-6 p-2 text-sm font-medium text-gray-700 truncate">
                 <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-6 h-6" />
-                <span class="text-[20px]">{{ item.label }}</span>
+                <span class="text-[18px]">{{ item.label }}</span>
               </NuxtLink>
             </li>
           </ul>
@@ -161,7 +161,7 @@ const firstName = parts[0]
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[18px]', leadingIcon: 'text-[#676A6D]' }" class="w-full gap-2 text-sm font-medium text-gray-700" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
