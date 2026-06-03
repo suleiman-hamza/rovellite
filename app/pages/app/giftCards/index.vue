@@ -7,7 +7,12 @@ definePageMeta({
 </script>
 
 <template>
-  <main>
-    <h1>Gift Cards page</h1>
+  <main class="bg-white h-full flex items-center justify-center rounded-[20px]">
+    <div class="bg-secondary border border-primary rounded-2xl flex flex-col gap-4 p-4 text-center items-center">
+      <UIcon name="i-lucide-gift" class="size-20 text-primary" />
+      <h1 class="text-2xl italic">
+        Comming Soon
+      </h1>
+    </div>
   </main>
 </template>
