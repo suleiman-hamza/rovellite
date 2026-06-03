@@ -39,6 +39,56 @@ export interface Database {
   }
   public: {
     Tables: {
+      bvn_verifications: {
+        Row: {
+          attempt_count: number
+          bvn_hash: string
+          created_at: string | null
+          failure_reason: string | null
+          id: string
+          name_match_percentage: string | null
+          name_match_result: string | null
+          palmpay_response: Json | null
+          status: Database['public']['Enums']['bvn_verification_status']
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          attempt_count?: number
+          bvn_hash: string
+          created_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          name_match_percentage?: string | null
+          name_match_result?: string | null
+          palmpay_response?: Json | null
+          status?: Database['public']['Enums']['bvn_verification_status']
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          attempt_count?: number
+          bvn_hash?: string
+          created_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          name_match_percentage?: string | null
+          name_match_result?: string | null
+          palmpay_response?: Json | null
+          status?: Database['public']['Enums']['bvn_verification_status']
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bvn_verifications_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['user_id']
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -424,6 +474,14 @@ export interface Database {
         }
     }
     Enums: {
+      bvn_verification_status:
+        | 'pending'
+        | 'processing'
+        | 'verified'
+        | 'name_mismatch'
+        | 'bvn_invalid'
+        | 'service_error'
+        | 'failed'
       user_role: 'user' | 'admin'
       user_status: 'active' | 'suspended' | 'blocked'
     }
@@ -556,6 +614,15 @@ export const Constants = {
   },
   public: {
     Enums: {
+      bvn_verification_status: [
+        'pending',
+        'processing',
+        'verified',
+        'name_mismatch',
+        'bvn_invalid',
+        'service_error',
+        'failed',
+      ],
       user_role: ['user', 'admin'],
       user_status: ['active', 'suspended', 'blocked'],
     },

@@ -18,6 +18,11 @@ export type VirtualAccountRow = Tables<'virtual_accounts'>
 export type VirtualAccountInsert = TablesInsert<'virtual_accounts'>
 export type VirtualAccountUpdate = TablesUpdate<'virtual_accounts'>
 
+// bvn verifications table
+export type BvnVerificationRow = Tables<'bvn_verifications'>
+export type BvnVerificationInsert = TablesInsert<'bvn_verifications'>
+export type BvnVerificationUpdate = TablesUpdate<'bvn_verifications'>
+
 // transactions table
 export type TransactionRow = Tables<'transactions'>
 export type TransactionInsert = TablesInsert<'transactions'>
@@ -105,6 +110,42 @@ export interface Database {
           updated_at?: string
         }
         Relationships: []
+      }
+      bvn_verifications: {
+        Row: BvnVerificationRow
+        Insert: {
+          id?: string
+          user_id: string
+          bvn_hash: string
+          status?: string
+          attempt_count?: number
+          name_match_result?: string | null
+          name_match_percentage?: string | null
+          palmpay_response?: Record<string, any> | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          bvn_hash?: string
+          status?: string
+          attempt_count?: number
+          name_match_result?: string | null
+          name_match_percentage?: string | null
+          palmpay_response?: Record<string, any> | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'bvn_verifications_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: true
+            referencedRelation: 'profiles'
+            referencedColumns: ['user_id']
+          },
+        ]
       }
       transactions: {
         Row: TransactionRow

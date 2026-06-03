@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import type { User } from 'firebase/auth' // Type for firebaseUser
-import * as z from 'zod'
 
+import type { LoginInput as Schema } from '~~/shared/validations/auth'
+import { loginSchema as schema } from '~~/shared/validations/auth'
 import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile'
 import { mapFirebaseError } from '@/utils/firebase-error'
@@ -17,13 +18,6 @@ const toast = useToast()
 const { getUser, signIn, isEmailVerified } = useAuth()
 
 const loading = ref(false)
-
-const schema = z.object({
-  email: z.email('Invalid email'),
-  password: z.string('Password is required').min(8, 'Must be at least 8 characters'),
-})
-
-type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
   email: undefined,

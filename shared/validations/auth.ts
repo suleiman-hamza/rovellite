@@ -4,6 +4,7 @@ const whitespaceRegex = /\s+/
 const phoneCleanupRegex = /[^0-9+]/g
 const nigerianPhoneRegex = /^\+234\d{10}$/
 
+// signup validation schema
 export const signupSchema = z.object({
   email: z.email({ message: 'Valid email is required' })
     .trim()
@@ -73,3 +74,22 @@ export const signupSchema = z.object({
 })
 
 export type SignupInput = z.infer<typeof signupSchema>
+
+// login validation schema
+export const loginSchema = z.object({
+  email: z.email({ message: 'Valid email is required' })
+    .trim()
+    .toLowerCase(),
+  password: z.string({ message: 'Password is required' }).min(1, 'Password is required'),
+})
+
+export type LoginInput = z.infer<typeof loginSchema>
+
+// forgot password validation schema
+export const forgotPasswordSchema = z.object({
+  email: z.email({ message: 'Valid email is required' })
+    .trim()
+    .toLowerCase(),
+})
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>

@@ -1,19 +1,16 @@
-import admin from 'firebase-admin'
-import { defineEventHandler, getCookie } from 'h3'
+import { defineEventHandler } from 'h3'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 // Endpoint handler for authenticated users
 export default defineEventHandler(async (event) => {
   const adminSupabase = createAdminSupabaseClient()
-  const session = getCookie(event, '__session')
-  if (!session) {
+  const decodedClaims = event.context.user
+
+  if (!decodedClaims) {
     return null // No session = not authenticated
   }
 
   try {
-    // Verify session cookie
-    const decodedClaims = await admin.auth().verifySessionCookie(session, true) // Check revocation
-
     // Fetch Supabase profile using UID from claims
     const { data } = await adminSupabase
       .from('profiles')
@@ -23,7 +20,8 @@ export default defineEventHandler(async (event) => {
 
     return data || null
   }
-  catch {
+  catch (error) {
+    console.error('[user.get.ts] Error fetching profile:', error)
     return null // Fail silently to unauthenticated state
   }
 })

@@ -1,5 +1,19 @@
+import type { Database } from '~~/types/supabase-schema'
 import admin from 'firebase-admin'
-import { defineEventHandler, getCookie, setCookie } from 'h3'
+import { defineEventHandler, getCookie } from 'h3'
+import { handleUtilityError } from '~~/server/utils/error-handler'
+import { clearFirebaseSessionCookie, setFirebaseSessionCookie } from '~~/server/utils/session'
+
+type UserRole = Database['public']['Enums']['user_role']
+
+// Extend H3's runtime context type interface so event.context.user is globally known
+declare module 'h3' {
+  interface H3EventContext {
+    user?: admin.auth.DecodedIdToken & {
+      role?: UserRole
+    }
+  }
+}
 
 export default defineEventHandler(async (event) => {
   // Skip static assets, internal Nuxt calls, and the logout route
@@ -17,28 +31,20 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Verify the session cookie and check for revocation
-    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true)
+    const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true) as admin.auth.DecodedIdToken & { role?: UserRole }
 
     // Refresh the 14-day window on every active request
-    const expiresIn = 60 * 60 * 24 * 14 * 1000
-
-    setCookie(event, '__session', sessionCookie, {
-      httpOnly: true,
-      secure: !import.meta.dev,
-      sameSite: 'strict',
-      maxAge: expiresIn / 1000,
-      path: '/',
-    })
+    setFirebaseSessionCookie(event, sessionCookie)
 
     // Attach decoded user data to the event context for downstream use in API routes
     event.context.user = decodedClaims
   }
-  catch {
-    setCookie(event, '__session', '', { maxAge: -1, path: '/' })
+  catch (error: any) {
+    clearFirebaseSessionCookie(event)
 
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Session cleared due to authentication error',
-    })
+    event.context.user = undefined
+
+    // console.warn('Session automatically revoked:', error.message)
+    return handleUtilityError(error, 'Session cleared due to authentication error')
   }
 })
