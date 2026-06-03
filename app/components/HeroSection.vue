@@ -14,7 +14,7 @@
         <p class="leading-[161%] md:leading-[190%] xl:leading-[200%] text-[clamp(1rem,4vw,1.5rem)]">
           Access airtime, data, subscriptions, and pay bills in one platform. RovelSub  Point is your trusted and secure digital service platform.
         </p>
-        <UButton to="/register" size="xl" class="hidden md:inline-flex size-fit bg-[#1177FE] text-white text-base rounded-full font-semibold px-8 tracking-[10%]" aria-label="Get Started">
+        <UButton to="/app/dashboard" size="xl" class="hidden md:inline-flex size-fit bg-[#1177FE] text-white text-base rounded-full font-semibold px-8 tracking-[10%]" aria-label="Get Started">
           Get Started
         </UButton>
         <UButton to="/onboarding" size="xl" class="md:hidden size-fit bg-[#1177FE] text-white text-base rounded-full font-semibold px-8 tracking-[10%]" aria-label="Get Started">

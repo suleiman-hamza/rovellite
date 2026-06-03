@@ -76,7 +76,7 @@ function displayError(error: any) {
 </script>
 
 <template>
-  <section class="grid grid-cols-1 md:grid-cols-2 min-h-screen">
+  <section class="grid grid-cols-1 md:grid-cols-2 h-full">
     <div class="flex flex-col w-full max-w-md mx-auto my-auto px-5 py-4">
       <div class="flex justify-center md:justify-start">
         <NuxtImg
@@ -140,7 +140,7 @@ function displayError(error: any) {
         </p>
       </div> -->
     </div>
-    <div class="hidden bg-[#1177FE] h-full relative md:flex items-center justify-center p-4 border">
+    <div class="hidden bg-[#1177FE] min-h-screen relative md:flex items-center justify-center p-4">
       <NuxtImg src="/images/top-left.svg" class="absolute top-0 left-0 z-1" alt="ellipse top" />
       <NuxtImg src="/images/bottom-right.svg" class="absolute bottom-0 right-0 z-0" alt="ellipse bottom" />
       <div class="font-poppins text-center flex flex-col gap-5 items-center justify-center">

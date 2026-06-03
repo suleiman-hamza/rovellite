@@ -1,89 +1,56 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 // import type { VirtualAccountResponse } from '../../types/palmpay'
-
-import { useCartStore } from '#imports' // cart store
 import { useAuth } from '@/composables/use-auth'
 import { useProfileStore } from '@/stores/profile' // profile store
 
 const toast = useToast()
-const route = useRoute()
+// const route = useRoute()
 
 const { signOutUser } = useAuth()
 
 const store = useProfileStore()
-const cartStore = useCartStore()
 
 const items: NavigationMenuItem[] = [{
   label: 'Dashboard',
   icon: '/images/icons/dashboard.svg',
-  to: '/app/dashboard',
+  to: '/admin/dashboard',
   // active: route.path.startsWith()
 }, {
-  label: 'Gift cards',
-  icon: '/images/icons/giftcard.svg',
-  to: '/app/giftCards',
-  active: route.path.startsWith('/app/giftCards'),
-}, {
-  label: 'Data/Internet',
-  icon: '/images/icons/data.svg',
-  to: '/app/dataInternet',
-  active: route.path.startsWith('/app/dataInternet'),
-}, {
-  label: 'Airtime',
-  icon: '/images/icons/airtime.svg',
-  to: '/app/airtime',
-  active: route.path.startsWith('/app/airtime'),
-}, {
-  label: 'TV/Decoders',
-  icon: '/images/icons/tv-decoder.svg',
-  to: '/app/tvDecoders',
-  active: route.path.startsWith('/app/tvDecoders'),
-}, {
-  label: 'Betting',
-  icon: '/images/icons/betting.svg',
-  to: '/app/betting',
-  active: route.path.includes('/app/betting'),
-}, {
-  label: 'eSim',
-  icon: '/images/icons/eSim.svg',
-  to: '/app/eSim',
-  active: route.path.startsWith('/app/eSim'),
-}, {
-  label: 'Electricity',
-  icon: '/images/icons/electricity.svg',
-  to: '/app/electricity',
-  active: route.path.startsWith('/app/electricity'),
-}, {
-  label: 'Education',
-  icon: '/images/icons/education.svg',
-  to: '/app/education',
-  active: route.path.startsWith('/app/education'),
-}, {
-  label: 'Transportation',
-  icon: 'images/icons/transportation.svg',
-  to: '/app/transportation',
-  active: route.path.startsWith('/app/transportation'),
-}, {
-  label: 'Solar System',
-  icon: '/images/icons/solar.svg',
-  to: '/app/solarSystem',
-  active: route.path.startsWith('/app/solarSystem'),
-}, {
-  label: 'Funding History',
-  icon: '/images/icons/fundwallet.svg',
-  to: '/app/fundingHistory',
-  active: route.path.startsWith('/app/fundWallet'),
+  label: 'Users',
+  icon: '/images/admin-dashboard/admin-users.svg',
+  to: '/admin/users',
+  // active: route.path.startsWith()
 }, {
   label: 'Transactions',
-  icon: '/images/icons/transactions.svg',
-  to: '/app/transactions',
-  active: route.path.startsWith('/app/transactions'),
+  icon: '/images/admin-dashboard/admin-transactions.svg',
+  to: '/admin/transactions',
+  // active: route.path.startsWith()
+}, {
+  label: 'Products',
+  icon: '/images/admin-dashboard/admin-total-product.svg',
+  to: '/admin/products',
+  // active: route.path.startsWith()
+}, {
+  label: 'Product Sales',
+  icon: '/images/admin-dashboard/admin-product-sales.svg',
+  to: '/admin/product-sales',
+  // active: route.path.startsWith()
+}, {
+  label: 'Report',
+  icon: '/images/admin-dashboard/admin-report.svg',
+  to: '/admin/reports',
+  // active: route.path.startsWith()
+}, {
+  label: 'Support',
+  icon: '/images/admin-dashboard/admin-support.svg',
+  to: '/admin/support',
+  // active: route.path.startsWith()
 }, {
   label: 'Settings',
-  icon: '/images/icons/settings.svg',
-  to: '/app/settings',
-  active: route.path.startsWith('/app/settings'),
+  icon: '/images/admin-dashboard/admin-settings.svg',
+  to: '/admin/settings',
+  // active: route.path.startsWith()
 }]
 
 const loading = ref(false)
@@ -152,8 +119,8 @@ const firstName = parts[0]
                 <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-5 h-5" />
               </NuxtLink>
               <NuxtLink v-else :to="item.to" class="flex gap-2 items-center px-6 p-2 text-sm font-medium text-gray-700 truncate">
-                <NuxtImg :src="item.icon" :alt="item.label" width="30" height="30" class="w-6 h-6" />
-                <span class="text-[18px]">{{ item.label }}</span>
+                <NuxtImg :src="item.icon" :alt="item.label" width="24" height="24" class="w-6 h-6" />
+                <span class="text-[20px]">{{ item.label }}</span>
               </NuxtLink>
             </li>
           </ul>
@@ -161,7 +128,7 @@ const firstName = parts[0]
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[18px]', leadingIcon: 'text-[#676A6D]' }" class="w-full gap-2 text-sm font-medium text-gray-700" @click="logOut" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
@@ -177,11 +144,6 @@ const firstName = parts[0]
           </template>
           <template #right>
             <div class="gap-3 flex">
-              <UChip size="3xl" color="error" :text="cartStore.cartItemCount > 0 ? cartStore.cartItemCount : undefined">
-                <UButton icon="i-lucide-shopping-cart" to="/app/cart" active active-color="primary" size="lg" active-class="text-white" inactive-class="bg-secondary" class="p-2">
-                  <span class="hidden sm:inline font-semibold text-[16px] tracking-[2%]">My Cart</span>
-                </UButton>
-              </UChip>
               <UUser
                 :avatar="{
                   // src: store.userProfile?.avatar_url,
@@ -221,10 +183,5 @@ const firstName = parts[0]
     width: 8px;
     background-color: #1177FE;
   }
-}
-
-.cart-active.router-link-exact-active {
-  background-color: #3b82f6 !important; /* Example Blue */
-  color: white !important;
 }
 </style>

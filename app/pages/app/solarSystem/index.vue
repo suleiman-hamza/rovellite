@@ -61,11 +61,11 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <main class="bg-white rounded-[20px]">
     <div class="mb-4">
-      <NuxtImg src="/images/solar-banner.png" alt="solar page banner img" class="w-full h-25 md:h-50 object-contain rounded-[20px]" />
+      <NuxtImg src="/images/solar-banner.png" alt="solar page banner img" class="w-full h-25 md:h-40 object-contain rounded-[20px]" />
     </div>
     <div class="p-4">
-      <div class="max-w-[600px] mx-auto md:p-5">
-        <h2 class="text-center text-[#565252] text-[18px] md:text-[32px] font-bold mb-4">
+      <div class="max-w-120 mx-auto md:p-5">
+        <h2 class="text-center text-[#565252] text-[18px] md:text-[28px] font-bold mb-4">
           Enter Details For Your Solar
         </h2>
         <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
@@ -88,7 +88,7 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
             <UInput v-model="state.amount" size="xl" placeholder="Choose an Amount" class="w-full placeholder:text-amber-200" />
           </UFormField>
 
-          <div class="flex gap-4 md:justify-between px-0 sm:px-6">
+          <div class="flex gap-4 md:justify-between px-0">
             <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
               <template #leading>
                 <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
