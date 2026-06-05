@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { getPaginationRowModel } from '@tanstack/vue-table'
+import { h, resolveComponent } from 'vue'
 import TransactionStats from './components/TransactionStats.vue'
+
+const UBadge = resolveComponent('UBadge')
 
 const items = ref(['Activate User', 'Deactivate User'])
 const value = ref('Activate User')
@@ -192,6 +195,10 @@ const columns: TableColumn<Payment>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => {
+      const color = { paid: 'success', failed: 'error', refunded: 'warning' }[row.original.status as string] ?? 'neutral'
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => row.original.status)
+    },
   },
   {
     accessorKey: 'date',
