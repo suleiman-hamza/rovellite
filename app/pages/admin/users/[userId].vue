@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import { getPaginationRowModel } from '@tanstack/vue-table'
+import TransactionStats from './components/TransactionStats.vue'
 
 const items = ref(['Activate User', 'Deactivate User'])
 const value = ref('Activate User')
@@ -409,59 +410,7 @@ const globalFilter = ref('')
           @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
         />
       </div>
-      <!-- status text box 6 items -->
-      <div class="my-4">
-        <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] gap-4 rounded-xl grid-cols-3 md:grid-cols-6 lg:grid-cols-6">
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-            <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
-              20
-            </h3>
-            <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
-              Total
-            </h4>
-          </div>
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-            <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-              20
-            </h3>
-            <h4 class="text-[#565252] text-[12px] md:text-[16px] md:tracking-[5%]">
-              Successful
-            </h4>
-          </div>
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-            <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-              6
-            </h3>
-            <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-              Pending
-            </h4>
-          </div>
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
-            <span class="flex gap-2 font-bold">
-              6
-            </span>
-            <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-              Processing
-            </h4>
-          </div>
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
-            <span class="flex gap-2 font-bold">
-              6
-            </span>
-            <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-              Failed
-            </h4>
-          </div>
-          <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
-            <span class="flex gap-2 font-bold">
-              6
-            </span>
-            <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-              Products
-            </h4>
-          </div>
-        </UPageGrid>
-      </div>
+      <TransactionStats :total="20" :successful="20" :pending="6" :processing="6" :failed="6" :products="6" />
       <UTable
         ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" :data="transactions"
         :columns="columns" :pagination-options="{

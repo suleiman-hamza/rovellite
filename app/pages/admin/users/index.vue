@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-// import type { AvatarProps, TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
+import type { Column, Row } from '@tanstack/vue-table'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
+import UserStats from './components/UserStats.vue'
 
 const toast = useToast()
 const { copy } = useClipboard()
 
 const UButton = resolveComponent('UButton')
-// const UBadge = resolveComponent('UBadge')
+const UBadge = resolveComponent('UBadge')
 const UAvatar = resolveComponent('UAvatar')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
@@ -212,12 +212,12 @@ const users = ref<UsersInfo[]>([
 const columns: TableColumn<UsersInfo>[] = [
   {
     accessorKey: 'id',
-    header: 'S/N',
+    header: ({ column }) => getHeader(column, 'S/N', 'left'),
     cell: ({ row }) => row.index + 1,
   },
   {
     accessorKey: 'name',
-    header: 'Users',
+    header: ({ column }) => getHeader(column, 'Users', 'left'),
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
         h(UAvatar, {
@@ -229,6 +229,7 @@ const columns: TableColumn<UsersInfo>[] = [
         ]),
       ])
     },
+    size: 172,
   },
   {
     accessorKey: 'account',
@@ -237,6 +238,10 @@ const columns: TableColumn<UsersInfo>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => {
+      const color = row.original.status === 'active' ? 'primary' : 'error'
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => row.original.status)
+    },
   },
   {
     accessorKey: 'created_at',
@@ -292,6 +297,26 @@ const columns: TableColumn<UsersInfo>[] = [
   },
 ]
 
+function getHeader(column: Column<UsersInfo>, label: string, position: 'left' | 'right') {
+  const isPinned = column.getIsPinned()
+
+  return h(UButton, {
+    color: 'neutral',
+    variant: 'ghost',
+    label,
+    icon: isPinned ? 'i-lucide-pin-off' : 'i-lucide-pin',
+    class: '-mx-2.5',
+    onClick() {
+      column.pin(isPinned === position ? false : position)
+    },
+  })
+}
+
+const columnPinning = ref({
+  left: [], // You can specify column IDs to be pinned on the left or right. For example: ['name']
+  right: [],
+})
+
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
@@ -332,7 +357,7 @@ function getRowItems(row: Row<UsersInfo>) {
     },
     {
       label: 'View User',
-      icon: 'i-lucide-arrow-right',
+      icon: 'i-lucide-eye',
       onSelect() {
         // Navigate to the dynamic route using the user's ID
         navigateTo(`/admin/users/${row.original.id}`)
@@ -367,37 +392,11 @@ function getRowItems(row: Row<UsersInfo>) {
       />
     </div>
     <!-- status text box 3 items -->
-    <div class="my-4">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] gap-4 rounded-xl grid-cols-3 md:grid-cols- lg:grid-cols-3">
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
-            20
-          </h3>
-          <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
-            Total Users
-          </h4>
-        </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-            20
-          </h3>
-          <h4 class="text-[#565252] text-[12px] md:text-[16px] md:tracking-[5%]">
-            Non active users
-          </h4>
-        </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-            6
-          </h3>
-          <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-            Total Users
-          </h4>
-        </div>
-      </UPageGrid>
-    </div>
+    <UserStats :total="users.length" :non-active="users.filter(u => u.status === 'inactive').length" :active="users.filter(u => u.status === 'active').length" />
+    <!-- table -->
     <UTable
-      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" :data="users"
-      :columns="columns" :pagination-options="{
+      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-pinning="columnPinning"
+      :data="users" :columns="columns" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
     >
