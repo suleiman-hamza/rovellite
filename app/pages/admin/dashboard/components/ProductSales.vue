@@ -16,24 +16,53 @@ interface DataRecord {
   color: string
 }
 
-const categories = ['Gift Cards', 'Data', 'Airtime', 'TV/Decoder', 'Betting', 'Esim', 'Electricity', 'Education', 'Transportation', 'Solar']
+const categories = ['Gift Cards', 'Data', 'Airtime', 'TV/Decoder', 'Betting', 'Esim', 'Electricity', 'Solar', 'Education', 'Transportation']
 
-const colors = ['#378ADD', '#E24B4A', '#EF9F27', '#5DCAA5', '#D4537E', '#2C2C2A', '#F0997B', '#7F77DD', '#D85A30', '#ED93B1']
+const colors = ['#1177FE', '#E22828', '#F9DB3F', '#9BD9FE', '#1CB452', '#34383D', '#F6A07E', '#7F30DC', '#FF672C', '#FBABAB']
 
-const data: DataRecord[] = categories.map((label, i) => ({
-  x: i,
-  value: [45000, 62000, 68000, 78000, 67000, 50000, 40000, 65000, 78000, 55000][i]!,
-  label,
-  color: colors[i]!,
-}))
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
 
-// Single x accessor — positional index
+const monthlyValues: Record<string, number[]> = {
+  January: [32000, 48000, 55000, 60000, 41000, 38000, 29000, 50000, 62000, 43000],
+  February: [38000, 52000, 61000, 65000, 49000, 42000, 35000, 58000, 70000, 47000],
+  March: [45000, 62000, 68000, 78000, 67000, 50000, 40000, 65000, 78000, 55000],
+  April: [50000, 70000, 72000, 82000, 71000, 55000, 43000, 69000, 80000, 60000],
+  May: [55000, 75000, 80000, 88000, 76000, 60000, 47000, 73000, 85000, 65000],
+  June: [62000, 80000, 85000, 92000, 80000, 64000, 52000, 78000, 90000, 70000],
+  July: [68000, 85000, 90000, 95000, 84000, 68000, 55000, 82000, 93000, 74000],
+  August: [72000, 88000, 93000, 97000, 87000, 71000, 58000, 85000, 95000, 77000],
+  September: [65000, 82000, 88000, 90000, 82000, 65000, 53000, 80000, 88000, 72000],
+  October: [58000, 76000, 82000, 85000, 77000, 60000, 48000, 75000, 83000, 67000],
+  November: [52000, 70000, 75000, 80000, 72000, 55000, 44000, 70000, 78000, 62000],
+  December: [42000, 58000, 65000, 72000, 60000, 46000, 36000, 60000, 68000, 50000],
+}
+
+const selectedMonth = ref('January')
+
+const data = computed<DataRecord[]>(() =>
+  categories.map((label, i) => ({
+    x: i,
+    value: monthlyValues[selectedMonth.value]![i]!,
+    label,
+    color: colors[i]!,
+  })),
+)
+
 const x = (d: DataRecord) => d.x
-
-// Single y accessor — each bar reads its own value
 const y = (d: DataRecord) => d.value
-
-// Color per bar — reads the color field directly from the datum
 const color = (d: DataRecord) => d.color
 
 const yTickFormat = (v: number) => `#${v.toLocaleString()}`
@@ -49,9 +78,12 @@ const triggers = {
 
 <template>
   <div class="p-4">
-    <p class="text-[#4D5155] font-semibold md:font-bold text-[18px] md:text-[20px] font-poppins tracking-[2%] mb-2">
-      Product Sales
-    </p>
+    <div class="flex justify-between items-center mb-2">
+      <p class="text-[#4D5155] font-semibold md:font-bold text-[18px] md:text-[20px] font-poppins tracking-[2%] mb-2">
+        Product Sales
+      </p>
+      <USelect v-model="selectedMonth" :items="months" />
+    </div>
     <!--
     VisXYContainer
     ──────────────
@@ -89,7 +121,7 @@ const triggers = {
         :y="y"
         :color="color"
         :rounded-corners="2"
-        :bar-padding="0.05"
+        :bar-padding="0.4"
         :group-padding="0.2"
       />
 
