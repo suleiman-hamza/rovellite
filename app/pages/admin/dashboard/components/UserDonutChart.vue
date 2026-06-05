@@ -10,6 +10,7 @@ interface ChartDatum {
 
 const props = defineProps<{ data: ChartDatum[] }>()
 const height = 200
+const width = 200
 
 const value = (d: ChartDatum) => d.value
 // Access the value property directly
@@ -28,11 +29,11 @@ const items = computed(() => props.data.map(d => ({
       Users
     </p>
     <div class="flex justify-center items-center">
-      <VisSingleContainer :height="height" :data="data">
+      <VisSingleContainer :height="height" :width="width" :data="data">
         <VisDonut
           :value="value"
           central-label="100"
-          :radius="100"
+          :radius="90"
           :arc-width="34"
           corner-radius="20"
           :show-background="true"

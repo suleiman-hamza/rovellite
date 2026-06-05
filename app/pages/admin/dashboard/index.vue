@@ -29,12 +29,12 @@ const data = [
 <template>
   <main class="">
     <MetricCard />
-    <section class="flex gap-4 mt-6">
+    <section class="flex flex-col md:flex-row gap-4 mt-6">
       <StatisticalReportChart class="bg-white rounded-[20px] flex-1" :data="data" />
-      <UserDonutChart class="bg-white rounded-[20px] w-fit max-w-80 flex-1" :data="chartData" />
+      <UserDonutChart class="bg-white rounded-[20px] w-fit" :data="chartData" />
     </section>
-    <section class="flex gap-4 mt-6">
-      <ProductSales class="bg-white rounded-[20px] w-fit max-w-100 flex-1" />
+    <section class="flex flex-col md:flex-row gap-4 mt-6">
+      <ProductSales class="bg-white rounded-[20px] w-fit md:flex-1" />
       <TransactionsTable class="bg-white rounded-[20px] flex-1" />
     </section>
   </main>

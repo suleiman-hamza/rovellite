@@ -99,7 +99,7 @@ const triggers = {
     <VisXYContainer
       :height="300"
       :data="data"
-      :padding="{ top: 2, right: 2, bottom: 2, left: 2 }"
+      :padding="{ top: 1, right: 1, bottom: 1, left: 1 }"
     >
       <!--
     VisGroupedBar
@@ -122,7 +122,7 @@ const triggers = {
         :color="color"
         :rounded-corners="2"
         :bar-padding="0.4"
-        :group-padding="0.2"
+        :group-padding="0.1"
       />
 
       <!--
