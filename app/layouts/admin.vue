@@ -22,6 +22,11 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/users',
   // active: route.path.startsWith()
 }, {
+  label: 'Virtual Accounts',
+  icon: '/images/admin-dashboard/admin-users.svg',
+  to: '/admin/virtual-accounts',
+  // active: route.path.startsWith()
+}, {
   label: 'Transactions',
   icon: '/images/admin-dashboard/admin-transactions.svg',
   to: '/admin/transactions',
@@ -32,9 +37,9 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/products',
   // active: route.path.startsWith()
 }, {
-  label: 'Product Sales',
-  icon: '/images/admin-dashboard/admin-product-sales.svg',
-  to: '/admin/product-sales',
+  label: 'Wallet Funding',
+  icon: '/images/admin-dashboard/admin-users.svg',
+  to: '/admin/wallet-funding',
   // active: route.path.startsWith()
 }, {
   label: 'Report',
