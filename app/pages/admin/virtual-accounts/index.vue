@@ -15,6 +15,17 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const table = useTemplateRef('table')
 const globalFilter = ref('')
+const columnFilters = ref<{ id: string, value: unknown }[]>([])
+
+const activeStatusFilter = computed(() =>
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'disabled' | null
+)
+
+function setStatusFilter(value: 'active' | 'disabled' | null) {
+  columnFilters.value = value
+    ? [{ id: 'status', value }]
+    : []
+}
 
 interface UsersInfo {
   id: string
@@ -238,6 +249,7 @@ const columns: TableColumn<UsersInfo>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
+    filterFn: (row, columnId, filterValue) => row.getValue(columnId) === filterValue,
     cell: ({ row }) => {
       const color = row.original.status === 'active' ? 'primary' : 'error'
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => row.original.status)
@@ -375,10 +387,43 @@ function getRowItems(row: Row<UsersInfo>) {
       </h2>
       <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-200.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search users..." />
       <UPopover>
-        <UButton label="Filter" leading-icon="i-lucide-list-filter" :ui="{ base: 'md:px-5 md:py-2.5 text-[#4D5155] bg-[#DBF4FF] rounded-[4px] md:rounded-[12px]', label: 'text-[#4D5155] font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }" />
+        <UButton
+          :label="activeStatusFilter ? 'Filter (1)' : 'Filter'"
+          leading-icon="i-lucide-list-filter"
+          :ui="{ base: 'md:px-5 md:py-2.5 rounded-[4px] md:rounded-[12px]', label: 'font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }"
+          :color="activeStatusFilter ? 'primary' : 'neutral'"
+          :variant="activeStatusFilter ? 'subtle' : 'ghost'"
+          :style="!activeStatusFilter ? 'color: #4D5155; background: #DBF4FF;' : ''"
+        />
         <template #content>
-          <div class="p-4">
-            <h2>Categories</h2>
+          <div class="p-3 flex flex-col gap-1 min-w-36">
+            <p class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide px-2 mb-1">
+              Status
+            </p>
+            <UButton
+              label="All"
+              size="sm"
+              :variant="!activeStatusFilter ? 'soft' : 'ghost'"
+              :color="!activeStatusFilter ? 'primary' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter(null)"
+            />
+            <UButton
+              label="Active"
+              size="sm"
+              :variant="activeStatusFilter === 'active' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'active' ? 'success' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('active')"
+            />
+            <UButton
+              label="Disabled"
+              size="sm"
+              :variant="activeStatusFilter === 'disabled' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'disabled' ? 'error' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('disabled')"
+            />
           </div>
         </template>
       </UPopover>
@@ -395,7 +440,7 @@ function getRowItems(row: Row<UsersInfo>) {
     <StatusStats :total="users.length" :disabled="users.filter(u => u.status === 'disabled').length" :active="users.filter(u => u.status === 'active').length" :newacc="2" />
     <!-- table -->
     <UTable
-      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-pinning="columnPinning"
+      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" v-model:column-pinning="columnPinning"
       :data="users" :columns="columns" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
