@@ -360,7 +360,7 @@ function getRowItems(row: Row<UsersInfo>) {
       icon: 'i-lucide-eye',
       onSelect() {
         // Navigate to the dynamic route using the user's ID
-        navigateTo(`/admin/users/${row.original.id}`)
+        navigateTo(`/admin/virtual-accounts/${row.original.id}`)
       },
     },
   ]
