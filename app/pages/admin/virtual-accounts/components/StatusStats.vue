@@ -15,7 +15,7 @@ defineProps<{
           {{ total }}
         </h3>
         <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
-          Total Users
+          Total Account
         </h4>
       </div>
       <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
@@ -23,7 +23,7 @@ defineProps<{
           {{ disabled }}
         </h3>
         <h4 class="text-[#565252] text-[12px] md:text-[16px] md:tracking-[5%]">
-          Disabled Users
+          Disabled
         </h4>
       </div>
       <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
@@ -31,7 +31,7 @@ defineProps<{
           {{ active }}
         </h3>
         <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-          Active Users
+          Active
         </h4>
       </div>
       <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
@@ -39,7 +39,7 @@ defineProps<{
           {{ newacc }}
         </h3>
         <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-          New Users
+          New Accounts
         </h4>
       </div>
     </UPageGrid>
