@@ -23,7 +23,7 @@ const items: NavigationMenuItem[] = [{
   // active: route.path.startsWith()
 }, {
   label: 'Virtual Accounts',
-  icon: '/images/admin-dashboard/admin-users.svg',
+  icon: '/images/admin-dashboard/admin-wallet-funding.svg',
   to: '/admin/virtual-accounts',
   // active: route.path.startsWith()
 }, {
@@ -133,7 +133,7 @@ const firstName = parts[0]
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[18px]', leadingIcon: 'text-[#676A6D]' }" class="w-full gap-2 text-sm font-medium text-gray-700" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
