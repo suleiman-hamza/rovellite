@@ -406,5 +406,18 @@ function getRowItems(row: Row<UsersInfo>) {
         </div>
       </template>
     </UTable>
+    <div class="flex justify-between border-t border-default pt-4">
+      <div class="py-3.5 text-sm text-muted">
+        {{ table?.tableApi?.getRowCount() }} of
+        {{ table?.tableApi?.getFilteredRowModel().rows.length || 0 }} entries.
+      </div>
+      <UPagination
+        :show-controls="false"
+        :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
+    </div>
   </main>
 </template>

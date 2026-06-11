@@ -1,3 +1,3 @@
 <template>
-  <p>virtual account tables</p>
+  <p>wallet funding tables</p>
 </template>

@@ -1,13 +1,70 @@
 <script setup lang="ts">
-import type { TableColumn } from '@nuxt/ui'
+import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
 import TransactionStats from './components/TransactionStats.vue'
 
 const UBadge = resolveComponent('UBadge')
 
-const items = ref(['Activate User', 'Deactivate User'])
-const value = ref('Activate User')
+const isModalOpen = ref(false)
+const selectedAction = ref<'deactivate' | 'enable' | 'delete' | 'copy' | null>(null)
+
+const modalConfig = computed(() => {
+  switch (selectedAction.value) {
+    case 'deactivate':
+      return { title: 'Deactivate Account', description: 'Are you sure you want to deactivate this account? The user will no longer be able to log in.', actionLabel: 'Deactivate', actionColor: 'error' as const }
+    case 'enable':
+      return { title: 'Enable Account', description: 'Are you sure you want to enable this account? The user will regain access.', actionLabel: 'Enable', actionColor: 'success' as const }
+    case 'delete':
+      return { title: 'Delete Account', description: 'Are you sure you want to permanently delete this account? This action cannot be undone.', actionLabel: 'Delete', actionColor: 'error' as const }
+    case 'copy':
+      return { title: 'Copy Account', description: 'Copy this account\'s details to clipboard?', actionLabel: 'Copy', actionColor: 'neutral' as const }
+    default:
+      return { title: '', description: '', actionLabel: '', actionColor: 'neutral' as const }
+  }
+})
+
+function handleModalAction() {
+  // TODO: implement action logic per selectedAction.value
+  isModalOpen.value = false
+}
+
+const items = ref<DropdownMenuItem[]>([
+  {
+    label: 'Deactivate Account',
+    icon: 'i-lucide-ban',
+    color: 'error',
+    onSelect() {
+      selectedAction.value = 'deactivate'
+      isModalOpen.value = true
+    },
+  },
+  {
+    label: 'Enable Account',
+    icon: 'i-lucide-refresh-ccw',
+    onSelect() {
+      selectedAction.value = 'enable'
+      isModalOpen.value = true
+    },
+  },
+  {
+    label: 'Delete Account',
+    icon: 'i-lucide-trash',
+    color: 'error',
+    onSelect() {
+      selectedAction.value = 'delete'
+      isModalOpen.value = true
+    },
+  },
+  {
+    label: 'Copy Account',
+    icon: 'i-lucide-clipboard',
+    onSelect() {
+      selectedAction.value = 'copy'
+      isModalOpen.value = true
+    },
+  },
+])
 
 interface Payment {
   id: string
@@ -257,7 +314,15 @@ const globalFilter = ref('')
         </div>
       </div>
       <div class="">
-        <USelect v-model="value" size="xl" :items="items" />
+        <UDropdownMenu
+          :items="items" :content="{
+            align: 'end',
+            side: 'bottom',
+            sideOffset: 8,
+          }"
+        >
+          <UButton icon="i-lucide-arrow-down-narrow-wide" label="Actions" color="neutral" size="lg" variant="soft" />
+        </UDropdownMenu>
       </div>
     </section>
     <!-- blue banner -->
@@ -445,5 +510,12 @@ const globalFilter = ref('')
         />
       </div>
     </section>
+
+    <UModal v-model:open="isModalOpen" :title="modalConfig.title" :description="modalConfig.description">
+      <template #footer>
+        <UButton label="Cancel" color="neutral" variant="outline" @click="isModalOpen = false" />
+        <UButton :label="modalConfig.actionLabel" :color="modalConfig.actionColor" @click="handleModalAction" />
+      </template>
+    </UModal>
   </main>
 </template>
