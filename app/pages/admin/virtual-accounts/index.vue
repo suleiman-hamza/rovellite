@@ -3,7 +3,7 @@ import type { TableColumn } from '@nuxt/ui'
 import type { Column, Row } from '@tanstack/vue-table'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
-import UserStats from './components/UserStats.vue'
+import StatusStats from './components/StatusStats.vue'
 
 const toast = useToast()
 const { copy } = useClipboard()
@@ -15,6 +15,17 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const table = useTemplateRef('table')
 const globalFilter = ref('')
+const columnFilters = ref<{ id: string, value: unknown }[]>([])
+
+const activeStatusFilter = computed(() =>
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'disabled' | null,
+)
+
+function setStatusFilter(value: 'active' | 'disabled' | null) {
+  columnFilters.value = value
+    ? [{ id: 'status', value }]
+    : []
+}
 
 interface UsersInfo {
   id: string
@@ -23,7 +34,7 @@ interface UsersInfo {
   name: string
   email: string
   account: number
-  status: 'active' | 'inactive'
+  status: 'active' | 'disabled'
 }
 
 const users = ref<UsersInfo[]>([
@@ -43,7 +54,7 @@ const users = ref<UsersInfo[]>([
     name: 'Mia White',
     email: 'mia.white@example.com',
     account: 48573920192,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4598',
@@ -70,7 +81,7 @@ const users = ref<UsersInfo[]>([
     name: 'Ethan Harris',
     email: 'ethan.harris@example.com',
     account: 12345678901,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4595',
@@ -79,7 +90,7 @@ const users = ref<UsersInfo[]>([
     name: 'Sophia Miller',
     email: 'sophia.miller@example.com',
     account: 55667788990,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4594',
@@ -88,7 +99,7 @@ const users = ref<UsersInfo[]>([
     name: 'Noah Wilson',
     email: 'noah.wilson@example.com',
     account: 11223344556,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4593',
@@ -124,7 +135,7 @@ const users = ref<UsersInfo[]>([
     name: 'Lucas Martin',
     email: 'lucas.martin@example.com',
     account: 22334455667,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4589',
@@ -142,7 +153,7 @@ const users = ref<UsersInfo[]>([
     name: 'Mason Rodriguez',
     email: 'mason.rodriguez@example.com',
     account: 88776655443,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4587',
@@ -151,7 +162,7 @@ const users = ref<UsersInfo[]>([
     name: 'Sophia Lee',
     email: 'sophia.lee@example.com',
     account: 99001122334,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4586',
@@ -196,7 +207,7 @@ const users = ref<UsersInfo[]>([
     name: 'Henry Wright',
     email: 'henry.wright@example.com',
     account: 77887788778,
-    status: 'inactive',
+    status: 'disabled',
   },
   {
     id: '4581',
@@ -238,6 +249,7 @@ const columns: TableColumn<UsersInfo>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
+    filterFn: (row, columnId, filterValue) => row.getValue(columnId) === filterValue,
     cell: ({ row }) => {
       const color = row.original.status === 'active' ? 'primary' : 'error'
       return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => row.original.status)
@@ -245,7 +257,7 @@ const columns: TableColumn<UsersInfo>[] = [
   },
   {
     accessorKey: 'created_at',
-    header: 'Sign Up Date',
+    header: 'Date Created',
     cell: ({ row }) => {
       return new Date(row.getValue('created_at')).toLocaleString('en-US', {
         day: 'numeric',
@@ -257,7 +269,7 @@ const columns: TableColumn<UsersInfo>[] = [
   },
   {
     accessorKey: 'last_seen',
-    header: 'Last Login',
+    header: 'Last Transaction',
     cell: ({ row }) => {
       return new Date(row.getValue('last_seen')).toLocaleString('en-US', {
         day: 'numeric',
@@ -360,7 +372,7 @@ function getRowItems(row: Row<UsersInfo>) {
       icon: 'i-lucide-eye',
       onSelect() {
         // Navigate to the dynamic route using the user's ID
-        navigateTo(`/admin/users/${row.original.id}`)
+        navigateTo(`/admin/virtual-accounts/${row.original.id}`)
       },
     },
   ]
@@ -375,10 +387,43 @@ function getRowItems(row: Row<UsersInfo>) {
       </h2>
       <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-200.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search users..." />
       <UPopover>
-        <UButton label="Filter" leading-icon="i-lucide-list-filter" :ui="{ base: 'md:px-5 md:py-2.5 text-[#4D5155] bg-[#DBF4FF] rounded-[4px] md:rounded-[12px]', label: 'text-[#4D5155] font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }" />
+        <UButton
+          :label="activeStatusFilter ? 'Filter (1)' : 'Filter'"
+          leading-icon="i-lucide-list-filter"
+          :ui="{ base: 'md:px-5 md:py-2.5 rounded-[4px] md:rounded-[12px]', label: 'font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }"
+          :color="activeStatusFilter ? 'primary' : 'neutral'"
+          :variant="activeStatusFilter ? 'subtle' : 'ghost'"
+          :style="!activeStatusFilter ? 'color: #4D5155; background: #DBF4FF;' : ''"
+        />
         <template #content>
-          <div class="p-4">
-            <h2>Categories</h2>
+          <div class="p-3 flex flex-col gap-1 min-w-36">
+            <p class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide px-2 mb-1">
+              Status
+            </p>
+            <UButton
+              label="All"
+              size="sm"
+              :variant="!activeStatusFilter ? 'soft' : 'ghost'"
+              :color="!activeStatusFilter ? 'primary' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter(null)"
+            />
+            <UButton
+              label="Active"
+              size="sm"
+              :variant="activeStatusFilter === 'active' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'active' ? 'success' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('active')"
+            />
+            <UButton
+              label="Disabled"
+              size="sm"
+              :variant="activeStatusFilter === 'disabled' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'disabled' ? 'error' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('disabled')"
+            />
           </div>
         </template>
       </UPopover>
@@ -392,10 +437,10 @@ function getRowItems(row: Row<UsersInfo>) {
       />
     </div>
     <!-- status text box 3 items -->
-    <UserStats :total="users.length" :non-active="users.filter(u => u.status === 'inactive').length" :active="users.filter(u => u.status === 'active').length" />
+    <StatusStats :total="users.length" :disabled="users.filter(u => u.status === 'disabled').length" :active="users.filter(u => u.status === 'active').length" :newacc="2" />
     <!-- table -->
     <UTable
-      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-pinning="columnPinning"
+      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" v-model:column-pinning="columnPinning"
       :data="users" :columns="columns" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"

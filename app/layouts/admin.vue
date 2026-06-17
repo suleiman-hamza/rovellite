@@ -22,6 +22,11 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/users',
   // active: route.path.startsWith()
 }, {
+  label: 'Virtual Accounts',
+  icon: '/images/admin-dashboard/admin-wallet-funding.svg',
+  to: '/admin/virtual-accounts',
+  // active: route.path.startsWith()
+}, {
   label: 'Transactions',
   icon: '/images/admin-dashboard/admin-transactions.svg',
   to: '/admin/transactions',
@@ -32,9 +37,9 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/products',
   // active: route.path.startsWith()
 }, {
-  label: 'Product Sales',
-  icon: '/images/admin-dashboard/admin-product-sales.svg',
-  to: '/admin/product-sales',
+  label: 'Wallet Funding',
+  icon: '/images/admin-dashboard/admin-users.svg',
+  to: '/admin/wallet-funding',
   // active: route.path.startsWith()
 }, {
   label: 'Report',
@@ -128,7 +133,7 @@ const firstName = parts[0]
       </template>
 
       <template #footer="{ collapsed }">
-        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[#676A6D]', leadingIcon: 'text-[#676A6D]' }" class="w-full justify-center" @click="logOut" />
+        <UButton :label="collapsed ? undefined : 'Log Out'" icon="i-lucide-log-out" variant="ghost" :loading :ui="{ label: 'text-[18px]', leadingIcon: 'text-[#676A6D]' }" class="w-full gap-2 text-sm font-medium text-gray-700" @click="logOut" />
       </template>
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">

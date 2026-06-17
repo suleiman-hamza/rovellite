@@ -2,7 +2,7 @@
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
-import TransactionStats from './components/UserTransactionStats.vue'
+import TransactionStats from './components/TransactionStats.vue'
 
 const UBadge = resolveComponent('UBadge')
 
@@ -295,7 +295,7 @@ const globalFilter = ref('')
 
 <template>
   <main class="">
-    <section class="flex justify-between gap-4 mb-6">
+    <section class="flex flex-col md:flex-row justify-between gap-4 mb-6">
       <div class="flex items-center gap-5">
         <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gray-200" />
         <div>
@@ -326,77 +326,62 @@ const globalFilter = ref('')
       </div>
     </section>
     <!-- blue banner -->
-    <section class="bg-[#1177FE] rounded-[16px]">
+    <section class="bg-white shadow rounded-[16px]">
       <UPageGrid class="p-5 rounded-[20px] gap-4">
         <UPageCard
-          class="bg-white rounded-[20px] px-2 py-3.5"
+          class="bg-secondary rounded-[20px] px-2 py-3.5"
           :ui="{ container: 'p-0 sm:p-0 rounded-[20px]' }"
         >
           <template #default>
             <div class="rounded-[20px]">
-              <div class="flex gap-2 items-center relative">
-                <span class="p-2.5 rounded-[8px]">
-                  <NuxtImg src="/images/cart-empty.svg" alt="alt text here" class="w-8 h-8" />
-                </span>
-                <div class="truncate">
-                  <p class="text-[20px] font-bold text-[#4D5155]">
-                    0
-                  </p>
-                  <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
-                    No Wallet
-                  </h3>
-                </div>
+              <div class="flex gap-2 items-center relative flex-col justify-center">
+                <p class="text-[20px] font-bold text-[#4D5155]">
+                  20
+                </p>
+                <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
+                  Total Wallet Funding
+                </h3>
               </div>
             </div>
           </template>
         </UPageCard>
         <UPageCard
-          class="bg-white rounded-[20px] px-2 py-3.5"
+          class="bg-secondary rounded-[20px] px-2 py-3.5"
           :ui="{ container: 'p-0 sm:p-0 rounded-[20px]' }"
         >
           <template #default>
             <div class="rounded-[20px]">
-              <div class="flex gap-2 items-center relative">
-                <span class="p-2.5 rounded-[8px]">
-                  <NuxtImg src="/images/cart-empty.svg" alt="alt text here" class="w-8 h-8" />
-                </span>
-                <div class="truncate">
-                  <p class="text-[20px] font-bold text-[#4D5155]">
-                    0
-                  </p>
-                  <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
-                    No Wallet
-                  </h3>
-                </div>
+              <div class="flex gap-2 items-center relative flex-col justify-center">
+                <p class="text-[20px] font-bold text-[#4D5155]">
+                  20
+                </p>
+                <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
+                  Total Amount Spent
+                </h3>
               </div>
             </div>
           </template>
         </UPageCard>
         <UPageCard
-          class="bg-white rounded-[20px] px-2 py-3.5"
+          class="bg-secondary rounded-[20px] px-2 py-3.5"
           :ui="{ container: 'p-0 sm:p-0 rounded-[20px]' }"
         >
           <template #default>
             <div class="rounded-[20px]">
-              <div class="flex gap-2 items-center relative">
-                <span class="p-2.5 rounded-[8px]">
-                  <NuxtImg src="/images/cart-empty.svg" alt="alt text here" class="w-8 h-8" />
-                </span>
-                <div class="truncate">
-                  <p class="text-[20px] font-bold text-[#4D5155]">
-                    0
-                  </p>
-                  <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
-                    No Wallet
-                  </h3>
-                </div>
+              <div class="flex gap-2 items-center relative flex-col justify-center">
+                <p class="text-[20px] font-bold text-[#4D5155]">
+                  20
+                </p>
+                <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
+                  Total Amount In Wallet
+                </h3>
               </div>
             </div>
           </template>
         </UPageCard>
       </UPageGrid>
-      <div class="p-4 sm:px-6 text-white">
-        <div class="flex justify-between items-start md:gap-3">
+      <div class="p-4 sm:px-6 text-[#4D5155]">
+        <div class="flex flex-col sm:flex-row justify-between items-start md:gap-3">
           <div class="flex gap-1.5 md:gap-3 items-center font-bold text-[16px] md:text-[24px] mb-2">
             <NuxtImg src="/images/icons/palmpay-wallet.svg" alt="palmpay wallet" class="w-5.5 h-5.5 md:w-8 md:h-8" />
             <h3 class="text-[16px] md:text-[24px] tracking-[1%]">
@@ -405,57 +390,14 @@ const globalFilter = ref('')
             <span class="tracking-[1%]">0450987873</span>
           </div>
           <div class="">
-            <p>Sign Up Date: Jan 1, 2023</p>
+            <p><span class="font-bold">Sign Up Date:</span> Jan 1, 2023</p>
             <USeparator class="my-4" />
-            <p>Last Login: Jan 1, 2026</p>
+            <p><span class="font-bold">Last Login:</span> Jan 1, 2026</p>
           </div>
         </div>
       </div>
     </section>
-    <section class="bg-white rounded-[20px] mt-6">
-      <UPageGrid :ui="{ base: '' }" class="bg-[#FFFFFF] py-5 px-3 sm:px-4 sm:py-4.5 lg:px-6 gap-4 rounded-xl grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-        <div class="relative col-span-3 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-3">
-          <div>
-            <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
-              vhehk;ssio
-            </h3>
-            <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
-              Referral Code
-            </h4>
-          </div>
-          <button
-            class="absolute top-4 right-4 bg-[#C4ECFE] p-1 px-2 rounded-sm h-fit text-[14px]"
-          >
-            <span>Copy</span>
-          </button>
-        </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-            #20,000
-          </h3>
-          <h4 class="text-[#565252] text-[12px] md:text-[16px] md:tracking-[5%]">
-            Referal Bonus
-          </h4>
-        </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3">
-          <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px]">
-            #20,000
-          </h3>
-          <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-            Total Referrals
-          </h4>
-        </div>
-        <div class="bg-[#F2FBFF] rounded-lg flex flex-col text-center justify-center items-center p-3 py-2">
-          <span class="flex gap-2 font-bold">
-            <NuxtImg src="images/dashboard/giftboxblue.svg" alt="Withdraw earnings" class="text-primary w-6 h-6 inline" />
-            #20,000
-          </span>
-          <h4 class="text-[#565252] text-[12px] md:text-[16px] text-center md:tracking-[5%]">
-            Total Withdrawal
-          </h4>
-        </div>
-      </UPageGrid>
-    </section>
+
     <section class="mt-6 bg-white p-4 rounded-[20px]">
       <h2 class="sm:hidden inline text-[#34383D] text-[14px] sm:text-[20px] font-bold leading-[150%] tracking-[2%]">
         Transaction History

@@ -16,11 +16,23 @@ definePageMeta({
 })
 
 const UButton = resolveComponent('UButton')
-// const UBadge = resolveComponent('UBadge')
+const UBadge = resolveComponent('UBadge')
 const UDropdownMenu = resolveComponent('UDropdownMenu')
 
 const toast = useToast()
 const { copy } = useClipboard()
+
+const columnFilters = ref<{ id: string, value: unknown }[]>([])
+
+const activeStatusFilter = computed(() =>
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'paid' | 'failed' | 'refunded' | null,
+)
+
+function setStatusFilter(value: 'paid' | 'failed' | 'refunded' | null) {
+  columnFilters.value = value
+    ? [{ id: 'status', value }]
+    : []
+}
 
 interface Payment {
   id: string
@@ -214,6 +226,16 @@ const columns: TableColumn<Payment>[] = [
     },
   },
   {
+    accessorKey: 'status',
+    header: 'Status',
+    filterFn: (row, columnId, filterValue) => row.getValue(columnId) === filterValue,
+    cell: ({ row }) => {
+      const colorMap = { paid: 'success', failed: 'error', refunded: 'warning' } as const
+      const color = colorMap[row.original.status] ?? 'neutral'
+      return h(UBadge, { class: 'capitalize', variant: 'subtle', color }, () => row.original.status)
+    },
+  },
+  {
     id: 'actions',
     meta: {
       class: {
@@ -304,10 +326,51 @@ const globalFilter = ref('')
       </h2>
       <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-112.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search for transactions" />
       <UPopover>
-        <UButton label="Filter" leading-icon="i-lucide-list-filter" :ui="{ base: 'md:px-5 md:py-2.5 text-[#4D5155] bg-[#DBF4FF] rounded-[4px] md:rounded-[12px]', label: 'text-[#4D5155] font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }" />
+        <UButton
+          :label="activeStatusFilter ? 'Filter (1)' : 'Filter'"
+          leading-icon="i-lucide-list-filter"
+          :ui="{ base: 'md:px-5 md:py-2.5 rounded-[4px] md:rounded-[12px]', label: 'font-semibold text-[16px]', leadingIcon: 'size-4 md:size-5' }"
+          :color="activeStatusFilter ? 'primary' : 'neutral'"
+          :variant="activeStatusFilter ? 'subtle' : 'ghost'"
+          :style="!activeStatusFilter ? 'color: #4D5155; background: #DBF4FF;' : ''"
+        />
         <template #content>
-          <div class="p-4">
-            <h2>Categories</h2>
+          <div class="p-3 flex flex-col gap-1 min-w-36">
+            <p class="text-xs font-semibold text-[#9CA3AF] uppercase tracking-wide px-2 mb-1">
+              Status
+            </p>
+            <UButton
+              label="All"
+              size="sm"
+              :variant="!activeStatusFilter ? 'soft' : 'ghost'"
+              :color="!activeStatusFilter ? 'primary' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter(null)"
+            />
+            <UButton
+              label="Paid"
+              size="sm"
+              :variant="activeStatusFilter === 'paid' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'paid' ? 'success' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('paid')"
+            />
+            <UButton
+              label="Failed"
+              size="sm"
+              :variant="activeStatusFilter === 'failed' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'failed' ? 'error' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('failed')"
+            />
+            <UButton
+              label="Refunded"
+              size="sm"
+              :variant="activeStatusFilter === 'refunded' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'refunded' ? 'warning' : 'neutral'"
+              class="justify-start"
+              @click="setStatusFilter('refunded')"
+            />
           </div>
         </template>
       </UPopover>
@@ -321,7 +384,7 @@ const globalFilter = ref('')
       />
     </div>
     <UTable
-      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" :data="transactions"
+      ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" :data="transactions"
       :columns="columns" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
