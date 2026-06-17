@@ -391,7 +391,7 @@ const globalFilter = ref('')
           </div>
           <div class="">
             <p><span class="font-bold">Sign Up Date:</span> Jan 1, 2023</p>
-            <USeparator class="my-4" color="#4D5155" />
+            <USeparator class="my-4" />
             <p><span class="font-bold">Last Login:</span> Jan 1, 2026</p>
           </div>
         </div>
