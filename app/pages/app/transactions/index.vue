@@ -25,7 +25,7 @@ const { copy } = useClipboard()
 const columnFilters = ref<{ id: string, value: unknown }[]>([])
 
 const activeStatusFilter = computed(() =>
-  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'paid' | 'failed' | 'refunded' | null
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'paid' | 'failed' | 'refunded' | null,
 )
 
 function setStatusFilter(value: 'paid' | 'failed' | 'refunded' | null) {

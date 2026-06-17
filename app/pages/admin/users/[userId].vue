@@ -2,7 +2,7 @@
 import type { DropdownMenuItem, TableColumn } from '@nuxt/ui'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
-import TransactionStats from './components/TransactionStats.vue'
+import TransactionStats from './components/UserTransactionStats.vue'
 
 const UBadge = resolveComponent('UBadge')
 

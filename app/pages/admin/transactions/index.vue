@@ -34,11 +34,11 @@ const transactions = computed(() => {
 const columnFilters = ref<{ id: string, value: unknown }[]>([])
 
 const activeStatusFilter = computed(() =>
-  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as string | null
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as string | null,
 )
 
 const activeTypeFilter = computed(() =>
-  (columnFilters.value.find(f => f.id === 'type')?.value ?? null) as string | null
+  (columnFilters.value.find(f => f.id === 'type')?.value ?? null) as string | null,
 )
 
 const activeFilterCount = computed(() => columnFilters.value.length)

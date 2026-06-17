@@ -1,7 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'Settings',
-  layout: 'dashboard-layout',
+  layout: 'admin',
   keepalive: true,
 })
 

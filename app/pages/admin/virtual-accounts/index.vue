@@ -18,7 +18,7 @@ const globalFilter = ref('')
 const columnFilters = ref<{ id: string, value: unknown }[]>([])
 
 const activeStatusFilter = computed(() =>
-  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'disabled' | null
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'disabled' | null,
 )
 
 function setStatusFilter(value: 'active' | 'disabled' | null) {
