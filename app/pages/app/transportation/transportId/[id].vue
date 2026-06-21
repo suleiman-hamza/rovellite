@@ -77,7 +77,7 @@ const selectPlan = computed(() => {
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/transportation" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/transportation" variant="outline" class="hidden md:inline-block" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
     <!-- Loading Skeleton when data is fetching from the API -->
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
