@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
-import { useCartStore } from '#imports'
 
 const { getUser } = useAuth()
-const cartStore = useCartStore()
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 
@@ -67,21 +66,13 @@ const airtimeInfo = computed(() => {
 })
 
 function cart() {
-  // Map the scattered data to your CartItemType
-  cartStore.addToCart({
+  addToCart({
     productName: airtimeInfo.value?.productName as string,
     productId: airtimeInfo.value?.id as number,
-    amount: Number(state.amount), // Safer than parsing the state.price string
-    billerId: airtimeInfo.value?.billerId as number, // Fallback if slug isn't a number
+    amount: Number(state.amount),
+    billerId: airtimeInfo.value?.billerId as number,
     customerReference: state.phoneNumber as string,
-    image: airtimeResult.value?.image, // Add if you have it in decodeInfo
-  })
-
-  // 4. Success Toast
-  toast.add({
-    title: 'Success',
-    description: `${airtimeInfo.value?.productName} added to cart`,
-    icon: 'i-lucide-check',
+    image: airtimeResult.value?.image,
   })
 }
 

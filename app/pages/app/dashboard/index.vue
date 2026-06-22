@@ -127,7 +127,8 @@ async function createWallet() {
 }
 
 async function submitBvn() {
-  if (!state.bvn) return
+  if (!state.bvn)
+    return
   loading.value = true
   bvnResult.value = null
   try {

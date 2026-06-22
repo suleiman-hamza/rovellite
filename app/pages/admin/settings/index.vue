@@ -207,7 +207,7 @@ const account = ref<AccountSettings>({
   reenterNewPassword: '',
 })
 
-const showDeleteModal = ref(false)
+const _showDeleteModal = ref(false)
 
 const toast = useToast()
 

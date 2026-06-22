@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Package } from '@@/shared/types/biller-types'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 const { getUser } = useAuth()
@@ -63,16 +65,26 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 const selectPlan = computed(() => {
-  if (!transportDetail.value) {
-    return []
-  }
-  return transportDetail.value.platformResponse.map((plan) => {
-    return {
-      label: plan.name,
-      value: plan.id,
-    }
-  })
+  return transportDetail.value?.platformResponse?.map(plan => ({
+    label: plan.name,
+    value: plan.name,
+  })) ?? []
 })
+
+const selectedPlan = computed(() =>
+  (transportDetail.value?.platformResponse as Package[] | undefined)?.find(p => p.name === state.plan),
+)
+
+function cart() {
+  addToCart({
+    productName: selectedPlan.value?.name ?? '',
+    productId: selectedPlan.value?.id ?? 0,
+    billerId: selectedPlan.value?.billerId ?? 0,
+    amount: (selectedPlan.value?.amount ?? Number(state.amount)) || null,
+    customerReference: state.profileId ?? '',
+    image: transportDetail.value?.image,
+  })
+}
 </script>
 
 <template>
@@ -107,7 +119,7 @@ const selectPlan = computed(() => {
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
               <UFormField name="plan">
-                <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+                <USelect v-model="state.plan" placeholder="Plan" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <UFormField name="profileId">
@@ -123,7 +135,7 @@ const selectPlan = computed(() => {
               </UFormField>
 
               <div class="flex gap-4 md:justify-between px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   <template #leading>
                     <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
                   </template>
