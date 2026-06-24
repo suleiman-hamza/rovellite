@@ -11,29 +11,25 @@ import { mapFirebaseError } from '@/utils/firebase-error'
 useSeoMeta({ title: 'Login - Welcome Back' })
 definePageMeta({
   layout: 'auth-layout',
+  middleware: 'guest',
 })
 
 const store = useProfileStore()
 const toast = useToast()
-const { getUser, signIn, isEmailVerified } = useAuth()
+const { signIn, isEmailVerified } = useAuth()
 
 const loading = ref(false)
+const isLoggingIn = ref(false)
 
 const state = reactive<Partial<Schema>>({
   email: undefined,
   password: undefined,
 })
 
-// Watch user for redirect if already logged in
-watch(getUser, (currentUser) => {
-  if (currentUser) {
-    navigateTo('/app/dashboard')
-  }
-})
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     loading.value = true
+    isLoggingIn.value = true
 
     const firebaseUser: User = await signIn(
       event.data.email,
@@ -46,6 +42,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         title: 'Email Not Verified',
         description: 'Please verify your email to continue.',
       })
+      isLoggingIn.value = false
       return // Prevent navigation until verified
     }
 
@@ -58,6 +55,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   catch (error: any) {
     loading.value = false
+    isLoggingIn.value = false
 
     const message = mapFirebaseError(error)
     displayError(message)

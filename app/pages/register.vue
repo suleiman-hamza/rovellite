@@ -9,6 +9,7 @@ import { mapFirebaseError } from '@/utils/firebase-error'
 useSeoMeta({ title: 'Welcome - Get Started' })
 definePageMeta({
   layout: 'auth-layout',
+  middleware: 'guest',
 })
 
 const toast = useToast()

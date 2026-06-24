@@ -2,6 +2,7 @@
 useSeoMeta({ title: 'OnBoarding - RovelSub Point' })
 definePageMeta({
   layout: 'auth-layout',
+  middleware: 'guest',
 })
 </script>
 

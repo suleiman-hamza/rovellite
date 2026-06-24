@@ -59,16 +59,6 @@ export default defineEventHandler(async (event) => {
     // Generate/mint and set Firebase Session Cookie
     await createAndSetFirebaseSessionCookie(event, idToken)
 
-    // --- TERMINAL TESTING LOGGER ---
-    // console.warn('\n======================================================')
-    // console.warn('⚡ [AUTH GATEWAY] PROCESSING LOGIN DISPATCH')
-    // console.warn(`   User UID:      ${decodedToken.uid}`)
-    // console.warn(`   User Email:    ${decodedToken.email}`)
-    // console.warn(`   Supabase Role: ${actualDbRole.toUpperCase()}`)
-    // console.warn(`   Claims Sync:   ${claimsUpdated ? '⚠️ OUT OF SYNC (FIXED)' : '✅ PERFECT'}`)
-    // console.warn(`   Target Route:  ${actualDbRole === 'admin' ? '/admin/dashboard' : '/dashboard'}`)
-    // console.warn('======================================================\n')
-
     return apiResponse.success({
       profile,
       role: actualDbRole,

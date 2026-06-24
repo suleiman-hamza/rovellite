@@ -5,6 +5,7 @@ import {
   signOut,
 } from 'firebase/auth'
 import { ref } from 'vue'
+import { useProfileStore } from '@/stores/profile'
 
 // Authethentication composable
 export function useAuth() {
@@ -83,14 +84,6 @@ export function useAuth() {
           ? ADMIN_DASHBOARD_PATH
           : USER_DASHBOARD_PATH
 
-        // --- FRONTEND REDIRECTION PROOF ---
-        // console.warn(`[Frontend Router] Handoff successful. Attempting navigation to: ${redirectPath}`)
-
-        // Temporary guard for non-existent admin page during development
-        // if (userRole === 'admin') {
-        //   console.warn(`Success! REDIRECTING TO ADMIN: The system gracefully calculated the role and is now executing a push to: ${redirectPath}`)
-        // }
-
         await navigateTo(redirectPath)
       }
 
@@ -158,6 +151,8 @@ export function useAuth() {
         throw new Error('Failed to log out on server')
       }
       else {
+        const profileStore = useProfileStore()
+        profileStore.clearProfile()
         user.value = null
         return result
       }
