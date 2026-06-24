@@ -8,12 +8,6 @@ import { createAdminSupabaseClient } from '#server/utils/supabase'
 type UserRole = Database['public']['Enums']['user_role']
 
 export default defineEventHandler(async (event) => {
-  // Guard the route: Ensure the requester is an admin
-  const requester = event.context.user
-  if (!requester || requester.role !== 'admin') {
-    return apiResponse.error('You do not have permission to perform this action.', 403)
-  }
-
   // Parse the target user and the new role from the request body
   const { targetUserId, newRole } = await readBody<{ targetUserId: string, newRole: UserRole }>(event)
 

@@ -1,19 +1,8 @@
-import type { Database } from '~~/types/supabase-schema'
+import type { UserRole } from '~~/types/supabase'
 import admin from 'firebase-admin'
 import { defineEventHandler, getCookie } from 'h3'
 import { handleUtilityError } from '~~/server/utils/error-handler'
 import { clearFirebaseSessionCookie, setFirebaseSessionCookie } from '~~/server/utils/session'
-
-type UserRole = Database['public']['Enums']['user_role']
-
-// Extend H3's runtime context type interface so event.context.user is globally known
-declare module 'h3' {
-  interface H3EventContext {
-    user?: admin.auth.DecodedIdToken & {
-      role?: UserRole
-    }
-  }
-}
 
 export default defineEventHandler(async (event) => {
   // Skip static assets, internal Nuxt calls, and the logout route
@@ -44,7 +33,10 @@ export default defineEventHandler(async (event) => {
 
     event.context.user = undefined
 
-    // console.warn('Session automatically revoked:', error.message)
-    return handleUtilityError(error, 'Session cleared due to authentication error')
+    // Only return JSON error responses for actual API routes.
+    // For page requests (non-API), let the request complete so the Nuxt auth middleware can redirect cleanly.
+    if (event.path.startsWith('/api/')) {
+      return handleUtilityError(error, 'Session cleared due to authentication error')
+    }
   }
 })

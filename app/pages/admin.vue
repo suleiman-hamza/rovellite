@@ -2,7 +2,7 @@
 definePageMeta({
   layout: 'admin',
   // keepalive: true,
-  // middleware: 'auth',
+  middleware: 'auth',
 })
 </script>
 

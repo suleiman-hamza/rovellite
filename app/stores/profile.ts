@@ -41,7 +41,7 @@ export const useProfileStore = defineStore('profile', () => {
 
     try {
       const firebaseUser = getUser()
-      const queryUid = uid || firebaseUser?.uid || (firebaseUser as any)?.user_id || null
+      const queryUid = uid || firebaseUser?.uid || null
       const queryEmail = email || firebaseUser?.email || null
 
       if (!queryUid && !queryEmail) {

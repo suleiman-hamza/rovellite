@@ -7,6 +7,7 @@ const auth = getAuth()
 
 definePageMeta({
   layout: 'auth-layout',
+  middleware: 'guest',
 })
 useSeoMeta({
   title: 'Forgot Password',
