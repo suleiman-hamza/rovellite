@@ -74,7 +74,7 @@ if (VAerror.value) {
 const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
-const refferalCode = ref('vvshsiahehk;ssio')
+const refferalCode = store.userProfile?.invite_code
 const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
