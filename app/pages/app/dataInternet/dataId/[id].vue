@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { Package } from '@@/shared/types/biller-types'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
 const { getUser } = useAuth()
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 
@@ -49,30 +51,25 @@ const { data: result, error: fetcherror, refresh, status } = await useLazyFetch(
 // }
 
 const selectPlan = computed(() => {
-  if (!result.value) {
-    return []
-  }
-  return result.value.dataplan.map((plan) => {
-    return {
-      label: plan.name,
-      value: plan.id,
-    }
-  })
+  return result.value?.dataplan?.map(plan => ({
+    label: plan.name,
+    value: plan.name,
+  })) ?? []
 })
 
-// loading state for add to cart button
-const loading = ref(false)
+const selectedPlan = computed(() =>
+  (result.value?.dataplan as Package[] | undefined)?.find(p => p.name === state.plan),
+)
 
-// Simulate adding to cart with a loading state
-function addToCart() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    toast.add({
-      title: 'Added to Cart',
-      description: 'The item has been added to your cart.',
-    })
-  }, 2000)
+function cart() {
+  addToCart({
+    productName: selectedPlan.value?.name ?? '',
+    productId: selectedPlan.value?.id ?? 0,
+    billerId: selectedPlan.value?.billerId ?? 0,
+    amount: selectedPlan.value?.amount ?? null,
+    customerReference: state.phoneNumber ?? '',
+    image: result.value?.image,
+  })
 }
 </script>
 
@@ -109,18 +106,18 @@ function addToCart() {
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
               <UFormField name="agent">
-                <USelect placeholder="Plan" :items="selectPlan" size="xl" class="w-full" />
+                <USelect v-model="state.plan" placeholder="Plan" :items="selectPlan" size="xl" class="w-full" />
                 <p class="text-[14px] mt-2">
                   Minimum: #100 | Maximun: #100
                 </p>
               </UFormField>
 
               <UFormField name="id">
-                <UInput size="xl" inputmode="numeric" maxlength="11" placeholder="Phone Number" class="w-full" />
+                <UInput v-model="state.phoneNumber" size="xl" inputmode="numeric" maxlength="11" placeholder="Phone Number" class="w-full" />
               </UFormField>
 
               <div class="flex gap-4 px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   Add to Cart
                 </UButton>
                 <UButton

@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { Package } from '@@/shared/types/biller-types'
 import type { FormSubmitEvent } from '@nuxt/ui'
+
 import { z } from 'zod'
 
-// import type { Package } from '@@/shared/types/biller-types'
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 const { getUser } = useAuth()
@@ -64,21 +66,31 @@ function onSubmit(event: FormSubmitEvent<Schema>) {
 }
 
 const selectPlan = computed(() => {
-  if (!discoSlug.value) {
-    return []
-  }
-  return discoSlug.value.discoResponse.map((plan) => {
-    return {
-      label: plan.name,
-      value: plan.id,
-    }
-  })
+  return discoSlug.value?.discoResponse?.map(plan => ({
+    label: plan.name,
+    value: plan.name,
+  })) ?? []
 })
+
+const selectedPlan = computed(() =>
+  (discoSlug.value?.discoResponse as Package[] | undefined)?.find(p => p.name === state.package),
+)
+
+function cart() {
+  addToCart({
+    productName: selectedPlan.value?.name ?? '',
+    productId: selectedPlan.value?.id ?? 0,
+    billerId: selectedPlan.value?.billerId ?? 0,
+    amount: Number(state.amount) || null,
+    customerReference: state.meterNumber ?? '',
+    image: discoSlug.value?.image,
+  })
+}
 </script>
 
 <template>
   <main class="bg-white font-poppins rounded-[20px] md:p-7 relative">
-    <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="md:hidden" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
+    <UButton icon="i-lucide-arrow-left" to="/app/electricity" variant="outline" class="hidden md:inline-block" :ui="{ base: 'bg-secondary/10 ring-secondary/25 text-primary hover:bg-primary/25' }" />
     <div v-if="status === 'pending'" class="">
       <SlugSkeleton />
     </div>
@@ -106,7 +118,7 @@ const selectPlan = computed(() => {
           <div class="px-4 sm:px-6">
             <UForm :schema="formSchema" :state="state" class="space-y-4 md:space-y-6" @submit="onSubmit">
               <UFormField name="package">
-                <USelect placeholder="Select Meter Type" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
+                <USelect v-model="state.package" placeholder="Select Meter Type" :items="selectPlan" size="xl" class="w-full placeholder:text-[#4D5155]" />
               </UFormField>
 
               <UFormField name="meterNumber">
@@ -122,7 +134,7 @@ const selectPlan = computed(() => {
               </UFormField>
 
               <div class="flex gap-4 md:justify-between px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   <template #leading>
                     <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
                   </template>

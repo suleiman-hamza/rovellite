@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
-import { useCartStore } from '#imports'
 
-// import type { Package } from '@@/shared/types/biller-types'
-const cartStore = useCartStore()
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 const { getUser } = useAuth()
@@ -110,32 +108,13 @@ const selectPlan = computed(() => {
 
 function cart() {
   const selectedPlanDetails = selectPlan.value.find(plan => plan.name === state.plan)
-
-  // Guard clause: Ensure a plan and decoder number are present
-  if (!selectedPlanDetails || !state.decoderNumber) {
-    toast.add({
-      title: 'Missing Information',
-      description: 'Please select a plan and enter a decoder number.',
-      icon: 'i-lucide-close',
-    })
-    return
-  }
-
-  // 2. Map the scattered data to your CartItemType
-  cartStore.addToCart({
-    productName: selectedPlanDetails.name,
-    productId: selectedPlanDetails.id,
-    amount: selectedPlanDetails.amount, // Safer than parsing the state.price string
-    billerId: selectedPlanDetails.billerId, // Fallback if slug isn't a number
-    customerReference: state.decoderNumber as string,
-    image: decodeInfo.value?.image, // Add if you have it in decodeInfo
-  })
-
-  // 4. Success Toast
-  toast.add({
-    title: 'Success',
-    description: `${selectedPlanDetails.name} added to cart`,
-    icon: 'i-lucide-check',
+  addToCart({
+    productName: selectedPlanDetails?.name ?? '',
+    productId: selectedPlanDetails?.id ?? 0,
+    amount: selectedPlanDetails?.amount ?? null,
+    billerId: selectedPlanDetails?.billerId ?? 0,
+    customerReference: state.decoderNumber ?? '',
+    image: decodeInfo.value?.image,
   })
 }
 </script>
@@ -217,9 +196,6 @@ function cart() {
                   Checkout
                 </UButton>
               </div>
-              <p>{{ state.plan }}</p>
-              <p>{{ state.decoderNumber }}</p>
-              <p>{{ state.phoneNumber }}</p>
             </UForm>
           </div>
         </div>

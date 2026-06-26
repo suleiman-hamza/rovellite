@@ -74,26 +74,32 @@ if (VAerror.value) {
 const source = virtualAccountDetails.value?.data?.virtual_account_no || ''
 const { copy, copied } = useClipboard({ source, copiedDuring: 3000 })
 
-const refferalCode = ref('vvshsiahehk;ssio')
+const refferalCode = store.userProfile?.invite_code
 const { copy: copyReferralCode, copied: copiedReferralCode } = useClipboard({ source: refferalCode, copiedDuring: 3000 })
 const loading = ref(false)
 
-// const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
-// const isDesktop = useMediaQuery('(min-width: 768px)')
+const [DefineFormTemplate, ReuseFormTemplate] = createReusableTemplate()
+const isDesktop = useMediaQuery('(min-width: 768px)')
 
-// const open = ref(false)
+const open = ref(false)
 
-// const state = reactive({
-//   email: undefined,
-//   fullname: undefined,
-//   bvn: undefined,
-// })
+const state = reactive({
+  bvn: undefined as string | undefined,
+})
 
-// const title = 'Create Wallet'
-// const description = 'You are required by the federal government of Nigeria, to submit your van information in order to use financial services provided by palmpay'
+const bvnResult = ref<{ success: boolean, message: string } | null>(null)
+
+watch(open, (val) => {
+  if (!val) {
+    bvnResult.value = null
+    state.bvn = undefined
+  }
+})
+
+const title = 'Create Wallet'
+const description = 'You are required by the federal government of Nigeria, to submit your BVN information in order to use financial services provided by palmpay'
 
 async function createWallet() {
-  loading.value = true
   try {
     const response = await $fetch('/api/virtual-account/create', {
       method: 'POST',
@@ -105,17 +111,47 @@ async function createWallet() {
       toast.add({
         title: 'Failed to create account number',
         description: response.message,
+        color: 'error',
       })
     }
     else {
-      toast.add({
-        title: 'Account Created Succesfully',
-      })
-      await refreshNuxtData('virtual-account') // the key passed is set when fetching VaAccount with useAsyncData()
+      toast.add({ title: 'Account Created Successfully' })
+      await refreshNuxtData('virtual-account')
+      open.value = false
     }
   }
   catch (error) {
     console.error('Error creating wallet:', error)
+    toast.add({ title: 'Error', description: 'Failed to create wallet', color: 'error' })
+  }
+}
+
+async function submitBvn() {
+  if (!state.bvn)
+    return
+  loading.value = true
+  bvnResult.value = null
+  try {
+    const response = await $fetch('/api/bvn/verify', {
+      method: 'POST',
+      body: {
+        userId: store.userProfile?.user_id,
+        bvn: state.bvn,
+      },
+    })
+    if (response.success) {
+      bvnResult.value = { success: true, message: 'BVN verified. Creating your wallet...' }
+      await createWallet()
+    }
+    else {
+      bvnResult.value = { success: false, message: response.message || 'BVN verification failed' }
+    }
+  }
+  catch (error: any) {
+    bvnResult.value = {
+      success: false,
+      message: error?.data?.message || error?.message || 'Failed to verify BVN',
+    }
   }
   finally {
     loading.value = false
@@ -167,46 +203,42 @@ async function createWallet() {
         <p class="font-semibold md:font-bold text-white text-[14px] md:text-[24px]">
           You have no wallet
         </p>
-        <UButton class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
-          <span v-if="loading">Processing</span>
-          <span v-else>Create Wallet</span>
-        </UButton>
-        <!-- <DefineFormTemplate>
-          <UForm :state="state" class="space-y-4">
-            <UFormField label="Full Name" name="fullname" required>
-              <UInput v-model="state.fullname" placeholder="John Doe" required />
-            </UFormField>
+
+        <DefineFormTemplate>
+          <UForm :state="state" class="space-y-4" @submit="submitBvn">
             <UFormField label="Bank Verification Number (BVN)" name="bvn" required>
               <UInput v-model="state.bvn" placeholder="12345678901" required />
             </UFormField>
 
-            <UButton label="Submit" :loading :disabled="loading" type="submit" />
+            <p v-if="bvnResult" :class="bvnResult.success ? 'text-green-600' : 'text-red-500'" class="text-sm">
+              {{ bvnResult.message }}
+            </p>
+
+            <UButton label="Submit" :loading="loading" :disabled="loading" type="submit" />
           </UForm>
-        </DefineFormTemplate> -->
+        </DefineFormTemplate>
 
         <!-- create wallet btn for desktop activates modal for validating bvn -->
-        <!-- <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
-          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
-            <span v-if="loading">Processing</span>
-            <span v-else>Create Wallet</span>
+        <UModal v-if="isDesktop" v-model:open="open" :title="title" :description="description">
+          <UButton size="lg" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }">
+            Create Wallet
           </UButton>
 
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UModal> -->
+        </UModal>
 
         <!-- create wallet btn for mobile activates drawer for validating bvn -->
-        <!-- <UDrawer v-else v-model:open="open" :title="title" :description="description">
-          <UButton :loading :disabled="loading" class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }" @click="createWallet">
-            <span v-if="loading">Processing</span>
-            <span v-else>Create Wallet</span>
+        <UDrawer v-else v-model:open="open" :title="title" :description="description">
+          <UButton class="text-[12px] md:text-[20px] md:font-bold hover:bg-secondary" :ui="{ base: 'text-[#1177FE] bg-white flex items-center justify-center rounded-[8px] sm:rounded-[12px]' }">
+            Create Wallet
           </UButton>
 
           <template #body>
             <ReuseFormTemplate />
           </template>
-        </UDrawer> -->
+        </UDrawer>
       </div>
     </section>
 

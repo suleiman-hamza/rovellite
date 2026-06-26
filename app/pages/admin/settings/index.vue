@@ -13,7 +13,7 @@ const navItems: { key: SettingsSection, label: string }[] = [
   { key: 'general', label: 'General' },
   { key: 'security', label: 'Security' },
   { key: 'payment', label: 'Payment' },
-  { key: 'api', label: 'API & Integration' },
+  { key: 'api', label: 'API & Intergration' },
   { key: 'services', label: 'Services' },
   { key: 'notification', label: 'Notification' },
   { key: 'account', label: 'Account' },
@@ -103,10 +103,117 @@ function isEditingPayment(field: 'transactionCharges' | 'minimumFunding') {
   return editingPaymentFields.value.has(field)
 }
 
+interface ApiSettings {
+  apiKey: string
+  webhookUrl: string
+  callbackUrl: string
+}
+
+const api = ref<ApiSettings>({
+  apiKey: '',
+  webhookUrl: '',
+  callbackUrl: '',
+})
+
+const editingApiFields = ref<Set<keyof ApiSettings>>(new Set())
+
+function toggleApiEdit(field: keyof ApiSettings) {
+  if (editingApiFields.value.has(field)) {
+    editingApiFields.value.delete(field)
+  }
+  else {
+    editingApiFields.value.add(field)
+  }
+  editingApiFields.value = new Set(editingApiFields.value)
+}
+
+function isEditingApi(field: keyof ApiSettings) {
+  return editingApiFields.value.has(field)
+}
+
+interface ServicesSettings {
+  data: boolean
+  airtime: boolean
+  tvDecoder: boolean
+  electricity: boolean
+  betting: boolean
+  education: boolean
+  eSim: boolean
+  transportation: boolean
+  solar: boolean
+  giftCards: boolean
+}
+
+const services = ref<ServicesSettings>({
+  data: true,
+  airtime: true,
+  tvDecoder: true,
+  electricity: true,
+  betting: true,
+  education: true,
+  eSim: true,
+  transportation: true,
+  solar: true,
+  giftCards: true,
+})
+
+const serviceItems: { key: keyof ServicesSettings, label: string }[] = [
+  { key: 'data', label: 'Data' },
+  { key: 'airtime', label: 'Airtime' },
+  { key: 'tvDecoder', label: 'TV/Decoder' },
+  { key: 'electricity', label: 'Electricity' },
+  { key: 'betting', label: 'Betting' },
+  { key: 'education', label: 'Education' },
+  { key: 'eSim', label: 'eSim' },
+  { key: 'transportation', label: 'Transportation' },
+  { key: 'solar', label: 'Solar' },
+  { key: 'giftCards', label: 'Gift Cards' },
+]
+
+interface NotificationSettings {
+  email: boolean
+  walletFunding: boolean
+  failedTransaction: boolean
+  successfulTransactions: boolean
+}
+
+const notification = ref<NotificationSettings>({
+  email: true,
+  walletFunding: true,
+  failedTransaction: true,
+  successfulTransactions: true,
+})
+
+const notificationItems: { key: keyof NotificationSettings, label: string }[] = [
+  { key: 'email', label: 'Email' },
+  { key: 'walletFunding', label: 'Wallet Funding' },
+  { key: 'failedTransaction', label: 'Failed Transaction' },
+  { key: 'successfulTransactions', label: 'Successful Transactions' },
+]
+
+interface AccountSettings {
+  name: string
+  email: string
+  currentPassword: string
+  newPassword: string
+  reenterNewPassword: string
+}
+
+const account = ref<AccountSettings>({
+  name: 'Rovel Jamia',
+  email: 'rovel20@gmail.com',
+  currentPassword: '',
+  newPassword: '',
+  reenterNewPassword: '',
+})
+
+const _showDeleteModal = ref(false)
+
 const toast = useToast()
 
 function handleUpdate() {
   editingFields.value = new Set()
+  editingApiFields.value = new Set()
   toast.add({
     title: 'Settings updated successfully!',
     color: 'success',
@@ -420,16 +527,243 @@ function handleUpdate() {
           </div>
         </template>
 
-        <!-- Placeholder for other sections -->
-        <template v-else>
+        <!-- API & Integration Section -->
+        <template v-else-if="activeSection === 'api'">
           <div class="flex justify-between items-center mb-6">
-            <h3 class="text-[#34383D] text-[20px] font-bold capitalize">
-              {{ navItems.find(n => n.key === activeSection)?.label }}
+            <h3 class="text-[#34383D] text-[20px] font-bold">
+              API & Intergration
             </h3>
+            <UButton
+              label="Update"
+              color="primary"
+              :ui="{ base: 'rounded-full px-8 py-2.5', label: 'font-semibold text-[16px]' }"
+              @click="handleUpdate"
+            />
           </div>
-          <p class="text-[#9CA3AF] text-[15px]">
-            This section is coming soon.
-          </p>
+
+          <div class="flex flex-col gap-5">
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">API Key</label>
+              <div class="flex gap-2 items-center">
+                <UInput
+                  v-model="api.apiKey"
+                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+                  :disabled="!isEditingApi('apiKey')"
+                  class="flex-1"
+                  :ui="{ base: 'rounded-[8px] py-2.5 px-4 disabled:bg-white disabled:cursor-default' }"
+                />
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="neutral"
+                  variant="outline"
+                  :ui="{ base: 'rounded-[8px] p-2.5', leadingIcon: 'size-5' }"
+                  @click="toggleApiEdit('apiKey')"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">Webhook URL</label>
+              <div class="flex gap-2 items-center">
+                <UInput
+                  v-model="api.webhookUrl"
+                  placeholder="https://example.com/webhook"
+                  :disabled="!isEditingApi('webhookUrl')"
+                  class="flex-1"
+                  :ui="{ base: 'rounded-[8px] py-2.5 px-4 disabled:bg-white disabled:cursor-default' }"
+                />
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="neutral"
+                  variant="outline"
+                  :ui="{ base: 'rounded-[8px] p-2.5', leadingIcon: 'size-5' }"
+                  @click="toggleApiEdit('webhookUrl')"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">Callback URL</label>
+              <div class="flex gap-2 items-center">
+                <UInput
+                  v-model="api.callbackUrl"
+                  placeholder="https://example.com/callback"
+                  :disabled="!isEditingApi('callbackUrl')"
+                  class="flex-1"
+                  :ui="{ base: 'rounded-[8px] py-2.5 px-4 disabled:bg-white disabled:cursor-default' }"
+                />
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="neutral"
+                  variant="outline"
+                  :ui="{ base: 'rounded-[8px] p-2.5', leadingIcon: 'size-5' }"
+                  @click="toggleApiEdit('callbackUrl')"
+                />
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Services Section -->
+        <template v-else-if="activeSection === 'services'">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-[#34383D] text-[20px] font-bold">
+              Services
+            </h3>
+            <UButton
+              label="Update"
+              color="primary"
+              :ui="{ base: 'rounded-full px-8 py-2.5', label: 'font-semibold text-[16px]' }"
+              @click="handleUpdate"
+            />
+          </div>
+
+          <div class="flex flex-col divide-y divide-[#E5E7EB]">
+            <div
+              v-for="item in serviceItems"
+              :key="item.key"
+              class="flex justify-between items-center py-5"
+            >
+              <div>
+                <p class="text-[#34383D] text-[15px] font-semibold">
+                  {{ item.label }}
+                </p>
+                <p class="text-[#6B7280] text-[14px] mt-0.5">
+                  {{ services[item.key] ? 'On' : 'Off' }}
+                </p>
+              </div>
+              <USwitch v-model="services[item.key]" color="success" />
+            </div>
+          </div>
+        </template>
+
+        <!-- Notification Section -->
+        <template v-else-if="activeSection === 'notification'">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="text-[#34383D] text-[20px] font-bold">
+              Notification
+            </h3>
+            <UButton
+              label="Update"
+              color="primary"
+              :ui="{ base: 'rounded-full px-8 py-2.5', label: 'font-semibold text-[16px]' }"
+              @click="handleUpdate"
+            />
+          </div>
+
+          <div class="flex flex-col divide-y divide-[#E5E7EB]">
+            <div
+              v-for="item in notificationItems"
+              :key="item.key"
+              class="flex justify-between items-center py-5"
+            >
+              <div>
+                <p class="text-[#34383D] text-[15px] font-semibold">
+                  {{ item.label }}
+                </p>
+                <p class="text-[#6B7280] text-[14px] mt-0.5">
+                  {{ notification[item.key] ? 'On' : 'Off' }}
+                </p>
+              </div>
+              <USwitch v-model="notification[item.key]" color="success" />
+            </div>
+          </div>
+        </template>
+
+        <!-- Account Section -->
+        <template v-else-if="activeSection === 'account'">
+          <!-- Profile banner -->
+          <div class="relative bg-[#DBF4FF] rounded-[12px] flex items-center justify-center py-8 mb-6">
+            <div class="relative">
+              <div class="w-20 h-20 rounded-full overflow-hidden border-4 border-white">
+                <img
+                  src="https://i.pravatar.cc/80"
+                  alt="Profile"
+                  class="w-full h-full object-cover"
+                >
+              </div>
+              <button class="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow border border-[#E5E7EB]">
+                <UIcon name="i-lucide-camera" class="size-4 text-[#6B7280]" />
+              </button>
+            </div>
+            <button class="absolute top-4 right-4 flex items-center gap-1.5 text-[#34383D] text-[14px] font-medium hover:text-red-500 transition-colors">
+              Delete Account
+              <UIcon name="i-lucide-trash-2" class="size-4" />
+            </button>
+          </div>
+
+          <!-- Account info -->
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-[#34383D] text-[20px] font-bold">
+              Account
+            </h3>
+            <UButton
+              label="Update"
+              color="primary"
+              :ui="{ base: 'rounded-full px-8 py-2.5', label: 'font-semibold text-[16px]' }"
+              @click="handleUpdate"
+            />
+          </div>
+
+          <div class="flex flex-col gap-3 mb-8">
+            <div>
+              <p class="text-[#34383D] text-[15px] font-bold">
+                Name
+              </p>
+              <p class="text-[#6B7280] text-[15px] mt-0.5">
+                {{ account.name }}
+              </p>
+            </div>
+            <div>
+              <p class="text-[#34383D] text-[15px] font-bold">
+                Email
+              </p>
+              <p class="text-[#6B7280] text-[15px] mt-0.5">
+                {{ account.email }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Change Password -->
+          <h3 class="text-[#34383D] text-[20px] font-bold mb-5">
+            Change Password
+          </h3>
+
+          <div class="flex flex-col gap-5">
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">Add Current Password</label>
+              <UInput
+                v-model="account.currentPassword"
+                type="password"
+                placeholder="werunfjjak11"
+                class="w-full"
+                :ui="{ base: 'rounded-[8px] py-2.5 px-4' }"
+              />
+              <a href="#" class="text-[#0894DE] text-[14px] mt-1.5 inline-block hover:underline">Forgot Password?</a>
+            </div>
+
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">New Password</label>
+              <UInput
+                v-model="account.newPassword"
+                type="password"
+                placeholder="werunfjjak11"
+                class="w-full"
+                :ui="{ base: 'rounded-[8px] py-2.5 px-4' }"
+              />
+            </div>
+
+            <div>
+              <label class="block text-[#34383D] text-[15px] font-medium mb-1.5">Re-enter New Password</label>
+              <UInput
+                v-model="account.reenterNewPassword"
+                type="password"
+                placeholder="werunfjjak11"
+                class="w-full"
+                :ui="{ base: 'rounded-[8px] py-2.5 px-4' }"
+              />
+            </div>
+          </div>
         </template>
       </div>
     </div>

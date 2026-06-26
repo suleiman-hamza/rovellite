@@ -14,38 +14,38 @@ const items = computed<NavigationMenuItem[]>(() => [
     label: 'Home',
     to: '/',
     type: 'link',
-    active: route.path.startsWith('/'),
+    active: route.path === '/' && route.hash === '',
   },
   {
     label: 'Features',
     to: '#features',
     type: 'link',
-    active: route.path.includes('#features'),
+    active: route.hash === '#features',
   },
   {
     label: 'Why Choose us',
     to: '#whychooseus',
     type: 'link',
-    active: route.path.includes('#whychooseus'),
+    active: route.hash === '#whychooseus',
   },
   // The "How it Works" link is currently disabled in the nav.
   // {
   //   label: 'How it Works',
   //   to: '#howitworks',
   //   type: 'link',
-  //   active: route.path.includes('#howitworks'),
+  //   active: route.hash === '#howitworks',
   // },
   {
     label: 'FAQs',
     to: '#faqs',
     type: 'link',
-    active: route.path.includes('#faqs'),
+    active: route.hash === '#faqs',
   },
   {
     label: 'Contact us',
     to: '#contactus',
     type: 'link',
-    active: route.path.includes('#contactus'),
+    active: route.hash === '#contactus',
   },
 ])
 </script>
@@ -70,8 +70,8 @@ const items = computed<NavigationMenuItem[]>(() => [
           :items="items"
           variant="link"
           highlight
-          highlight-color="secondary"
-          color="secondary"
+          highlight-color="primary"
+          color="primary"
           :ui="{ linkLabel: 'font-semibold text-[18px] leading-[150%] tracking-[2%]' }"
         />
       </div>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Package } from '@@/shared/types/biller-types'
 import type { FormSubmitEvent } from '@nuxt/ui'
 import { z } from 'zod'
 
+const { addToCart } = useAddToCart()
 const route = useRoute()
 const toast = useToast()
 
@@ -92,19 +94,19 @@ const selectPlan = computed(() => {
   })
 })
 
-// loading state for add to cart button
-const loading = ref(false)
+const selectedBet = computed(() =>
+  (betPlatform.value?.bettinPlan as Package[] | undefined)?.find(p => p.name === state.agent),
+)
 
-// Simulate adding to cart with a loading state
-function addToCart() {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-    toast.add({
-      title: 'Added to Cart',
-      description: 'The item has been added to your cart.',
-    })
-  }, 2000)
+function cart() {
+  addToCart({
+    productName: selectedBet.value?.name ?? state.agent ?? '',
+    productId: selectedBet.value?.id ?? 0,
+    billerId: selectedBet.value?.billerId ?? 0,
+    amount: Number(state.amount) || null,
+    customerReference: state.id ?? '',
+    image: betPlatform.value?.image,
+  })
 }
 </script>
 
@@ -162,7 +164,7 @@ function addToCart() {
               </UFormField>
 
               <div class="flex gap-4 md:justify-between px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="addToCart">
+                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   <template #leading>
                     <Icon name="i-lucide-shopping-cart" class="hidden md:inline" />
                   </template>
