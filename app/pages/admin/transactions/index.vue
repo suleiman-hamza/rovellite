@@ -1,34 +1,36 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
+import type { AdminTransactionListItem } from '~~/server/api/admin/transactions.get'
 import { useProfileStore } from '@/stores/profile'
 
 const store = useProfileStore()
 
-interface trx {
-  created_at: string
-  id: string
-  reference: string
-  type: string
-  user_id: string
-  virtual_account_no: string
-  wallet_id: string
-  wallet: {
-    balance: number
-    currency: string
-  }
-}
+// interface trx {
+//   created_at: string
+//   id: string
+//   reference: string
+//   type: string
+//   user_id: string
+//   virtual_account_no: string
+//   wallet_id: string
+//   wallet: {
+//     balance: number
+//     currency: string
+//   }
+// }
+const table = useTemplateRef('table')
+const globalFilter = ref('')
 
-const { data: trxData, status: fetchStatus } = await useLazyFetch('/api/transaction', {
+const { data: trxData, status: fetchStatus } = await useLazyFetch('/api/admin/transactions', {
   query: { userId: store.userProfile?.user_id, limit: '3' },
   key: 'transactions',
+  transform: (response) => {
+    if (response?.success) {
+      return response.data.transactions
+    }
+    return []
+  },
   server: false,
-})
-
-const transactions = computed(() => {
-  if (trxData.value?.success) {
-    return trxData.value.data
-  }
-  return []
 })
 
 const columnFilters = ref<{ id: string, value: unknown }[]>([])
@@ -57,7 +59,7 @@ function setTypeFilter(value: string | null) {
   ]
 }
 
-const columns: TableColumn<trx>[] = [
+const columns: TableColumn<AdminTransactionListItem>[] = [
   {
     accessorKey: 'id',
     header: 'Id',
@@ -71,7 +73,7 @@ const columns: TableColumn<trx>[] = [
     },
   },
   {
-    accessorKey: 'description',
+    accessorKey: 'type',
     header: 'Service',
   },
   {
@@ -86,7 +88,7 @@ const columns: TableColumn<trx>[] = [
     },
   },
   {
-    accessorKey: 'number',
+    accessorKey: 'profile',
     header: 'Number',
   },
   {
@@ -117,8 +119,12 @@ const columns: TableColumn<trx>[] = [
 </script>
 
 <template>
-  <div>
-    <div class="flex justify-end mb-3">
+  <main class="border p-4 bg-white rounded-[20px]">
+    <div class="flex gap-4 items-center py-3.5 border-accented mb-4 border">
+      <h2 class="hidden sm:inline-block text-nowrap text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
+        Transaction History
+      </h2>
+      <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-200.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search transactions..." />
       <UPopover>
         <UButton
           :label="activeFilterCount ? `Filter (${activeFilterCount})` : 'Filter'"
@@ -155,10 +161,23 @@ const columns: TableColumn<trx>[] = [
           </div>
         </template>
       </UPopover>
+      <UPagination
+        :sibling-count="-1"
+        :page="(table?.tableApi?.getState().pagination.pageIndex || 0) + 1"
+        :items-per-page="table?.tableApi?.getState().pagination.pageSize"
+        :total="table?.tableApi?.getFilteredRowModel().rows.length"
+        :ui="{ first: 'hidden', last: 'hidden', list: 'gap-1 md:gap-3', prev: 'rounded-full', next: 'rounded-full' }"
+        @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      />
     </div>
+
+    <!-- status text box 3 items -->
+    <TrxBoxes :total="0" :non-active="0" :active="0" />
+    <!-- <TrxBoxes :total="Users?.length || 0" :non-active="Users?.filter(u => u.status === 'suspended').length || 0" :active="Users?.filter(u => u.status === 'active').length || 0" /> -->
+
     <UTable
       v-model:column-filters="columnFilters"
-      :data="transactions"
+      :data="trxData"
       :loading="fetchStatus === 'pending' || fetchStatus === 'idle'"
       :columns
       class="flex-1 font-poppins"
@@ -170,5 +189,5 @@ const columns: TableColumn<trx>[] = [
         </div>
       </template>
     </UTable>
-  </div>
+  </main>
 </template>

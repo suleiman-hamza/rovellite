@@ -29,12 +29,13 @@ const globalFilter = ref('')
 // }
 
 // users fetch data
-const { data: Users, status } = await useFetch('/api/admin/users', {
+const { data: Users, status } = await useLazyFetch('/api/admin/users', {
   method: 'get',
   transform: (response) => {
     if (response.success) {
       return response.data.users
     }
+    return []
   },
   key: 'allUsers',
   query: {
@@ -45,11 +46,11 @@ const { data: Users, status } = await useFetch('/api/admin/users', {
 
 // column definition with user type
 const columns: TableColumn<AdminUserListItem>[] = [
-  {
-    accessorKey: 'id',
-    header: ({ column }) => getHeader(column, 'S/N', 'left'),
-    cell: ({ row }) => row.index + 1,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: ({ column }) => getHeader(column, 'S/N', 'left'),
+  //   cell: ({ row }) => row.index + 1,
+  // },
   {
     accessorKey: 'full_name',
     header: ({ column }) => getHeader(column, 'Users', 'left'),
