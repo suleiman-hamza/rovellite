@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
 import type { Column, Row } from '@tanstack/vue-table'
+import type { AdminUserListItem } from '~~/server/api/admin/users.get.js'
 import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
 import UserStats from './components/UserStats.vue'
@@ -16,207 +17,41 @@ const UDropdownMenu = resolveComponent('UDropdownMenu')
 const table = useTemplateRef('table')
 const globalFilter = ref('')
 
-interface UsersInfo {
-  id: string
-  created_at: string
-  last_seen: string
-  name: string
-  email: string
-  account: number
-  status: 'active' | 'inactive'
-}
+// type for each user
+// interface UsersInfo {
+//   id: string
+//   created_at: string
+//   last_seen: string
+//   name: string
+//   email: string
+//   account: number
+//   status: 'active' | 'inactive'
+// }
 
-const users = ref<UsersInfo[]>([
-  {
-    id: '4600',
-    created_at: '2024-03-11T15:30:00',
-    last_seen: '2024-03-11T16:45:00',
-    name: 'James Anderson',
-    email: 'james.anderson@example.com',
-    account: 59483999938,
-    status: 'active',
+// users fetch data
+const { data: Users, status } = await useFetch('/api/admin/users', {
+  method: 'get',
+  transform: (response) => {
+    if (response.success) {
+      return response.data.users
+    }
   },
-  {
-    id: '4599',
-    created_at: '2024-03-11T10:10:00',
-    last_seen: '2024-03-11T11:20:00',
-    name: 'Mia White',
-    email: 'mia.white@example.com',
-    account: 48573920192,
-    status: 'inactive',
+  key: 'allUsers',
+  query: {
+    limit: 10,
+    offset: 0,
   },
-  {
-    id: '4598',
-    created_at: '2024-03-11T08:50:00',
-    last_seen: '2024-03-11T09:15:00',
-    name: 'William Brown',
-    email: 'william.brown@example.com',
-    account: 10293847565,
-    status: 'active',
-  },
-  {
-    id: '4597',
-    created_at: '2024-03-10T19:45:00',
-    last_seen: '2024-03-10T20:30:00',
-    name: 'Emma Davis',
-    email: 'emma.davis@example.com',
-    account: 99887766554,
-    status: 'active',
-  },
-  {
-    id: '4596',
-    created_at: '2024-03-10T15:55:00',
-    last_seen: '2024-03-10T18:00:00',
-    name: 'Ethan Harris',
-    email: 'ethan.harris@example.com',
-    account: 12345678901,
-    status: 'inactive',
-  },
-  {
-    id: '4595',
-    created_at: '2024-03-10T13:20:00',
-    last_seen: '2024-03-10T14:10:00',
-    name: 'Sophia Miller',
-    email: 'sophia.miller@example.com',
-    account: 55667788990,
-    status: 'inactive',
-  },
-  {
-    id: '4594',
-    created_at: '2024-03-10T11:05:00',
-    last_seen: '2024-03-10T12:00:00',
-    name: 'Noah Wilson',
-    email: 'noah.wilson@example.com',
-    account: 11223344556,
-    status: 'inactive',
-  },
-  {
-    id: '4593',
-    created_at: '2024-03-09T22:15:00',
-    last_seen: '2024-03-09T23:50:00',
-    name: 'Olivia Jones',
-    email: 'olivia.jones@example.com',
-    account: 44332211009,
-    status: 'active',
-  },
-  {
-    id: '4592',
-    created_at: '2024-03-09T20:30:00',
-    last_seen: '2024-03-09T21:15:00',
-    name: 'Liam Taylor',
-    email: 'liam.taylor@example.com',
-    account: 77889900112,
-    status: 'active',
-  },
-  {
-    id: '4591',
-    created_at: '2024-03-09T18:45:00',
-    last_seen: '2024-03-09T19:00:00',
-    name: 'Ava Thomas',
-    email: 'ava.thomas@example.com',
-    account: 33445566778,
-    status: 'active',
-  },
-  {
-    id: '4590',
-    created_at: '2024-03-09T16:20:00',
-    last_seen: '2024-03-09T17:40:00',
-    name: 'Lucas Martin',
-    email: 'lucas.martin@example.com',
-    account: 22334455667,
-    status: 'inactive',
-  },
-  {
-    id: '4589',
-    created_at: '2024-03-09T14:10:00',
-    last_seen: '2024-03-09T15:00:00',
-    name: 'Isabella Clark',
-    email: 'isabella.clark@example.com',
-    account: 66554433221,
-    status: 'active',
-  },
-  {
-    id: '4588',
-    created_at: '2024-03-09T12:05:00',
-    last_seen: '2024-03-09T13:30:00',
-    name: 'Mason Rodriguez',
-    email: 'mason.rodriguez@example.com',
-    account: 88776655443,
-    status: 'inactive',
-  },
-  {
-    id: '4587',
-    created_at: '2024-03-09T10:30:00',
-    last_seen: '2024-03-09T11:15:00',
-    name: 'Sophia Lee',
-    email: 'sophia.lee@example.com',
-    account: 99001122334,
-    status: 'inactive',
-  },
-  {
-    id: '4586',
-    created_at: '2024-03-09T08:15:00',
-    last_seen: '2024-03-09T08:45:00',
-    name: 'Ethan Walker',
-    email: 'ethan.walker@example.com',
-    account: 55443322110,
-    status: 'active',
-  },
-  {
-    id: '4585',
-    created_at: '2024-03-08T23:40:00',
-    last_seen: '2024-03-09T00:10:00',
-    name: 'Amelia Hall',
-    email: 'amelia.hall@example.com',
-    account: 11221122112,
-    status: 'active',
-  },
-  {
-    id: '4584',
-    created_at: '2024-03-08T21:25:00',
-    last_seen: '2024-03-08T22:00:00',
-    name: 'Oliver Young',
-    email: 'oliver.young@example.com',
-    account: 33443344334,
-    status: 'active',
-  },
-  {
-    id: '4583',
-    created_at: '2024-03-08T19:50:00',
-    last_seen: '2024-03-08T20:15:00',
-    name: 'Aria King',
-    email: 'aria.king@example.com',
-    account: 55665566556,
-    status: 'active',
-  },
-  {
-    id: '4582',
-    created_at: '2024-03-08T17:35:00',
-    last_seen: '2024-03-08T18:10:00',
-    name: 'Henry Wright',
-    email: 'henry.wright@example.com',
-    account: 77887788778,
-    status: 'inactive',
-  },
-  {
-    id: '4581',
-    created_at: '2024-03-08T15:20:00',
-    last_seen: '2024-03-08T16:00:00',
-    name: 'Luna Lopez',
-    email: 'luna.lopez@example.com',
-    account: 99009900990,
-    status: 'active',
-  },
-])
+})
 
-const columns: TableColumn<UsersInfo>[] = [
+// column definition with user type
+const columns: TableColumn<AdminUserListItem>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => getHeader(column, 'S/N', 'left'),
     cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'full_name',
     header: ({ column }) => getHeader(column, 'Users', 'left'),
     cell: ({ row }) => {
       return h('div', { class: 'flex items-center gap-3' }, [
@@ -225,14 +60,14 @@ const columns: TableColumn<UsersInfo>[] = [
           size: 'lg',
         }),
         h('div', undefined, [
-          h('p', { class: 'font-medium text-highlighted' }, row.original.name),
+          h('p', { class: 'font-medium text-highlighted uppercase' }, row.original.full_name),
         ]),
       ])
     },
     size: 172,
   },
   {
-    accessorKey: 'account',
+    accessorKey: 'phone',
     header: 'Account',
   },
   {
@@ -251,19 +86,17 @@ const columns: TableColumn<UsersInfo>[] = [
         day: 'numeric',
         month: 'short',
         year: 'numeric',
-        hour: '2-digit',
       })
     },
   },
   {
-    accessorKey: 'last_seen',
+    accessorKey: 'created_at',
     header: 'Last Login',
     cell: ({ row }) => {
       return new Date(row.getValue('last_seen')).toLocaleString('en-US', {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
-        hour: '2-digit',
       })
     },
   },
@@ -297,7 +130,8 @@ const columns: TableColumn<UsersInfo>[] = [
   },
 ]
 
-function getHeader(column: Column<UsersInfo>, label: string, position: 'left' | 'right') {
+// // pin function
+function getHeader(column: Column<AdminUserListItem>, label: string, position: 'left' | 'right') {
   const isPinned = column.getIsPinned()
 
   return h(UButton, {
@@ -312,17 +146,20 @@ function getHeader(column: Column<UsersInfo>, label: string, position: 'left' | 
   })
 }
 
+// You can specify column IDs to be pinned on the left or right. For example: ['name']
 const columnPinning = ref({
-  left: [], // You can specify column IDs to be pinned on the left or right. For example: ['name']
+  left: [],
   right: [],
 })
 
+// pagination
 const pagination = ref({
   pageIndex: 0,
   pageSize: 10,
 })
 
-function getRowItems(row: Row<UsersInfo>) {
+// action function
+function getRowItems(row: Row<AdminUserListItem>) {
   return [
     {
       type: 'label',
@@ -343,7 +180,7 @@ function getRowItems(row: Row<UsersInfo>) {
     {
       label: 'Copy User ID',
       onSelect() {
-        copy(row.original.id)
+        copy(row.original.user_id)
 
         toast.add({
           title: 'User ID copied to clipboard!',
@@ -359,8 +196,7 @@ function getRowItems(row: Row<UsersInfo>) {
       label: 'View User',
       icon: 'i-lucide-eye',
       onSelect() {
-        // Navigate to the dynamic route using the user's ID
-        navigateTo(`/admin/users/${row.original.id}`)
+        navigateTo(`/admin/users/${row.original.user_id}`)
       },
     },
   ]
@@ -392,11 +228,11 @@ function getRowItems(row: Row<UsersInfo>) {
       />
     </div>
     <!-- status text box 3 items -->
-    <UserStats :total="users.length" :non-active="users.filter(u => u.status === 'inactive').length" :active="users.filter(u => u.status === 'active').length" />
+    <UserStats :total="Users?.length || 0" :non-active="Users?.filter(u => u.status === 'suspended').length || 0" :active="Users?.filter(u => u.status === 'active').length || 0" />
     <!-- table -->
     <UTable
       ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-pinning="columnPinning"
-      :data="users" :columns="columns" :pagination-options="{
+      :data="Users" :columns="columns" :loading="status === 'pending' || status === 'idle'" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
       }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
     >
