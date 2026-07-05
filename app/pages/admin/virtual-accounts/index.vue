@@ -18,10 +18,10 @@ const globalFilter = ref('')
 const columnFilters = ref<{ id: string, value: unknown }[]>([])
 
 const activeStatusFilter = computed(() =>
-  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'disabled' | null,
+  (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as 'active' | 'deactivated' | null,
 )
 
-function setStatusFilter(value: 'active' | 'disabled' | null) {
+function setStatusFilter(value: 'active' | 'deactivated' | null) {
   columnFilters.value = value
     ? [{ id: 'status', value }]
     : []
@@ -34,7 +34,7 @@ interface UsersInfo {
   name: string
   email: string
   account: number
-  status: 'active' | 'disabled'
+  status: 'active' | 'deleted' | 'deactivated'
 }
 
 const users = ref<UsersInfo[]>([
@@ -54,7 +54,7 @@ const users = ref<UsersInfo[]>([
     name: 'Mia White',
     email: 'mia.white@example.com',
     account: 48573920192,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4598',
@@ -81,7 +81,7 @@ const users = ref<UsersInfo[]>([
     name: 'Ethan Harris',
     email: 'ethan.harris@example.com',
     account: 12345678901,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4595',
@@ -90,7 +90,7 @@ const users = ref<UsersInfo[]>([
     name: 'Sophia Miller',
     email: 'sophia.miller@example.com',
     account: 55667788990,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4594',
@@ -99,7 +99,7 @@ const users = ref<UsersInfo[]>([
     name: 'Noah Wilson',
     email: 'noah.wilson@example.com',
     account: 11223344556,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4593',
@@ -135,7 +135,7 @@ const users = ref<UsersInfo[]>([
     name: 'Lucas Martin',
     email: 'lucas.martin@example.com',
     account: 22334455667,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4589',
@@ -153,7 +153,7 @@ const users = ref<UsersInfo[]>([
     name: 'Mason Rodriguez',
     email: 'mason.rodriguez@example.com',
     account: 88776655443,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4587',
@@ -162,7 +162,7 @@ const users = ref<UsersInfo[]>([
     name: 'Sophia Lee',
     email: 'sophia.lee@example.com',
     account: 99001122334,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4586',
@@ -207,7 +207,7 @@ const users = ref<UsersInfo[]>([
     name: 'Henry Wright',
     email: 'henry.wright@example.com',
     account: 77887788778,
-    status: 'disabled',
+    status: 'deactivated',
   },
   {
     id: '4581',
@@ -381,7 +381,7 @@ function getRowItems(row: Row<UsersInfo>) {
 
 <template>
   <main class="p-4 bg-white rounded-[20px]">
-    <div class="flex gap-4 items-center py-3.5 border-accented mb-4">
+    <div class="flex gap-4 items-center sm:py-3.5 border-accented mb-4">
       <h2 class="hidden sm:inline-block text-nowrap text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
         Users
       </h2>
@@ -419,10 +419,10 @@ function getRowItems(row: Row<UsersInfo>) {
             <UButton
               label="Disabled"
               size="sm"
-              :variant="activeStatusFilter === 'disabled' ? 'soft' : 'ghost'"
-              :color="activeStatusFilter === 'disabled' ? 'error' : 'neutral'"
+              :variant="activeStatusFilter === 'deactivated' ? 'soft' : 'ghost'"
+              :color="activeStatusFilter === 'deactivated' ? 'error' : 'neutral'"
               class="justify-start"
-              @click="setStatusFilter('disabled')"
+              @click="setStatusFilter('deactivated')"
             />
           </div>
         </template>
@@ -437,13 +437,13 @@ function getRowItems(row: Row<UsersInfo>) {
       />
     </div>
     <!-- status text box 3 items -->
-    <StatusStats :total="users.length" :disabled="users.filter(u => u.status === 'disabled').length" :active="users.filter(u => u.status === 'active').length" :newacc="2" />
+    <StatusStats :total="users.length" :deactivated="users.filter(u => u.status === 'deactivated').length" :active="users.filter(u => u.status === 'active').length" :new-accounts="2" :deleted="users.filter(u => u.status === 'deactivated').length" />
     <!-- table -->
     <UTable
       ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" v-model:column-pinning="columnPinning"
       :data="users" :columns="columns" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
-      }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
+      }" class="flex-1 font-poppins hidden md:block" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
     >
       <template #empty>
         <div>
@@ -451,6 +451,26 @@ function getRowItems(row: Row<UsersInfo>) {
         </div>
       </template>
     </UTable>
+    <!-- mobile table layout -->
+    <section class="md:hidden border p-1 divide-y divide-gray-300 flex flex-col gap-4">
+      <div v-for="item in users" :key="item.id" class="">
+        <div class="flex gap-4 justify-between">
+          <div class="flex gap-2 flex-col">
+            <p class="flex gap-2 items-center">
+              <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
+              <span>{{ item.name }}</span>
+            </p>
+            <p>{{ item.account }}</p>
+          </div>
+          <div class="flex gap-2 flex-col items-end">
+            <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="outline" class="w-fit" />
+            <span>
+              {{ item.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="flex justify-between border-t border-default pt-4">
       <div class="py-3.5 text-sm text-muted">
         {{ table?.tableApi?.getRowCount() }} of
