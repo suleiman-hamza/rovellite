@@ -383,7 +383,7 @@ function getRowItems(row: Row<UsersInfo>) {
   <main class="p-4 bg-white rounded-[20px]">
     <div class="flex gap-4 items-center sm:py-3.5 border-accented mb-4">
       <h2 class="hidden sm:inline-block text-nowrap text-[#34383D] text-[20px] font-bold leading-[150%] tracking-[2%]">
-        Users
+        Virtual Accounts
       </h2>
       <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-200.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search users..." />
       <UPopover>
