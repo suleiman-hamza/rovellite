@@ -60,9 +60,9 @@ function toggleAmountVisibility() {
 </script>
 
 <template>
-  <div class="">
+  <div class="rounded-[20.75px] p-4 bg-[#1177FE]">
     <section class="sm:hidden">
-      <div class="embla bg-[#1177FE] p-4 rounded-[20.75px]">
+      <div class="embla rounded-[20.75px]">
         <div ref="emblaRef" class="embla__viewport">
           <div class="embla__container">
             <UPageCard
@@ -117,7 +117,7 @@ function toggleAmountVisibility() {
     </section>
     <!-- desktop view -->
     <section class="hidden sm:block">
-      <UPageGrid class="bg-[#1177FE] p-5 rounded-[20px] gap-4">
+      <UPageGrid class="bg-[#1177FE] px-3 py-2 rounded-[20px] gap-4">
         <UPageCard
           v-for="(card, index) in cards"
           :key="index"
