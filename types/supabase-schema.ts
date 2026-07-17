@@ -89,6 +89,66 @@ export interface Database {
           },
         ]
       }
+      orders: {
+        Row: {
+          amount: number
+          created_at: string
+          error_message: string | null
+          id: string
+          idempotency_key: string
+          plan_id: string
+          status: Database['public']['Enums']['order_status']
+          target_identifier: string
+          updated_at: string
+          user_id: string
+          vendor_request: Json | null
+          vendor_response: Json | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key: string
+          plan_id: string
+          status?: Database['public']['Enums']['order_status']
+          target_identifier: string
+          updated_at?: string
+          user_id: string
+          vendor_request?: Json | null
+          vendor_response?: Json | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key?: string
+          plan_id?: string
+          status?: Database['public']['Enums']['order_status']
+          target_identifier?: string
+          updated_at?: string
+          user_id?: string
+          vendor_request?: Json | null
+          vendor_response?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'orders_plan_id_fkey'
+            columns: ['plan_id']
+            isOneToOne: false
+            referencedRelation: 'subscription_plans'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['user_id']
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -175,6 +235,39 @@ export interface Database {
             referencedColumns: ['user_id']
           },
         ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          metadata: Json | null
+          name: string
+          price: number
+          service_provider: Database['public']['Enums']['service_provider']
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          name: string
+          price: number
+          service_provider: Database['public']['Enums']['service_provider']
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          name?: string
+          price?: number
+          service_provider?: Database['public']['Enums']['service_provider']
+          updated_at?: string
+        }
+        Relationships: []
       }
       transactions: {
         Row: {
@@ -348,6 +441,32 @@ export interface Database {
         Returns: number
       }
       introspect_user_tables: { Args: never, Returns: Json }
+      process_cart_checkout: {
+        Args: {
+          p_items: Json
+          p_master_idempotency_key: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      process_subscription_debit: {
+        Args: {
+          p_idempotency_key: string
+          p_plan_id: string
+          p_target: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
+      reverse_subscription_debit: {
+        Args: {
+          p_amount: number
+          p_error_message: string
+          p_order_id: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       sync_profile_with_wallet:
         | {
           Args: {
@@ -482,6 +601,8 @@ export interface Database {
         | 'bvn_invalid'
         | 'service_error'
         | 'failed'
+      order_status: 'PENDING_FULFILLMENT' | 'COMPLETED' | 'FAILED'
+      service_provider: 'CORALPAY' | 'SOCHITEL'
       user_role: 'user' | 'admin'
       user_status: 'active' | 'suspended' | 'blocked'
     }
@@ -623,6 +744,8 @@ export const Constants = {
         'service_error',
         'failed',
       ],
+      order_status: ['PENDING_FULFILLMENT', 'COMPLETED', 'FAILED'],
+      service_provider: ['CORALPAY', 'SOCHITEL'],
       user_role: ['user', 'admin'],
       user_status: ['active', 'suspended', 'blocked'],
     },

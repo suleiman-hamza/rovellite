@@ -7,7 +7,7 @@ export type Profile = Tables<'profiles'>
 export type ProfileInsert = TablesInsert<'profiles'>
 export type ProfileUpdate = TablesUpdate<'profiles'>
 export type UserRole = Enums<'user_role'>
-// export type UserStatus = Enums<'user_status'>
+export type UserStatus = Enums<'user_status'>
 
 // wallets table
 export type WalletRow = Tables<'wallets'>
@@ -26,6 +26,18 @@ export type BvnVerificationUpdate = TablesUpdate<'bvn_verifications'>
 // transactions table
 export type TransactionRow = Tables<'transactions'>
 export type TransactionInsert = TablesInsert<'transactions'>
+
+// subscription plans table
+export type SubscriptionPlanRow = Tables<'subscription_plans'>
+export type SubscriptionPlanInsert = TablesInsert<'subscription_plans'>
+export type SubscriptionPlanUpdate = TablesUpdate<'subscription_plans'>
+export type ServiceProvider = Enums<'service_provider'>
+
+// orders table
+export type OrderRow = Tables<'orders'>
+export type OrderInsert = TablesInsert<'orders'>
+export type OrderUpdate = TablesUpdate<'orders'>
+export type OrderStatus = Enums<'order_status'>
 
 // RPC FUNCTION TYPES
 export interface CreditWalletWithTransactionArgs {
@@ -177,6 +189,62 @@ export interface Database {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: SubscriptionPlanRow
+        Insert: {
+          id?: string
+          name: string
+          price: number
+          service_provider: ServiceProvider
+          is_active?: boolean
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          price?: number
+          service_provider?: ServiceProvider
+          is_active?: boolean
+          metadata?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: OrderRow
+        Insert: {
+          id?: string
+          user_id: string
+          plan_id: string
+          idempotency_key: string
+          target_identifier: string
+          amount: number
+          status?: OrderStatus
+          vendor_request?: Json | null
+          vendor_response?: Json | null
+          error_message?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          plan_id?: string
+          idempotency_key?: string
+          target_identifier?: string
+          amount?: number
+          status?: OrderStatus
+          vendor_request?: Json | null
+          vendor_response?: Json | null
+          error_message?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: { [_ in never]: never }
     Enums: { [_ in never]: never }
@@ -192,6 +260,24 @@ export interface Database {
           p_amount: number
         }
         Returns: number | null
+      }
+      process_subscription_debit: {
+        Args: {
+          p_user_id: string
+          p_plan_id: string
+          p_idempotency_key: string
+          p_target: string
+        }
+        Returns: Json
+      }
+      reverse_subscription_debit: {
+        Args: {
+          p_order_id: string
+          p_user_id: string
+          p_amount: number
+          p_error_message: string
+        }
+        Returns: Json
       }
     }
   }
