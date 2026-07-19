@@ -454,22 +454,26 @@ function getRowItems(row: Row<UsersInfo>) {
     <!-- mobile table layout -->
     <section class="md:hidden divide-y divide-gray-300">
       <div v-for="item in users" :key="item.id" class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-            <p class="flex gap-2 items-center">
-              <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
-              <span>{{ item.name }}</span>
-            </p>        
-            <p class="text-gray-500 text-sm mt-1">{{ item.account }}</p>
-      </div>
+        <!-- Left Column -->
+        <div>
+          <p class="flex gap-2 items-center">
+            <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
+            <span>{{ item.name }}</span>
+          </p>
+          <p class="text-gray-500 text-sm mt-1">
+            {{ item.account }}
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-            <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="" class="w-fit" />
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">{{ item.status }}</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="" class="w-fit" />
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            {{ item.status }}
+          </p>
+        </div>
       </div>
-    </div>
     </section>
     <div class="flex justify-between border-t border-default pt-4">
       <div class="py-3.5 text-sm text-muted">

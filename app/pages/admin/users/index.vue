@@ -244,25 +244,29 @@ function getRowItems(row: Row<AdminUserListItem>) {
       </template>
     </UTable>
 
-     <!-- mobile table layout -->
+    <!-- mobile table layout -->
     <section v-if="Users" class="md:hidden divide-y divide-gray-300">
-     <div v-for="item in Users" :key="item.user_id" class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-            <p class="flex gap-2 items-center">
-              <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
-              <span>{{ item?.full_name }}</span>
-            </p>        
-            <p class="text-gray-500 text-sm mt-1">{{ item }}</p>
-      </div>
+      <div v-for="item in Users" :key="item.user_id" class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <p class="flex gap-2 items-center">
+            <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
+            <span>{{ item?.full_name }}</span>
+          </p>
+          <p class="text-gray-500 text-sm mt-1">
+            {{ item }}
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-            <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">{{ item.status }}</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            {{ item.status }}
+          </p>
+        </div>
       </div>
-    </div>
     </section>
 
     <div class="flex justify-between border-t border-default pt-4">

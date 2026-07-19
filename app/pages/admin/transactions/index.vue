@@ -39,7 +39,7 @@ const activeStatusFilter = computed(() =>
   (columnFilters.value.find(f => f.id === 'status')?.value ?? null) as string | null,
 )
 
-const activeTypeFilter = computed(() =>
+const _activeTypeFilter = computed(() =>
   (columnFilters.value.find(f => f.id === 'type')?.value ?? null) as string | null,
 )
 
@@ -52,7 +52,7 @@ function setStatusFilter(value: string | null) {
   ]
 }
 
-function setTypeFilter(value: string | null) {
+function _setTypeFilter(value: string | null) {
   columnFilters.value = [
     ...columnFilters.value.filter(f => f.id !== 'type'),
     ...(value ? [{ id: 'type', value }] : []),
@@ -125,7 +125,7 @@ const columns: TableColumn<AdminTransactionListItem>[] = [
         Transaction History
       </h2>
       <UInput v-model="globalFilter" leading-icon="i-lucide-search" class="max-w-200.5 w-full" :ui="{ base: 'rounded-[4px] md:rounded-[12px] md:px-5 md:pl-10 md:py-2.5' }" placeholder="Search transactions..." />
-      <UPopover sideFlip="true" class="" :ui="{ content: '' }">
+      <UPopover side-flip="true" class="" :ui="{ content: '' }">
         <UButton
           :label="activeFilterCount ? `Filter (${activeFilterCount})` : 'Filter'"
           leading-icon="i-lucide-list-filter"
@@ -181,61 +181,85 @@ const columns: TableColumn<AdminTransactionListItem>[] = [
     <!-- Table Mobile View -->
     <div class="md:hidden py-2">
       <div class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-        <h3 class="text-gray-900 font-semibold text-base">Data</h3>
-        <p class="text-gray-500 text-sm mt-1">2pm June 18th, 2026</p>
-      </div>
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-        <span class="text-blue-600 font-medium text-base">#2000</span>
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">Successful</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
       </div>
-    </div>
       <div class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-        <h3 class="text-gray-900 font-semibold text-base">Data</h3>
-        <p class="text-gray-500 text-sm mt-1">2pm June 18th, 2026</p>
-      </div>
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-        <span class="text-blue-600 font-medium text-base">#2000</span>
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">Successful</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
       </div>
-    </div>
       <div class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-        <h3 class="text-gray-900 font-semibold text-base">Data</h3>
-        <p class="text-gray-500 text-sm mt-1">2pm June 18th, 2026</p>
-      </div>
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-        <span class="text-blue-600 font-medium text-base">#2000</span>
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">Successful</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
       </div>
-    </div>
       <div class="flex justify-between items-center py-3 border-b border-gray-200">
-      <!-- Left Column -->
-      <div>
-        <h3 class="text-gray-900 font-semibold text-base">Data</h3>
-        <p class="text-gray-500 text-sm mt-1">2pm June 18th, 2026</p>
-      </div>
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
 
-      <!-- Right Column -->
-      <div class="flex flex-col items-end">
-        <span class="text-blue-600 font-medium text-base">#2000</span>
-        <!-- Dynamic status color example -->
-        <p class="text-sm font-medium mt-1 text-green-600">Successful</p>
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
       </div>
     </div>
-  </div>
   </main>
 </template>
