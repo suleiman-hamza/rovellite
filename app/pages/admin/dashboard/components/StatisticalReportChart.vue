@@ -32,7 +32,7 @@ const items = computed(() => {
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-4 border w-fit">
     <p class="text-[#4D5155] font-semibold md:font-bold text-[18px] md:text-[20px] font-poppins tracking-[2%] mb-2">
       Statistical Report
     </p>

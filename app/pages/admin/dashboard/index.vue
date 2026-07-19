@@ -29,9 +29,9 @@ const data = [
 <template>
   <main class="">
     <MetricCard />
-    <section class="flex flex-col md:flex-row gap-4 mt-6">
-      <StatisticalReportChart class="bg-white rounded-[20px] w-fit md:flex-1 shadow-md" :data="data" />
-      <UserDonutChart class="bg-white rounded-[20px] max-w-80 w-fit" :data="chartData" />
+    <section class="border flex flex-col md:flex-row gap-4 mt-6">
+      <StatisticalReportChart class="bg-white rounded-[20px] w-fit flex-1 shadow-md" :data="data" />
+      <UserDonutChart class="bg-white rounded-[20px] max-w-80 w-fit shadow-md" :data="chartData" />
     </section>
     <section class="flex flex-col md:flex-row gap-4 mt-6">
       <ProductSales class="bg-white rounded-[20px] w-fit max-w-80" />

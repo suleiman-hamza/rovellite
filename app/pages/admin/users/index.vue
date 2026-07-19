@@ -239,7 +239,7 @@ function getRowItems(row: Row<AdminUserListItem>) {
     >
       <template #empty>
         <div>
-          <p>Your Transactions will appear here</p>
+          <p>Users will appear here</p>
         </div>
       </template>
     </UTable>
