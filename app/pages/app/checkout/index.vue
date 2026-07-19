@@ -68,7 +68,7 @@ const items = [
                 <template #content>
                   <div class="h-50 md:h-65 m-4 relative flex flex-col justify-center items-center gap-5">
                     <!-- Your custom close button -->
-                    <UButton icon="i-lucide-x" color="neutral" size="sm" variant="subtle" class="rounded-full absolute top-2 right-2" @click="isOpen = false" />
+                    <UButton icon="i-lucide-x" color="neutral" size="sm" variant="subtle" class="rounded-full absolute top-2 right-2" @click="() => { isOpen = false }" />
                     <span class="rounded-full bg-green-500 p-4 flex items-center justify-center w-fit">
                       <UIcon name="i-lucide-check" class="size-10 text-white" />
                     </span>

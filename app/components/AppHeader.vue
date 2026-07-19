@@ -123,7 +123,7 @@ const items = computed<NavigationMenuItem[]>(() => [
               alt="Rovelsub point header logo"
               class="w-auto h-10 md:h-16 object-contain"
             />
-            <UButton icon="i-lucide-x" color="neutral" variant="ghost" @click="menuOpen = false" />
+            <UButton icon="i-lucide-x" color="neutral" variant="ghost" @click="() => { menuOpen = false }" />
           </template>
 
           <template #body>

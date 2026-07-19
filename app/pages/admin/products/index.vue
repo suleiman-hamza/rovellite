@@ -157,7 +157,7 @@ const filteredSections = computed(() => {
                 :color="activeCategory === cat ? 'primary' : 'neutral'"
                 :variant="activeCategory === cat ? 'solid' : 'outline'"
                 class="rounded-full"
-                @click="activeCategory = cat"
+                @click="() => { activeCategory = cat }"
               />
             </div>
 

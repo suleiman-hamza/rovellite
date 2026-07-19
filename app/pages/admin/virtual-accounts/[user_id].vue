@@ -455,7 +455,7 @@ const globalFilter = ref('')
 
     <UModal v-model:open="isModalOpen" :title="modalConfig.title" :description="modalConfig.description">
       <template #footer>
-        <UButton label="Cancel" color="neutral" variant="outline" @click="isModalOpen = false" />
+        <UButton label="Cancel" color="neutral" variant="outline" @click="() => { isModalOpen = false }" />
         <UButton :label="modalConfig.actionLabel" :color="modalConfig.actionColor" @click="handleModalAction" />
       </template>
     </UModal>
