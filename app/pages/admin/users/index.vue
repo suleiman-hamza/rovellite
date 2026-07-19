@@ -235,7 +235,7 @@ function getRowItems(row: Row<AdminUserListItem>) {
       ref="table" v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-pinning="columnPinning"
       :data="Users" :columns="columns" :loading="status === 'pending' || status === 'idle'" :pagination-options="{
         getPaginationRowModel: getPaginationRowModel(),
-      }" class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
+      }" class="hidden md:block flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]', separator: 'bg-transparent' }"
     >
       <template #empty>
         <div>
@@ -243,6 +243,28 @@ function getRowItems(row: Row<AdminUserListItem>) {
         </div>
       </template>
     </UTable>
+
+     <!-- mobile table layout -->
+    <section v-if="Users" class="md:hidden divide-y divide-gray-300">
+     <div v-for="item in Users" :key="item.user_id" class="flex justify-between items-center py-3 border-b border-gray-200">
+      <!-- Left Column -->
+      <div>
+            <p class="flex gap-2 items-center">
+              <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
+              <span>{{ item?.full_name }}</span>
+            </p>        
+            <p class="text-gray-500 text-sm mt-1">{{ item }}</p>
+      </div>
+
+      <!-- Right Column -->
+      <div class="flex flex-col items-end">
+            <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
+        <!-- Dynamic status color example -->
+        <p class="text-sm font-medium mt-1 text-green-600">{{ item.status }}</p>
+      </div>
+    </div>
+    </section>
+
     <div class="flex justify-between border-t border-default pt-4">
       <div class="py-3.5 text-sm text-muted">
         {{ table?.tableApi?.getRowCount() }} of
