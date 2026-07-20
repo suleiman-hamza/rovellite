@@ -4,6 +4,7 @@ import { getPaginationRowModel } from '@tanstack/vue-table'
 import { h, resolveComponent } from 'vue'
 import TransactionStats from './components/UserTransactionStats.vue'
 
+const route = useRoute()
 const UBadge = resolveComponent('UBadge')
 
 const isModalOpen = ref(false)
@@ -28,6 +29,19 @@ function handleModalAction() {
   // TODO: implement action logic per selectedAction.value
   isModalOpen.value = false
 }
+
+const UserId = route.params.userId as string
+
+const { data: virtualAccountData, error } = await useLazyFetch(`/api/virtual-account/${UserId}`, {
+  key: 'userVirtualAccount',
+  server: false,
+  // transform: (response) => {
+  //   if (response.success) {
+  //     return response.data
+  //   }
+  //   return null
+  // },
+})
 
 const items = ref<DropdownMenuItem[]>([
   {
@@ -313,6 +327,7 @@ const globalFilter = ref('')
           </p>
         </div>
       </div>
+      <!-- <p class="border">{{ virtualAccountData }}</p> -->
       <div class="">
         <UDropdownMenu
           :items="items" :content="{
@@ -402,7 +417,7 @@ const globalFilter = ref('')
             <h3 class="text-[16px] md:text-[24px] tracking-[1%]">
               Palmpay
             </h3>
-            <span class="tracking-[1%]">0450987873</span>
+            <span class="tracking-[1%]">{{ virtualAccountData?.message }}</span>
           </div>
           <div class="">
             <p>Sign Up Date: Jan 1, 2023</p>

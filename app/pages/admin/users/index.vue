@@ -249,12 +249,11 @@ function getRowItems(row: Row<AdminUserListItem>) {
       <div v-for="item in Users" :key="item.user_id" class="flex justify-between items-center py-3 border-b border-gray-200">
         <!-- Left Column -->
         <div>
-          <p class="flex gap-2 items-center">
-            <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
-            <span>{{ item?.full_name }}</span>
-          </p>
+          <UUser :name="item.full_name" :avatar="{
+      loading: 'lazy',
+    }" :alt="item.full_name.toUpperCase()" class="font-semibold capitalize" />
           <p class="text-gray-500 text-sm mt-1">
-            {{ item }}
+            <span class="font-medium">User ID:</span> {{ item.user_id }}
           </p>
         </div>
 
@@ -262,7 +261,7 @@ function getRowItems(row: Row<AdminUserListItem>) {
         <div class="flex flex-col items-end">
           <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
           <!-- Dynamic status color example -->
-          <p class="text-sm font-medium mt-1 text-green-600">
+          <p class="text-sm font-medium mt-1 text-primary capitalize">
             {{ item.status }}
           </p>
         </div>
