@@ -78,17 +78,17 @@ const items = ref([
       icon: 'i-lucide-eye',
       onSelect() {
         // navigateTo(`/admin/users/${}`)
-        console.log('View User clicked')
+        console.warn('View User clicked')
       },
     },
-  ]
+  ],
 ])
 
 // column definition with user type
 const columns: TableColumn<AdminUserListItem>[] = [
   // {
   //   accessorKey: 'id',
-  //   header: ({ column }) => getHeader(column, 'S/N', 'left'), 
+  //   header: ({ column }) => getHeader(column, 'S/N', 'left'),
   //   cell: ({ row }) => row.index + 1,
   // },
   {
@@ -289,9 +289,11 @@ function getRowItems(row: Row<AdminUserListItem>) {
       <div v-for="item in Users" :key="item.user_id" class="flex justify-between items-center py-3 border-b border-gray-200">
         <!-- Left Column -->
         <div>
-          <UUser :name="item.full_name" :avatar="{
-      loading: 'lazy',
-    }" :alt="item.full_name" class="font-semibold uppercase" />
+          <UUser
+            :name="item.full_name" :avatar="{
+              loading: 'lazy',
+            }" :alt="item.full_name" class="font-semibold uppercase"
+          />
           <p class="text-sm font-medium mt-1 text-primary capitalize">
             {{ item.status }}
           </p>
@@ -303,7 +305,6 @@ function getRowItems(row: Row<AdminUserListItem>) {
             <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
           </UDropdownMenu>
           <!-- Dynamic status color example -->
-          
         </div>
       </div>
     </section>
