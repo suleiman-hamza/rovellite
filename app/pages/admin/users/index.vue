@@ -44,11 +44,51 @@ const { data: Users, status } = await useLazyFetch('/api/admin/users', {
   },
 })
 
+const items = ref([
+  [
+    {
+      type: 'label',
+      label: 'Actions',
+    },
+    {
+      label: 'Copy Email',
+      onSelect() {
+        toast.add({
+          title: 'Email copied to clipboard!',
+          color: 'success',
+          icon: 'i-lucide-circle-check',
+        })
+      },
+    },
+    {
+      label: 'Copy User ID',
+      onSelect() {
+        toast.add({
+          title: 'User ID copied to clipboard!',
+          color: 'success',
+          icon: 'i-lucide-circle-check',
+        })
+      },
+    },
+    {
+      type: 'separator',
+    },
+    {
+      label: 'View User',
+      icon: 'i-lucide-eye',
+      onSelect() {
+        // navigateTo(`/admin/users/${}`)
+        console.log('View User clicked')
+      },
+    },
+  ]
+])
+
 // column definition with user type
 const columns: TableColumn<AdminUserListItem>[] = [
   // {
   //   accessorKey: 'id',
-  //   header: ({ column }) => getHeader(column, 'S/N', 'left'),
+  //   header: ({ column }) => getHeader(column, 'S/N', 'left'), 
   //   cell: ({ row }) => row.index + 1,
   // },
   {
@@ -91,10 +131,10 @@ const columns: TableColumn<AdminUserListItem>[] = [
     },
   },
   {
-    accessorKey: 'created_at',
+    accessorKey: 'updated_at',
     header: 'Last Login',
     cell: ({ row }) => {
-      return new Date(row.getValue('last_seen')).toLocaleString('en-US', {
+      return new Date(row.getValue('updated_at')).toLocaleString('en-US', {
         day: 'numeric',
         month: 'short',
         year: 'numeric',
@@ -251,19 +291,19 @@ function getRowItems(row: Row<AdminUserListItem>) {
         <div>
           <UUser :name="item.full_name" :avatar="{
       loading: 'lazy',
-    }" :alt="item.full_name.toUpperCase()" class="font-semibold capitalize" />
-          <p class="text-gray-500 text-sm mt-1">
-            <span class="font-medium">User ID:</span> {{ item.user_id }}
+    }" :alt="item.full_name" class="font-semibold uppercase" />
+          <p class="text-sm font-medium mt-1 text-primary capitalize">
+            {{ item.status }}
           </p>
         </div>
 
         <!-- Right Column -->
         <div class="flex flex-col items-end">
-          <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
+          <UDropdownMenu :items="items">
+            <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="ghost" class="w-fit" />
+          </UDropdownMenu>
           <!-- Dynamic status color example -->
-          <p class="text-sm font-medium mt-1 text-primary capitalize">
-            {{ item.status }}
-          </p>
+          
         </div>
       </div>
     </section>

@@ -24,12 +24,12 @@ const WeeklyStatData = [
   <main class="">
     <MetricCard />
     <section class="flex flex-col md:flex-row gap-4 mt-6">
-      <StatisticalReportChart class="bg-white rounded-[20px] w-fit flex-1 shadow-md" :data="WeeklyStatData" />
-      <UserDonutChart class="bg-white rounded-[20px] w-full shadow-md" :data="chartData" />
+      <StatisticalReportChart class="bg-white rounded-[20px] w-fit md:flex-1 shadow-md" :data="WeeklyStatData" />
+      <UserDonutChart class="bg-white rounded-[20px] w-full md:w-fit md:max-w-80 shadow-md" :data="chartData" />
     </section>
     <section class="flex flex-col md:flex-row gap-4 mt-6">
-      <ProductSales class="bg-white rounded-[20px] w-full shadow-md" />
-      <!-- <TransactionsTable class="bg-white rounded-[20px] w-fit md:flex-1" /> -->
+      <ProductSales class="bg-white rounded-[20px] w-full md:max-w-100 shadow-md" />
+      <TransactionsTable class="bg-white rounded-[20px] w-full md:flex-1 shadow-md" />
     </section>
   </main>
 </template>

@@ -29,7 +29,7 @@ const items = computed(() => props.data.map(d => ({
       Users
     </p>
     <div class="flex justify-center items-center">
-      <VisSingleContainer :height="height" :width="width" :data="data">
+      <VisSingleContainer :height="height" :width="width" :data="data" class="w-50">
         <VisDonut
           :value="value"
           central-label="100"
@@ -38,8 +38,9 @@ const items = computed(() => props.data.map(d => ({
           corner-radius="20"
           :show-background="true"
           central-sub-label="Total Users"
+          class="w-50"
         />
-        <VisTooltip :triggers="triggers" />
+        <VisTooltip :triggers="triggers" class="w-50" />
       </VisSingleContainer>
     </div>
     <div class="flex items-center justify-center p-1">

@@ -47,11 +47,6 @@ const items: NavigationMenuItem[] = [{
   to: '/admin/reports',
   // active: route.path.startsWith()
 }, {
-  label: 'Support',
-  icon: '/images/admin-dashboard/admin-support.svg',
-  to: '/admin/support',
-  // active: route.path.startsWith()
-}, {
   label: 'Settings',
   icon: '/images/admin-dashboard/admin-settings.svg',
   to: '/admin/settings',

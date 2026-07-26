@@ -32,7 +32,7 @@ function handleModalAction() {
 
 const UserId = route.params.userId as string
 
-const { data: virtualAccountData, error } = await useLazyFetch(`/api/virtual-account/${UserId}`, {
+const { data: virtualAccountData } = await useLazyFetch(`/api/virtual-account/${UserId}`, {
   key: 'userVirtualAccount',
   server: false,
   // transform: (response) => {

@@ -36,7 +36,7 @@ const transactions = computed(() => {
 const columns: TableColumn<trx>[] = [
   {
     accessorKey: 'id',
-    header: 'Id',
+    header: 'Transaction Id',
     cell: ({ row }) => `#${row.getValue('id')}`,
     size: 100,
     meta: {
@@ -62,16 +62,8 @@ const columns: TableColumn<trx>[] = [
     },
   },
   {
-    accessorKey: 'number',
-    header: 'Number',
-  },
-  {
     accessorKey: 'status',
     header: 'Status',
-  },
-  {
-    accessorKey: 'type',
-    header: 'Method',
   },
   {
     accessorKey: 'created_at',
@@ -91,11 +83,33 @@ const columns: TableColumn<trx>[] = [
 </script>
 
 <template>
-  <main class="bg-white p-3 py-4 sm:px-6 ">
+  <main class="bg-white p-3 py-4 sm:px-6">
     <h2 class="text-[#4D5155] mb-2.5 tracking-[2%] text-[20px] font-bold">
       Recent Transactions
     </h2>
-    <UTable :data="transactions" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+    <div class="md:hidden py-2">
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-[#1177FE] font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-[#1CB452]">
+            Successful
+          </p>
+        </div>
+      </div>
+    </div>
+    <UTable :data="transactions" :loading="status === 'pending' || status === 'idle'" :columns class="flex-1 font-poppins hidden md:flex md:flex-1" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
       <template #empty>
         <div>
           <p>Your Transactions will appear here</p>
