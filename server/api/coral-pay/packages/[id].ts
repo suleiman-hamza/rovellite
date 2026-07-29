@@ -14,5 +14,6 @@ export default defineEventHandler(async (event) => {
       'Content-Type': 'text/plain',
     },
   })
+  console.warn(response)
   return response.responseData
 })

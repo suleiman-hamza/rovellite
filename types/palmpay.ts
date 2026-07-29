@@ -42,7 +42,7 @@ export interface PalmPayResponse extends PalmPayBaseResponse {
   data?: Record<string, unknown>
 }
 
-// ─── Request Payload Types ───────────────────────────────────────────
+// Request Payload Types
 
 /** Payload for creating a virtual account */
 export interface VirtualAccountCreatePayload {
@@ -87,7 +87,7 @@ export interface VirtualAccountWithProfile {
   palmPayFresh?: VirtualAccountData // Latest live data from PalmPay
 }
 
-// ─── EaseID BVN Verification Types ──────────────────────────────────
+// EaseID BVN Verification Types
 
 /** Payload for EaseID Basic BVN Enquiry */
 export interface BvnVerifyPayload {
