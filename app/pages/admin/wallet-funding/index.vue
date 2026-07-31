@@ -337,13 +337,97 @@ const pagination = ref({
         @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
       />
     </div>
-    <UTable v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" v-model:column-pinning="columnPinning" :data="walletfund" :columns class="flex-1 font-poppins" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
+    <FundingBoxes :total="100" :successful="75" :processing="10" :failed="5" :pending="10" />
+    <UTable v-model:pagination="pagination" v-model:global-filter="globalFilter" v-model:column-filters="columnFilters" v-model:column-pinning="columnPinning" :data="walletfund" :columns class="flex-1 font-poppins hidden md:flex" :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }">
       <template #empty>
         <div>
           <p>Your Transactions will appear here</p>
         </div>
       </template>
     </UTable>
+    <!-- Table Mobile View -->
+    <div class="md:hidden py-2">
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Rovel Jprdan
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Rovel Jprdan
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Rovel Jordan
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-green-600">
+            Successful
+          </p>
+        </div>
+      </div>
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Rovel Jordan
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-blue-600 font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-[#F9DB3F]">
+            Pending
+          </p>
+        </div>
+      </div>
+    </div>
     <!-- <pre>{{ trxData }}</pre> -->
     <!-- <p class="text-red-500">
       {{ trxError }}

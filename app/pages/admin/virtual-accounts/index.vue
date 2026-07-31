@@ -48,15 +48,6 @@ const users = ref<UsersInfo[]>([
     status: 'active',
   },
   {
-    id: '4599',
-    created_at: '2024-03-11T10:10:00',
-    last_seen: '2024-03-11T11:20:00',
-    name: 'Mia White',
-    email: 'mia.white@example.com',
-    account: 48573920192,
-    status: 'deactivated',
-  },
-  {
     id: '4598',
     created_at: '2024-03-11T08:50:00',
     last_seen: '2024-03-11T09:15:00',
@@ -73,33 +64,6 @@ const users = ref<UsersInfo[]>([
     email: 'emma.davis@example.com',
     account: 99887766554,
     status: 'active',
-  },
-  {
-    id: '4596',
-    created_at: '2024-03-10T15:55:00',
-    last_seen: '2024-03-10T18:00:00',
-    name: 'Ethan Harris',
-    email: 'ethan.harris@example.com',
-    account: 12345678901,
-    status: 'deactivated',
-  },
-  {
-    id: '4595',
-    created_at: '2024-03-10T13:20:00',
-    last_seen: '2024-03-10T14:10:00',
-    name: 'Sophia Miller',
-    email: 'sophia.miller@example.com',
-    account: 55667788990,
-    status: 'deactivated',
-  },
-  {
-    id: '4594',
-    created_at: '2024-03-10T11:05:00',
-    last_seen: '2024-03-10T12:00:00',
-    name: 'Noah Wilson',
-    email: 'noah.wilson@example.com',
-    account: 11223344556,
-    status: 'deactivated',
   },
   {
     id: '4593',
@@ -129,15 +93,6 @@ const users = ref<UsersInfo[]>([
     status: 'active',
   },
   {
-    id: '4590',
-    created_at: '2024-03-09T16:20:00',
-    last_seen: '2024-03-09T17:40:00',
-    name: 'Lucas Martin',
-    email: 'lucas.martin@example.com',
-    account: 22334455667,
-    status: 'deactivated',
-  },
-  {
     id: '4589',
     created_at: '2024-03-09T14:10:00',
     last_seen: '2024-03-09T15:00:00',
@@ -153,15 +108,6 @@ const users = ref<UsersInfo[]>([
     name: 'Mason Rodriguez',
     email: 'mason.rodriguez@example.com',
     account: 88776655443,
-    status: 'deactivated',
-  },
-  {
-    id: '4587',
-    created_at: '2024-03-09T10:30:00',
-    last_seen: '2024-03-09T11:15:00',
-    name: 'Sophia Lee',
-    email: 'sophia.lee@example.com',
-    account: 99001122334,
     status: 'deactivated',
   },
   {
@@ -199,15 +145,6 @@ const users = ref<UsersInfo[]>([
     email: 'aria.king@example.com',
     account: 55665566556,
     status: 'active',
-  },
-  {
-    id: '4582',
-    created_at: '2024-03-08T17:35:00',
-    last_seen: '2024-03-08T18:10:00',
-    name: 'Henry Wright',
-    email: 'henry.wright@example.com',
-    account: 77887788778,
-    status: 'deactivated',
   },
   {
     id: '4581',
@@ -460,8 +397,8 @@ function getRowItems(row: Row<UsersInfo>) {
             <span class="border rounded-full bg-slate-500 h-5 w-5 inline-block" />
             <span>{{ item.name }}</span>
           </p>
-          <p class="text-gray-500 text-sm mt-1">
-            {{ item.account }}
+          <p class="text-gray-500 text-sm mt-2">
+            <span class="font-bold">Account</span> {{ item.account }}
           </p>
         </div>
 
@@ -469,7 +406,7 @@ function getRowItems(row: Row<UsersInfo>) {
         <div class="flex flex-col items-end">
           <UButton leading-icon="i-lucide-ellipsis-vertical" size="xs" variant="" class="w-fit" />
           <!-- Dynamic status color example -->
-          <p class="text-sm font-medium mt-1 text-green-600">
+          <p class="text-sm font-medium mt-2 text-[#1177FE] capitalize">
             {{ item.status }}
           </p>
         </div>
