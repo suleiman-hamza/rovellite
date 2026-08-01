@@ -9,6 +9,7 @@ export interface CartItemType {
   amount: number | null
   billerId: number
   customerReference: string
+  quantity: number
 }
 
 export const useCartStore = defineStore('cart', () => {
@@ -34,7 +35,7 @@ export const useCartStore = defineStore('cart', () => {
       items.value.push(newItem)
     }
     else {
-      console.warn('tem is already in cart')
+      console.warn('item is already in cart')
       // toast.add({
       //   title: 'Item is already in cart',
       // })

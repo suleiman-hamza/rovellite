@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
+import Transactions from './components/Transactions.vue'
 // import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
 
 import { useProfileStore } from '@/stores/profile'
@@ -13,10 +14,6 @@ definePageMeta({
 })
 
 const items = [{
-  label: 'Gift cards',
-  icon: '/images/dashboard/giftcard.svg',
-  to: '/app/giftCards',
-}, {
   label: 'Data',
   icon: '/images/dashboard/data.svg',
   to: '/app/dataInternet',
@@ -32,10 +29,6 @@ const items = [{
   label: 'Betting',
   icon: '/images/dashboard/betting.svg',
   to: '/app/betting',
-}, {
-  label: 'eSim',
-  icon: '/images/dashboard/eSim.svg',
-  to: '/app/eSim',
 }, {
   label: 'Electricity',
   icon: '/images/dashboard/electricity.svg',
@@ -247,7 +240,7 @@ async function submitBvn() {
         <div class="relative col-span-3 md:col-span-1 bg-[#F2FBFF] rounded-xl flex justify-between p-3">
           <div>
             <h3 class="text-[#4D5155] font-bold text-[14px] md:text-[16px] tracking-[1%]">
-              vhehk;ssio
+              {{ refferalCode }}
             </h3>
             <h4 class="text-[#565252] text-[14px] md:text-[16px] md:tracking-[5%]">
               Referral Code

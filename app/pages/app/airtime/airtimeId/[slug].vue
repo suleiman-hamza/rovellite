@@ -73,6 +73,7 @@ function cart() {
     billerId: airtimeInfo.value?.billerId as number,
     customerReference: state.phoneNumber as string,
     image: airtimeResult.value?.image,
+    quantity: 1,
   })
 }
 

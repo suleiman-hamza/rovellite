@@ -69,6 +69,7 @@ function cart() {
     amount: selectedPlan.value?.amount ?? null,
     customerReference: state.phoneNumber ?? '',
     image: result.value?.image,
+    quantity: 1,
   })
 }
 </script>

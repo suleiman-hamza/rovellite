@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TableColumn } from '@nuxt/ui'
-import { useProfileStore } from '@/stores/profile'
+import { useProfileStore } from '#imports'
 
 const store = useProfileStore()
 
@@ -94,12 +94,34 @@ const columns: TableColumn<trx>[] = [
 
 <template>
   <div>
+    <section class="md:hidden py-2 border">
+      <div class="flex justify-between items-center py-3 border-b border-gray-200">
+        <!-- Left Column -->
+        <div>
+          <h3 class="text-gray-900 font-semibold text-base">
+            Data
+          </h3>
+          <p class="text-gray-500 text-sm mt-1">
+            2pm June 18th, 2026
+          </p>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex flex-col items-end">
+          <span class="text-[#1177FE] font-medium text-base">#2000</span>
+          <!-- Dynamic status color example -->
+          <p class="text-sm font-medium mt-1 text-[#1CB452]">
+            Successful
+          </p>
+        </div>
+      </div>
+    </section>
     <UTable
       v-model:column-filters="columnFilters"
       :data="transactions"
       :loading="fetchStatus === 'pending' || fetchStatus === 'idle'"
       :columns
-      class="flex-1 font-poppins"
+      class="flex-1 font-poppins hidden md:flex md:flex-1"
       :ui="{ th: 'pl-0 py-1.5 md:py-3 text-[#565252] tracking-[1%] text-[16px] font-bold leading-[150%]', td: 'pl-0 font-normal text-[16px] tracking-[5%] text-[#4D5155]' }"
     >
       <template #empty>

@@ -33,7 +33,11 @@ definePageMeta({
       </div>
     </div>
     <div v-else class="p-4 md:p-5 lg:p-6">
-      <CartItem v-for="items in cartStore.items" :key="items.productId" :product-id="items.productId" :amount="items.amount || 0" :biller-id="items.billerId" :product-name="items.productName" :image="items.image" :customer-reference="items.customerReference" />
+      <div class="border border-indigo-400 flex justify-between gap-4 items-center mb-4">
+      <p class="text-base font-bold text-[#4D5155]">Cart</p>
+      <UButton label="Clear all" @click="cartStore.clearCart" variant="outline" class="rounded-sm" />
+    </div>
+      <CartItem v-for="items in cartStore.items" :key="items.productId" class="py-3 border-b border-muted" :product-id="items.productId" :amount="items.amount || 0" :biller-id="items.billerId" :product-name="items.productName" :image="items.image" :customer-reference="items.customerReference" :quantity="items.quantity" />
 
       <!-- should this section show if cart is empty -->
       <div class="mt-5 text-[#565252] font-bold">
