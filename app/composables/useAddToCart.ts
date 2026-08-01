@@ -27,6 +27,7 @@ export function useAddToCart() {
     }
 
     cartStore.addToCart(item)
+    console.log('Item added to cart:', item)
 
     toast.add({
       title: 'Added to Cart',
