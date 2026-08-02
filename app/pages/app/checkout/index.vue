@@ -26,13 +26,35 @@ const cartStore = useCartStore()
             Item details
           </p>
           <UButton
+          to="/app/cart"
             label="Edit Cart" leading-icon="i-lucide-edit-3" variant="ghost"
             class="rounded-sm px-1 py-0.5 text-[#808385] outline outline-[#80838554] text-sm"
             :ui="{ leadingIcon: 'size-3' }"
           />
         </div>
 
-        <div class="border h-20 rounded-sm mb-4" />
+        <div class="border rounded-sm mb-4 overflow-x-auto p-1 flex gap-4">
+          <div v-for="item in cartStore.items" :key="item.productId" class="border border-red-500 rounded-sm bg-[#F9F9FB] shadow-xs p-4 flex gap-2.5">
+            <span class="border border-[#DBF4FF] bg-white rounded-md p-2 w-16 h-auto md:w-20 md:h-auto flex items-center justify-center">
+        <NuxtImg
+          :src="item.image"
+          :alt="item.productName"
+          class="rounded-full w-full h-full object-cover"
+        />
+      </span>
+      <div class="flex flex-col flex-1 gap-0.5 md:gap-2 w-fit text-ellipsis overflow-hidden">
+        <h3 class="text-[#333333] text-[14px] md:text-[16px] truncate font-bold md:leading-[150%] tracking-[2%]">
+          <span>{{ item.productName }}</span>
+        </h3>
+        <p class="text-[#565252] text-[14px] md:text-[16px] truncate tracking-[5%] font-normal leading-[150%]">
+          <span>Id: {{ item.customerReference }}</span>
+        </p>
+        <p class="text-[#565252] text-[14px] md:text-[16px] tracking-[5%] font-bold leading-[150%]">
+          <span>#{{ item.amount }}</span>
+        </p>
+      </div>
+          </div>
+        </div>
 
         <div class="mb-4 md:mb-8">
           <p class="mb-4">
