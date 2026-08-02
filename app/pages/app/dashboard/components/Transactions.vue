@@ -94,7 +94,7 @@ const columns: TableColumn<trx>[] = [
 
 <template>
   <div>
-    <!--end mobile transaction table-->
+    <!-- end mobile transaction table -->
     <section class="md:hidden space-y-2">
       <template v-if="transactions.length">
         <div
@@ -139,9 +139,9 @@ const columns: TableColumn<trx>[] = [
         No transactions available yet.
       </div>
     </section>
-    <!--end mobile transaction table-->
+    <!-- end mobile transaction table -->
 
-    <!--desktop ransaction table-->
+    <!-- desktop ransaction table -->
     <UTable
       v-model:column-filters="columnFilters"
       :data="transactions"

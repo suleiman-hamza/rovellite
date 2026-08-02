@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { VirtualAccountResponse } from '@@/types/palmpay'
-import Transactions from './components/Transactions.vue'
+import { useProfileStore } from '@/stores/profile'
 // import { createReusableTemplate, useClipboard, useMediaQuery } from '@vueuse/core'
 
-import { useProfileStore } from '@/stores/profile'
+import Transactions from './components/Transactions.vue'
 
 const store = useProfileStore()
 const toast = useToast()
