@@ -41,7 +41,7 @@ const table = useTemplateRef('table')
 
 const { data: trxData, status } = await useLazyFetch('/api/transaction', {
   query: { userId: store.userProfile?.user_id, limit: '10' },
-  key: 'transactions',
+  key: 'transactionsfunding',
   server: false,
   getCachedData(key) {
     return nuxtApp.payload.data[key] || nuxtApp.static.data[key]

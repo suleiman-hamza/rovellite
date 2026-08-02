@@ -82,7 +82,7 @@ const items = ref([
           item: 'ps-0 sm:basis-2/3 md:basis-[33%] pl-(--slide-spacing) h-full',
           container: 'ms-0 -ml-(--slide-spacing) h-69 sm:h-80',
           controls: 'relative',
-          arrows: 'absolute sm:absolute -top-85 sm:-top-100 md:-top-110 end-0 sm:inset-e-0',
+          arrows: 'absolute sm:absolute -top-85 sm:-top-100 md:-top-110 inset-end-0 sm:inset-e-0',
           prev: 'relative -left-8 sm:relative sm:-left-8 outline bg-transparent outline-[#999B9E] text-[#999B9E]',
           next: 'relative right-0 bottom-0 sm:relative sm:right-0 sm:bottom-0 bg-transparent outline outline-[#999B9E] text-[#999B9E]',
           dots: 'sm:justify-start',

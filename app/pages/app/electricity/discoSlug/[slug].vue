@@ -84,6 +84,7 @@ function cart() {
     amount: Number(state.amount) || null,
     customerReference: state.meterNumber ?? '',
     image: discoSlug.value?.image,
+    quantity: 1,
   })
 }
 </script>

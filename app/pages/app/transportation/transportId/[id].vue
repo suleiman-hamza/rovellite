@@ -83,6 +83,7 @@ function cart() {
     amount: (selectedPlan.value?.amount ?? Number(state.amount)) || null,
     customerReference: state.profileId ?? '',
     image: transportDetail.value?.image,
+    quantity: 1,
   })
 }
 </script>
