@@ -125,7 +125,7 @@ const cartStore = useCartStore()
           </NuxtLink>
         </section>
 
-        <div class="p-4 text-center max-w-120 mx-auto md:hidden">
+        <div class="sm:p-4 text-center max-w-120 mx-auto md:hidden">
           <NuxtLink
             to="/app/checkout"
             class="bg-primary flex items-center justify-center text-white md:text-[18px] w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold mb-4"

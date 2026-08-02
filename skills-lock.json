@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "vueuse-functions": {
+      "source": "vueuse/skills",
+      "sourceType": "github",
+      "skillPath": "skills/vueuse-functions/SKILL.md",
+      "computedHash": "897ab17334bde959c42f49916f14dd85a9f5367ebb69d52ddb5bb3d38358ddb9"
+    }
+  }
+}
