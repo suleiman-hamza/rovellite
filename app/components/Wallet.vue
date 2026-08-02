@@ -29,50 +29,39 @@ watch(
   { immediate: true },
 )
 
-const store = useProfileStore()
-
 // const scrollPrev = () => emblaApi.value?.scrollPrev()
 // const scrollNext = () => emblaApi.value?.scrollNext()
 
-const { data: walletData } = await useFetch('/api/wallet', {
-  query: { userId: store.userProfile?.user_id },
-})
+const {
+  displayedBalance,
+  isAmountVisible,
+  toggleAmountVisibility,
+} = await useWallet()
 
-const cards = ref([
+// Card definitions.
+// Total Credited / Total Spent don't have a real data source yet (see
+// useWallet.ts) — they show a placeholder rather than the wallet balance.
+// Previously all three cards bound to `displayedBalance`, which was the bug.
+const cards = computed(() => [
   {
     title: 'Wallet Balance',
     icon: '/images/icons/wallet-ballance.svg',
     bgColor: 'bg-[#1177FE]',
+    value: displayedBalance.value,
   },
   {
     title: 'Total Credited',
     icon: '/images/icons/wallet-in.svg',
     bgColor: 'bg-[#1ED760]',
+    value: '—',
   },
   {
     title: 'Total Spent',
     icon: '/images/icons/wallet-out.svg',
     bgColor: 'bg-[#FBABAB]',
+    value: '—',
   },
 ])
-
-// const { data, error } = useFetch('/api/wallet')
-const isAmountVisible = ref(true)
-// const balance = ref(12550.50)
-
-const displayedBalance = computed((): string => {
-  if (isAmountVisible.value && walletData?.value?.success) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'NGN',
-    }).format(walletData?.value?.data.balance)
-  }
-  return '••••'
-})
-
-function toggleAmountVisibility() {
-  isAmountVisible.value = !isAmountVisible.value
-}
 </script>
 
 <template>
@@ -97,7 +86,7 @@ function toggleAmountVisibility() {
                     <!-- wallet balance -->
                     <div class="truncate">
                       <p class="text-[18px] font-bold text-[#4D5155]">
-                        {{ displayedBalance }}
+                        {{ card.value }}
                       </p>
                       <h3 class="text-[16px] md:text-[18px] tracking-[5%] md:tracking-[10%] text-[#676A6D] font-regular">
                         {{ card.title }}
@@ -148,7 +137,7 @@ function toggleAmountVisibility() {
                 </span>
                 <div class="truncate">
                   <p class="text-[20px] font-bold text-[#4D5155]">
-                    {{ displayedBalance }}
+                    {{ card.value }}
                   </p>
                   <h3 class="text-[14px] md:text-[16px] lg:text-[18px] tracking-[2%] md:tracking-[10%] text-[#676A6D] font-medium">
                     {{ card.title }}
