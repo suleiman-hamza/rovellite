@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { TabsItem } from '@nuxt/ui'
 import { useCartStore } from '@/stores/cart'
+import { useProfileStore } from '#imports'
 
 definePageMeta({
   title: 'Checkout',
@@ -9,51 +9,56 @@ definePageMeta({
   // keepalive: true,
 })
 
+const { displayedBalance } = await useWallet()
 const cartStore = useCartStore()
+const store = useProfileStore()
 
 const isOpen = ref(false) // v-model to open or close the modal
-const items = [
-  {
-    label: 'Pay With Wallet Balance',
-    slot: 'wallet' as const,
-  },
-  {
-    label: 'Pay With Other Methods',
-    slot: 'paystack' as const,
-  },
-] satisfies TabsItem[]
 </script>
 
 <template>
-  <main class="bg-white p-4 md:p-5 lg:p-6 rounded-[20px]">
+  <main class="border">
     <div class="">
-      <h2 class="text-[18px] md:text-[32px] md:leading-[42px] font-bold text-[#34383D] mb-2.5 md:mb-5">
-        Payment Method
+      <h2 class="text-[18px] md:text-[32px] md:leading-10.5 font-bold text-[#34383D] mb-2.5 md:mb-5">
+        Checkout
       </h2>
-      <h3 class="text-[#676A6D] text-[16px] md:text-[24px] font-bold md:leading-[30px]">
-        Select a payment method
-      </h3>
     </div>
-    <div class="mt-7">
-      <UTabs
-        :items="items"
-        variant="pill"
-        :ui="{
-          root: '',
-          list: 'bg-transparent gap-4 p-0 border',
-          indicator: 'hidden',
-          trigger: 'flex items-center gap-2 before:content-[\'\'] before:size-4 before:rounded-full before:border-2 before:border-primary data-[state=active]:before:bg-primary data-[state=active]:before:border-primary data-[state=inactive]:before:bg-transparent data-[state=inactive]:text-[#4D5155] data-[state=active]:text-primary md:before:size-6 md:text-[24px]',
-        }"
-      >
-        <template #wallet>
-          <div class="mt-5">
+    <div class="rounded-[20px] bg-white p-4 border border-red-500">
+      <div class="flex justify-between gap-4 items-center mb-4">
+          <p class="text-base md:text-[28px] font-normal text-[#4D5155] capitalize">Item details</p>
+          <UButton label="Edit Cart" leadingIcon="i-lucide-edit-3" variant="ghost" class="rounded-sm px-1 py-0.5 text-[#808385] outline outline-[#80838554] text-sm" :ui="{ leadingIcon: 'size-3' }" />
+        </div>
+
+        <div class="border h-20 rounded-sm mb-4">
+        </div>
+
+          <div class="">
+            <p class="mb-4">Payment Method</p>
+            <div class="border border-secondary p-3 rounded-sm flex gap-2.5 items-center md:gap-4">
+              <span class="border border-primary rounded-sm p-2">
+                <span class="bg-primary rounded-sm p-2 flex items-center justify-center">
+                  <UIcon name="i-lucide-credit-card" class="size-6 text-white" />
+                </span>
+              </span>
+
+              <div>
+                <p class="text-[15px] md:text-[16px] font-bold text-[#4D5155]">Wallet</p>
+                <p class="text-[14px] md:text-[15px] text-[#808385]">Wallet Balance: {{ displayedBalance }}</p>
+              </div>
+
+              <span class="ml-auto">
+              <UIcon name="i-lucide-circle-check" class="text-primary" />
+            </span>
+            </div>
+          </div>
+
             <div class="border-b border-[#CCCDCE] p-3 md:px-0 md:py-5 flex justify-between text-primary font-bold md:text-[20px] leading-[150%]">
               <p>Total Cost</p>
               <p>{{ cartStore.cartTotalAmount }}</p>
             </div>
             <div class="border-b border-[#CCCDCE] p-3 md:px-0 md:py-5 flex justify-between text-[#4D5155] font-bold md:text-[20px] leading-[150%]">
               <p>Wallet Balance</p>
-              <p>0.00</p>
+              <p>{{ displayedBalance }}</p>
             </div>
             <div class="mt-5 md:mt-15 flex flex-col gap-5 justify-center items-center">
               <UModal
@@ -64,7 +69,7 @@ const items = [
                   class: 'rounded-full',
                 }"
               >
-                <UButton label="Continue Payment" color="neutral" class="bg-primary flex items-center justify-center text-white w-full max-w-[500px] mx-auto py-3 rounded-[40px] md:text-[24px] font-bold border-none" variant="subtle" />
+                <UButton label="Continue Payment" color="neutral" class="bg-primary flex items-center justify-center text-white w-full max-w-125 mx-auto py-3 rounded-[40px] md:text-[24px] font-bold border-none" variant="subtle" />
                 <template #content>
                   <div class="h-50 md:h-65 m-4 relative flex flex-col justify-center items-center gap-5">
                     <!-- Your custom close button -->
@@ -87,13 +92,5 @@ const items = [
               </p>
             </div>
           </div>
-        </template>
-        <template #paystack>
-          <div class="mt-5">
-            <p>Paystack</p>
-          </div>
-        </template>
-      </UTabs>
-    </div>
   </main>
 </template>

@@ -298,11 +298,6 @@ async function submitBvn() {
         Recent Transactions
       </h2>
       <Transactions />
-      <!-- <h2>Wallet Balance</h2>
-      <pre>{{ walletData }}</pre>
-      <p class="text-red-500">
-        {{ walletError }}
-      </p> -->
     </section>
   </main>
 </template>

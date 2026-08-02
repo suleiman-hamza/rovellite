@@ -156,7 +156,7 @@ const firstName = parts[0]
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
       <template #header>
-        <UDashboardNavbar>
+        <UDashboardNavbar class="shadow-sm border-b-0 z-40  h-(--ui-header-height-mobile) sm:h-(--ui-header-height)">
           <template #title>
             <span class="text-[16px] md:text-[24px] font-normal">
               Welcome, <span class="text-[#1177FE] font-bold uppercase">{{ firstName }}</span>

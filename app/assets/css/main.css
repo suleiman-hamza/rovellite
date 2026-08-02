@@ -28,7 +28,7 @@
 
 :root {
   --ui-primary: #1177FE;
-  --ui-secondary: #F2FBFF;
+  --ui-secondary: #DBF4FF;
   --ui-border: #F2FBFF;
   --ui-border-accented: #808385; /*Since the outline variant uses ring-accented for the base border,*/
   --ui-header-height: --spacing(24);

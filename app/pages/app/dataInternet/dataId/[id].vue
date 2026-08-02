@@ -105,7 +105,7 @@ function cart() {
       <div class="border-2 border-[#E3EDF0] rounded-b-[20px]">
         <div class="w-full sm:max-w-lg mx-auto pt-9 pb-12.5">
           <div class="px-4 sm:px-6">
-            <UForm :schema="formSchema" :state="state" class="space-y-4" @submit="onSubmit">
+            <UForm :schema="formSchema" :state="state" class="space-y-4.5 sm:space-y-6" @submit="onSubmit">
               <UFormField name="agent">
                 <USelect v-model="state.plan" placeholder="Plan" :items="selectPlan" size="xl" class="w-full" />
                 <p class="text-[14px] mt-2">
@@ -117,13 +117,13 @@ function cart() {
                 <UInput v-model="state.phoneNumber" size="xl" inputmode="numeric" maxlength="11" placeholder="Phone Number" class="w-full" />
               </UFormField>
 
-              <div class="flex gap-4 px-0 sm:px-6">
-                <UButton class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
+              <div class="flex gap-4 px-0">
+                <UButton class="w-full flex justify-center items-center sm:flex-1 font-bold text-[16px] sm:text-[20px] text-black bg-[#999999] rounded-full" @click="cart">
                   Add to Cart
                 </UButton>
                 <UButton
                   type="submit"
-                  class="w-full flex justify-center items-center font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
+                  class="w-full flex justify-center items-center sm:flex-1 font-bold text-[16px] sm:text-[20px] bg-[#1177FE] rounded-full text-white"
                 >
                   Checkout
                 </UButton>

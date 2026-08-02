@@ -94,28 +94,54 @@ const columns: TableColumn<trx>[] = [
 
 <template>
   <div>
-    <section class="md:hidden py-2 border">
-      <div class="flex justify-between items-center py-3 border-b border-gray-200">
-        <!-- Left Column -->
-        <div>
-          <h3 class="text-gray-900 font-semibold text-base">
-            Data
-          </h3>
-          <p class="text-gray-500 text-sm mt-1">
-            2pm June 18th, 2026
-          </p>
-        </div>
+    <!--end mobile transaction table-->
+    <section class="md:hidden space-y-2">
+      <template v-if="transactions.length">
+        <div
+          v-for="transaction in transactions"
+          :key="transaction.id"
+          class="flex justify-between items-center pb-2 border-b border-gray-200"
+        >
+          <div class="min-w-0">
+            <h3 class="text-gray-900 font-semibold text-base truncate">
+              {{ transaction.description || 'Transaction' }}
+            </h3>
+            <p class="text-gray-500 text-sm mt-1">
+              {{ new Date(transaction.created_at).toLocaleString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              }) }}
+            </p>
+          </div>
 
-        <!-- Right Column -->
-        <div class="flex flex-col items-end">
-          <span class="text-[#1177FE] font-medium text-base">#2000</span>
-          <!-- Dynamic status color example -->
-          <p class="text-sm font-medium mt-1 text-[#1CB452]">
-            Successful
-          </p>
+          <div class="flex flex-col items-end text-right">
+            <span class="text-[#1177FE] font-medium text-base">
+              {{ new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'NGN',
+              }).format(Number(transaction.amount || 0)) }}
+            </span>
+            <p
+              class="text-sm font-medium mt-1"
+              :class="transaction.status?.toLowerCase() === 'successful' ? 'text-[#1CB452]' : transaction.status?.toLowerCase() === 'failed' ? 'text-[#EF4444]' : 'text-[#F59E0B]'"
+            >
+              {{ transaction.status || 'Pending' }}
+            </p>
+          </div>
         </div>
+      </template>
+
+      <div v-else class="rounded-lg border border-dashed border-gray-200 px-4 py-6 text-center text-sm text-gray-500">
+        No transactions available yet.
       </div>
     </section>
+    <!--end mobile transaction table-->
+
+    <!--desktop ransaction table-->
     <UTable
       v-model:column-filters="columnFilters"
       :data="transactions"
