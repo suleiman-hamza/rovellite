@@ -115,6 +115,7 @@ function cart() {
     billerId: selectedPlanDetails?.billerId ?? 0,
     customerReference: state.decoderNumber ?? '',
     image: decodeInfo.value?.image,
+    quantity: 1,
   })
 }
 </script>

@@ -106,6 +106,7 @@ function cart() {
     amount: Number(state.amount) || null,
     customerReference: state.id ?? '',
     image: betPlatform.value?.image,
+    quantity: 1,
   })
 }
 </script>

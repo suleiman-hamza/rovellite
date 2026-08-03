@@ -20,11 +20,6 @@ const items: NavigationMenuItem[] = [{
   to: '/app/dashboard',
   // active: route.path.startsWith()
 }, {
-  label: 'Gift cards',
-  icon: '/images/icons/giftcard.svg',
-  to: '/app/giftCards',
-  active: route.path.startsWith('/app/giftCards'),
-}, {
   label: 'Data/Internet',
   icon: '/images/icons/data.svg',
   to: '/app/dataInternet',
@@ -44,11 +39,6 @@ const items: NavigationMenuItem[] = [{
   icon: '/images/icons/betting.svg',
   to: '/app/betting',
   active: route.path.includes('/app/betting'),
-}, {
-  label: 'eSim',
-  icon: '/images/icons/eSim.svg',
-  to: '/app/eSim',
-  active: route.path.startsWith('/app/eSim'),
 }, {
   label: 'Electricity',
   icon: '/images/icons/electricity.svg',
@@ -166,7 +156,7 @@ const firstName = parts[0]
     </UDashboardSidebar>
     <UDashboardPanel resizable class="font-poppins">
       <template #header>
-        <UDashboardNavbar>
+        <UDashboardNavbar class="shadow-sm border-b-0 z-40  h-(--ui-header-height-mobile) sm:h-(--ui-header-height)">
           <template #title>
             <span class="text-[16px] md:text-[24px] font-normal">
               Welcome, <span class="text-[#1177FE] font-bold uppercase">{{ firstName }}</span>
