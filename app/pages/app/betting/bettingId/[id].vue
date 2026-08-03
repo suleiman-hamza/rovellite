@@ -103,7 +103,7 @@ function cart() {
     productName: selectedBet.value?.name ?? state.agent ?? '',
     productId: selectedBet.value?.id ?? 0,
     billerId: selectedBet.value?.billerId ?? 0,
-    amount: Number(state.amount) || null,
+    amount: Number(state.amount),
     customerReference: state.id ?? '',
     image: betPlatform.value?.image,
     quantity: 1,

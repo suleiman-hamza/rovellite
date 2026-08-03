@@ -2,6 +2,7 @@
 import { useCartStore } from '@/stores/cart'
 
 const cartStore = useCartStore()
+const { format } = useCurrency()
 
 definePageMeta({
   title: 'Cart',
@@ -67,21 +68,21 @@ definePageMeta({
             <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2">
               <p>Charges</p>
               <p class="font-bold">
-                #0
+                {{ format(0) }}
               </p>
             </div>
             <!-- bonus to earn -->
             <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2">
               <p>Bonus to Earn</p>
               <p class="bg-secondary text-primary rounded-sm px-1 p-0.5">
-                #0
+                {{ format(0) }}
               </p>
             </div>
             <!-- total amount -->
             <div class="md:text-[16px] flex gap-8 justify-between">
               <p>Total</p>
               <p class="text-primary font-bold">
-                #{{ cartStore.cartTotalAmount }}
+                {{ format(cartStore.cartTotalAmount) }}
               </p>
             </div>
           </div>
@@ -91,7 +92,7 @@ definePageMeta({
           <NuxtLink to="/app/checkout" class="bg-primary flex items-center justify-center text-white w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold">
             Checkout
           </NuxtLink>
-          <NuxtLink to="" class="bg-[#E6E6E7] flex items-center justify-center text-black w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold">
+          <NuxtLink to="/app/dashboard" class="bg-[#E6E6E7] flex items-center justify-center text-black w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold">
             Countinue Shopping
           </NuxtLink>
         </section>

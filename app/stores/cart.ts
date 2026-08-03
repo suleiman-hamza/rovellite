@@ -8,7 +8,7 @@ export interface CartItemType {
   productName: string
   productId: number
   image?: string
-  amount: number | null
+  amount: number
   billerId: number
   customerReference: string
   quantity: number
@@ -29,6 +29,11 @@ export const useCartStore = defineStore('cart', () => {
   const cartTotalAmount = computed(() => {
     return items.value.reduce((total, item) => total + (item.amount || 0) * item.quantity, 0)
   })
+
+  // add this
+  function getLineTotal(item: CartItemType) {
+    return item.amount * item.quantity
+  }
 
   // Actions
   function addToCart(newItem: CartItemType) {
@@ -71,5 +76,6 @@ export const useCartStore = defineStore('cart', () => {
     updateQuantity,
     removeFromCart,
     clearCart,
+    getLineTotal,
   }
 })

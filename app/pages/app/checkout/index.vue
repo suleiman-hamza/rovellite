@@ -10,6 +10,7 @@ definePageMeta({
 
 const { displayedBalance } = await useWallet()
 const cartStore = useCartStore()
+const { format } = useCurrency()
 
 // const isOpen = ref(false) // v-model to open or close the modal
 </script>
@@ -17,7 +18,7 @@ const cartStore = useCartStore()
 <template>
   <main class="">
     <div class="flex flex-col gap-4 md:flex-row">
-      <section class="rounded-[20px] bg-white p-4 md:flex-1">
+      <section class="rounded-[20px] bg-white p-4 w-full md:flex-1">
         <h2 class="text-[18px] md:text-[32px] md:leading-10.5 font-bold text-[#34383D] mb-2 md:mb-4">
           Checkout
         </h2>
@@ -33,24 +34,24 @@ const cartStore = useCartStore()
           />
         </div>
 
-        <div class="border rounded-sm mb-4 overflow-x-auto p-1 flex gap-4">
-          <div v-for="item in cartStore.items" :key="item.productId" class="border border-red-500 rounded-sm bg-[#F9F9FB] shadow-xs p-4 flex gap-2.5">
-            <span class="border border-[#DBF4FF] bg-white rounded-md p-2 w-16 h-auto md:w-20 md:h-auto flex items-center justify-center">
+        <div class="rounded-sm mb-4 overflow-x-scroll p-1 flex gap-3.5 max-w-2xl">
+          <div v-for="item in cartStore.items" :key="item.productId" class="rounded-sm bg-[#F9F9FB] shadow-xs p-3.5 flex gap-2.5 max-w-60">
+            <span class="border border-[#DBF4FF] bg-white rounded-md p-2 w-16 h-auto md:w-18 md:h-18 flex items-center justify-center">
               <NuxtImg
                 :src="item.image"
                 :alt="item.productName"
                 class="rounded-full w-full h-full object-cover"
               />
             </span>
-            <div class="flex flex-col flex-1 gap-0.5 md:gap-2 w-fit text-ellipsis overflow-hidden">
-              <h3 class="text-[#333333] text-[14px] md:text-[16px] truncate font-bold md:leading-[150%] tracking-[2%]">
+            <div class="flex flex-col flex-1 gap-0.5 md:gap-1.5 w-full text-ellipsis overflow-hidden">
+              <h3 class="text-[#333333] text-[14px] truncate font-bold md:leading-[150%] tracking-[2%]">
                 <span>{{ item.productName }}</span>
               </h3>
-              <p class="text-[#565252] text-[14px] md:text-[16px] truncate tracking-[5%] font-normal leading-[150%]">
+              <p class="text-[#565252] text-[14px] truncate tracking-[5%] font-normal leading-[150%]">
                 <span>Id: {{ item.customerReference }}</span>
               </p>
-              <p class="text-[#565252] text-[14px] md:text-[16px] tracking-[5%] font-bold leading-[150%]">
-                <span>#{{ item.amount }}</span>
+              <p class="text-[#565252] text-[14px] tracking-[5%] font-bold leading-[150%]">
+                <span>{{ format(item.amount) }}</span>
               </p>
             </div>
           </div>
@@ -93,7 +94,7 @@ const cartStore = useCartStore()
       </section>
 
       <!-- summary section -->
-      <div class="md:min-w-60 lg:min-w-80">
+      <div class="md:min-w-60 min-w-80">
         <section class="p-4 bg-white rounded-[20px]">
           <!-- should this section show if cart is empty -->
           <div class="text-[#565252]">
@@ -102,31 +103,42 @@ const cartStore = useCartStore()
             </h4>
             <USeparator class="my-4" />
             <!-- total product count -->
-            <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2">
+            <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2.5">
               <p>Total Products</p>
               <p class="font-bold">
                 {{ cartStore.cartItemCount }}
+              </p>
+            </div>
+            <div v-for="entity in cartStore.items" :key="entity.productId" class="grid grid-cols-[1fr_auto_1fr] overflow-hidden mb-2.5">
+              <p class="truncate">
+                {{ entity.productName }}
+              </p>
+              <p class="px-2">
+                {{ entity.quantity }}
+              </p>
+              <p class="text-right">
+                {{ format(cartStore.getLineTotal(entity)) }}
               </p>
             </div>
             <!-- rovelsub charges -->
             <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2">
               <p>Charges</p>
               <p class="font-bold">
-                #0
+                {{ format(0) }}
               </p>
             </div>
             <!-- bonus to earn -->
             <div class="text-[15px] md:text-[16px] flex gap-8 justify-between mb-2">
               <p>Bonus to Earn</p>
               <p class="bg-secondary text-primary rounded-sm px-1 p-0.5">
-                #0
+                {{ format(0) }}
               </p>
             </div>
             <!-- total amount -->
             <div class="md:text-[16px] flex gap-8 justify-between">
               <p>Total</p>
               <p class="text-primary font-bold">
-                #{{ cartStore.cartTotalAmount }}
+                {{ format(cartStore.cartTotalAmount) }}
               </p>
             </div>
           </div>
@@ -134,16 +146,16 @@ const cartStore = useCartStore()
 
         <section class="hidden md:flex flex-col sm:flex-row md:flex-col gap-4 justify-center items-center mt-5">
           <NuxtLink
-            to="/app/checkout"
+            to="/app/cart"
             class="bg-[#E6E6E7] flex items-center justify-center md:text-[18px] text-black w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold"
           >
             Edit Cart
           </NuxtLink>
           <NuxtLink
-            to=""
+            to="/app/dashboard"
             class="bg-[#E6E6E7] flex items-center justify-center md:text-[18px] text-black w-full max-w-100 mx-auto py-3 rounded-[40px] font-bold"
           >
-            Countinue Shopping
+            Continue Shopping
           </NuxtLink>
         </section>
 

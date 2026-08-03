@@ -111,7 +111,7 @@ function cart() {
   addToCart({
     productName: selectedPlanDetails?.name ?? '',
     productId: selectedPlanDetails?.id ?? 0,
-    amount: selectedPlanDetails?.amount ?? null,
+    amount: selectedPlanDetails?.amount ?? 0,
     billerId: selectedPlanDetails?.billerId ?? 0,
     customerReference: state.decoderNumber ?? '',
     image: decodeInfo.value?.image,

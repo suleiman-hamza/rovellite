@@ -81,7 +81,7 @@ function cart() {
     productName: selectedPlan.value?.name ?? '',
     productId: selectedPlan.value?.id ?? 0,
     billerId: selectedPlan.value?.billerId ?? 0,
-    amount: Number(state.amount) || null,
+    amount: Number(state.amount) || 0,
     customerReference: state.meterNumber ?? '',
     image: discoSlug.value?.image,
     quantity: 1,
