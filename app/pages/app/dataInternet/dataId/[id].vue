@@ -66,7 +66,7 @@ function cart() {
     productName: selectedPlan.value?.name ?? '',
     productId: selectedPlan.value?.id ?? 0,
     billerId: selectedPlan.value?.billerId ?? 0,
-    amount: selectedPlan.value?.amount ?? null,
+    amount: selectedPlan.value?.amount ?? 0,
     customerReference: state.phoneNumber ?? '',
     image: result.value?.image,
     quantity: 1,

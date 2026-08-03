@@ -13,19 +13,17 @@ interface Props {
 
 const props = defineProps<Props>()
 const cartStore = useCartStore()
+const { format } = useCurrency()
 
-// Bound directly to the store via get/set — a plain `ref(props.quantity)`
-// only captures the initial value and never stays in sync with the store
-// afterward, which is why the stepper wasn't doing anything before.
 const quantityCount = computed({
   get: () => cartStore.items.find(item => item.productId === props.productId)?.quantity ?? props.quantity,
   set: (value: number) => cartStore.updateQuantity(props.productId, value),
 })
 
-// Unit price × quantity, so this row reflects what it actually contributes
-// to cartStore.cartTotalAmount. Remove this and use props.amount directly
-// if amount is meant to stay fixed regardless of quantity.
-const lineTotal = computed(() => props.amount * quantityCount.value)
+// Unit price × quantity
+// const lineTotal = computed(() =>
+//   cartStore.getLineTotal({ ...props, quantity: quantityCount.value }),
+// )
 </script>
 
 <template>
@@ -51,7 +49,7 @@ const lineTotal = computed(() => props.amount * quantityCount.value)
           <span>Id: {{ props.customerReference }}</span>
         </p>
         <p class="text-[#565252] text-[14px] md:text-[16px] tracking-[5%] font-bold leading-[150%]">
-          <span>#{{ lineTotal }}</span>
+          <span>{{ format(props.amount) }}</span>
         </p>
       </div>
       <!-- remove btn and increase item -->
