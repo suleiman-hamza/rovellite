@@ -1,29 +1,19 @@
-import type { BillerResponse } from '#shared/types/biller-types'
-import Buffer from 'node:buffer'
+import { paymentLookup } from '#server/utils/coralpay-service'
+import { handleUtilityError } from '#server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
-  const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
-  const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
+  try {
+    const query = getQuery(event)
 
-  const query = getQuery(event)
-  const paymentReference = query.paymentReference
-  const transactionId = query.transactionId
+    // Delegate to service layer (handles auth + Zod validation)
+    const response = await paymentLookup({
+      paymentReference: query.paymentReference ? String(query.paymentReference) : undefined,
+      transactionId: query.transactionId ? String(query.transactionId) : undefined,
+    })
 
-  // Build query string dynamically
-  const params = new URLSearchParams()
-  if (paymentReference)
-    params.append('paymentReference', String(paymentReference))
-  if (transactionId)
-    params.append('transactionId', String(transactionId))
-
-  // Proxy request to CoralPay Sandbox payment-lookup
-  const response = await $fetch<BillerResponse>(`https://sandbox1.coralpay.com/coralpay-vas/api/transactions/payment-lookup?${params.toString()}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'text/plain',
-    },
-  })
-
-  return response
+    return response
+  }
+  catch (error) {
+    return handleUtilityError(error, 'Failed to look up payment status')
+  }
 })

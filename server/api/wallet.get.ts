@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import { handleUtilityError } from '#server/utils/error-handler'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { getRovelsubUserWallet } from '#server/utils/wallet'
 

@@ -105,6 +105,24 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-15',
+
+  // Nitro storage driver for CoralPay Redis caching
+  // When REDIS_URL is set, uses Redis; otherwise falls back to in-memory storage.
+  nitro: {
+    experimental: {
+      tasks: true,
+    },
+    scheduledTasks: {
+      // Run CoralPay catalog sync nightly at 2:00 AM
+      '0 2 * * *': ['sync-coralpay-catalog'],
+    },
+    storage: {
+      redis: {
+        driver: process.env.REDIS_URL ? 'redis' : 'memory',
+        ...(process.env.REDIS_URL ? { url: process.env.REDIS_URL } : {}),
+      },
+    },
+  },
   vite: {
     server: {
       allowedHosts: ['handful-hangup-crushing.ngrok-free.dev'],

@@ -39,6 +39,51 @@ export interface Database {
   }
   public: {
     Tables: {
+      billers: {
+        Row: {
+          category: string
+          coralpay_biller_id: number | null
+          created_at: string | null
+          group_slug: string
+          handle_with_product_code: boolean | null
+          id: string
+          is_active: boolean | null
+          is_restricted: boolean | null
+          name: string
+          skip_validation: boolean | null
+          slug: string
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          coralpay_biller_id?: number | null
+          created_at?: string | null
+          group_slug: string
+          handle_with_product_code?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_restricted?: boolean | null
+          name: string
+          skip_validation?: boolean | null
+          slug: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          coralpay_biller_id?: number | null
+          created_at?: string | null
+          group_slug?: string
+          handle_with_product_code?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_restricted?: boolean | null
+          name?: string
+          skip_validation?: boolean | null
+          slug?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       bvn_verifications: {
         Row: {
           attempt_count: number
@@ -94,6 +139,7 @@ export interface Database {
           amount: number
           created_at: string
           error_message: string | null
+          fulfillment_token: string | null
           id: string
           idempotency_key: string
           plan_id: string
@@ -103,11 +149,13 @@ export interface Database {
           user_id: string
           vendor_request: Json | null
           vendor_response: Json | null
+          vendor_tx_id: string | null
         }
         Insert: {
           amount: number
           created_at?: string
           error_message?: string | null
+          fulfillment_token?: string | null
           id?: string
           idempotency_key: string
           plan_id: string
@@ -117,11 +165,13 @@ export interface Database {
           user_id: string
           vendor_request?: Json | null
           vendor_response?: Json | null
+          vendor_tx_id?: string | null
         }
         Update: {
           amount?: number
           created_at?: string
           error_message?: string | null
+          fulfillment_token?: string | null
           id?: string
           idempotency_key?: string
           plan_id?: string
@@ -131,6 +181,7 @@ export interface Database {
           user_id?: string
           vendor_request?: Json | null
           vendor_response?: Json | null
+          vendor_tx_id?: string | null
         }
         Relationships: [
           {
@@ -238,6 +289,7 @@ export interface Database {
       }
       subscription_plans: {
         Row: {
+          biller_id: string | null
           created_at: string
           id: string
           is_active: boolean
@@ -245,9 +297,11 @@ export interface Database {
           name: string
           price: number
           service_provider: Database['public']['Enums']['service_provider']
+          slug: string | null
           updated_at: string
         }
         Insert: {
+          biller_id?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -255,9 +309,11 @@ export interface Database {
           name: string
           price: number
           service_provider: Database['public']['Enums']['service_provider']
+          slug?: string | null
           updated_at?: string
         }
         Update: {
+          biller_id?: string | null
           created_at?: string
           id?: string
           is_active?: boolean
@@ -265,9 +321,18 @@ export interface Database {
           name?: string
           price?: number
           service_provider?: Database['public']['Enums']['service_provider']
+          slug?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: 'subscription_plans_biller_id_fkey'
+            columns: ['biller_id']
+            isOneToOne: false
+            referencedRelation: 'billers'
+            referencedColumns: ['id']
+          },
+        ]
       }
       transactions: {
         Row: {

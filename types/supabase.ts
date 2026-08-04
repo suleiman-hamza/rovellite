@@ -39,6 +39,11 @@ export type OrderInsert = TablesInsert<'orders'>
 export type OrderUpdate = TablesUpdate<'orders'>
 export type OrderStatus = Enums<'order_status'>
 
+// billers table
+export type BillerRow = Tables<'billers'>
+export type BillerInsert = TablesInsert<'billers'>
+export type BillerUpdate = TablesUpdate<'billers'>
+
 // RPC FUNCTION TYPES
 export interface CreditWalletWithTransactionArgs {
   p_user_id: string

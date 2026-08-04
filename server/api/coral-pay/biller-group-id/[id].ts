@@ -1,33 +1,15 @@
-import type { BillerResponse } from '@@/shared/types/biller-types'
-import Buffer from 'node:buffer'
+import { getBillersByGroupId } from '#server/utils/coralpay-service'
+import { handleUtilityError } from '#server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id
-  console.warn(id)
-  const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
-  // console.log(CORALPAY_PASSWORD);
-  const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
 
   try {
-    const response = await $fetch<BillerResponse>(`https://sandbox1.coralpay.com/coralpay-vas/api/billers/group/${id}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Basic ${credentials}`,
-        'Content-Type': 'text/plain',
-      },
-    })
-
-    // is this redundant ?
-    if (response.error === true) {
-      return response.message
-    }
-    return response.responseData
+    const billers = await getBillersByGroupId(id!)
+    return billers
   }
   catch (error) {
     console.error('Error fetching biller group by ID:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Failed to fetch biller group by ID',
-    })
+    return handleUtilityError(error, 'Failed to fetch biller group by ID')
   }
 })
