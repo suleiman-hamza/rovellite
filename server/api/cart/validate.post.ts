@@ -1,7 +1,7 @@
 import { defineEventHandler } from 'h3'
 import { z } from 'zod'
-import { apiResponse } from '~~/server/utils/api-response'
-import { handleUtilityError } from '~~/server/utils/error-handler'
+import { apiResponse } from '#server/utils/api-response'
+import { handleUtilityError } from '#server/utils/error-handler'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 // Validation Schema

@@ -1,29 +1,43 @@
 import type { Json } from '~~/types/supabase-schema'
 import type { createAdminSupabaseClient } from '#server/utils/supabase'
+import { z } from 'zod'
+import { interpretResponse, paymentLookup, processPayment } from '~~/server/utils/coralpay-service'
 
-// Fulfillment Payload
-export interface FulfillmentPayload {
-  orderId: string
-  userId: string
-  planId: string
-  targetIdentifier: string
-  amount: number
-  serviceProvider: string
-  planName: string
-}
+// Fulfillment Payload Schema & Type Validation
+export const fulfillmentPayloadSchema = z.object({
+  orderId: z.string().min(1, 'orderId is required'),
+  userId: z.string().min(1, 'userId is required'),
+  planId: z.string().min(1, 'planId is required'),
+  targetIdentifier: z.string().min(1, 'targetIdentifier is required'),
+  amount: z.number().positive('amount must be a positive number'),
+  serviceProvider: z.string().min(1, 'serviceProvider is required'),
+  planName: z.string().min(1, 'planName is required'),
+})
+
+export type FulfillmentPayload = z.infer<typeof fulfillmentPayloadSchema>
+
+// Exponential Backoff Configuration
+
+/** Delays in milliseconds for polling pending transactions (09/68) */
+const POLL_DELAYS_MS = [10_000, 20_000, 40_000, 80_000] as const
+const MAX_POLL_ATTEMPTS = POLL_DELAYS_MS.length
 
 /**
  * Background fulfillment worker that dispatches subscription orders
  * to the appropriate third-party vendor API (CoralPay / Sochitel).
  *
  * On success → marks order COMPLETED with vendor response.
- * On failure → rolls back: marks order FAILED, refunds wallet, logs CREDIT transaction.
+ * On pending (09/68) → polls with exponential backoff. If still pending,
+ *   leaves order as PENDING_FULFILLMENT (NEVER auto-reverses).
+ * On failure (06/25/96) → rolls back: marks order FAILED, refunds wallet, logs CREDIT transaction.
  */
 export async function fulfillOrder(
   supabase: ReturnType<typeof createAdminSupabaseClient>,
   payload: FulfillmentPayload,
 ): Promise<void> {
-  const { orderId, userId, targetIdentifier, amount, serviceProvider, planName, planId } = payload
+  // Validate payload structure using Zod
+  const validatedPayload = fulfillmentPayloadSchema.parse(payload)
+  const { orderId, userId, targetIdentifier, amount, serviceProvider, planName, planId } = validatedPayload
 
   console.warn('[fulfillment] Starting background fulfillment:', {
     orderId,
@@ -35,7 +49,7 @@ export async function fulfillOrder(
     let vendorResponse: Record<string, Json>
 
     if (serviceProvider === 'CORALPAY') {
-      console.warn('[fulfillment] Fetching plan metadata and user profile...')
+      console.warn('[Coralpay fulfillment] Fetching plan metadata and user profile...')
 
       // Fetch Plan Metadata
       const { data: plan, error: planError } = await supabase
@@ -54,7 +68,7 @@ export async function fulfillOrder(
         throw new Error(`Plan ${planId} is missing coralpay.packageSlug in metadata`)
       }
 
-      // 2. Fetch User Profile
+      // Fetch User Profile
       const { data: profile } = await supabase
         .from('profiles')
         .select('phone, full_name, email')
@@ -65,12 +79,12 @@ export async function fulfillOrder(
       const phoneNumber = profile?.phone || '2348000000000'
       const email = profile?.email || 'customer@rovellite.com'
 
-      // Dispatch to CoralPay process-payment
+      // Build payment payload
       const paymentPayload = {
         paymentReference: `ref_${orderId}`,
         customerId: targetIdentifier,
         packageSlug,
-        channel: 'WEB',
+        channel: 'WEB' as const,
         amount,
         customerName,
         phoneNumber,
@@ -85,54 +99,59 @@ export async function fulfillOrder(
         .update({ vendor_request: paymentPayload })
         .eq('id', orderId)
 
-      const cpResponse = await $fetch<any>('/api/coral-pay/transactions/process-payment', {
-        method: 'POST',
-        body: paymentPayload,
+      // Call CoralPay directly via the service layer (not through own proxy)
+      const cpResponse = await processPayment(paymentPayload)
+
+      // Interpret the ISO 8583 response
+      const interpretation = interpretResponse(cpResponse)
+
+      console.warn('[fulfillment] Response interpretation:', {
+        action: interpretation.action,
+        code: interpretation.code,
+        message: interpretation.message,
       })
 
-      const responseCode = cpResponse?.responseCode || cpResponse?.responseData?.statusCode
-      const hasError = cpResponse?.error ?? true
-
-      if (hasError || !responseCode) {
-        throw new Error(cpResponse?.message || 'Unknown CoralPay error occurred')
+      if (interpretation.action === 'COMPLETE') {
+        vendorResponse = cpResponse.responseData as Record<string, Json>
       }
+      else if (interpretation.action === 'POLL') {
+        // Exponential Backoff Polling for 09/68
+        console.warn(`[fulfillment] Payment pending (code: ${interpretation.code}). Starting exponential backoff polling...`)
 
-      if (responseCode === '00') {
-        vendorResponse = cpResponse.responseData
-      }
-      else if (responseCode === '09' || responseCode === '68') {
-        console.warn(`[fulfillment] Payment pending (code: ${responseCode}). Starting active polling...`)
+        let pollResult: Record<string, Json> | null = null
 
-        let pollAttempts = 0
-        const maxAttempts = 6 // 6 attempts * 5 seconds = 30 seconds
-        let pollResult: any = null
-
-        // Poll the transaction status
-        while (pollAttempts < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, 5000))
-          pollAttempts++
-          console.warn(`[fulfillment] Polling transaction status (Attempt ${pollAttempts}/${maxAttempts})...`)
+        for (let attempt = 0; attempt < MAX_POLL_ATTEMPTS; attempt++) {
+          const delay = POLL_DELAYS_MS[attempt]!
+          console.warn(`[fulfillment] Polling attempt ${attempt + 1}/${MAX_POLL_ATTEMPTS} after ${delay / 1000}s...`)
+          await new Promise(resolve => setTimeout(resolve, delay))
 
           try {
-            const lookupResponse = await $fetch<any>('/api/coral-pay/transactions/payment-lookup', {
-              method: 'GET',
-              query: { paymentReference: `ref_${orderId}` },
+            const lookupResponse = await paymentLookup({
+              paymentReference: `ref_${orderId}`,
             })
 
-            const lookupCode = lookupResponse?.responseCode || lookupResponse?.responseData?.statusCode
+            const lookupInterpretation = interpretResponse(lookupResponse)
 
-            if (lookupResponse?.error === false && lookupCode === '00') {
-              console.warn('[fulfillment] Polling success!')
-              pollResult = lookupResponse.responseData
+            if (lookupInterpretation.action === 'COMPLETE') {
+              console.warn('[fulfillment] Polling resolved: SUCCESS')
+              pollResult = lookupResponse.responseData as Record<string, Json>
               break
             }
-            else if (lookupCode && lookupCode !== '09' && lookupCode !== '68') {
-              throw new Error(lookupResponse?.message || `Transaction failed with code: ${lookupCode}`)
+            else if (lookupInterpretation.action === 'FAIL') {
+              // Terminal failure during polling
+              throw new Error(
+                lookupInterpretation.customerMessage
+                || lookupInterpretation.message
+                || `Transaction failed with code: ${lookupInterpretation.code}`,
+              )
             }
+            // Still POLL → continue to next attempt
+            console.warn(`[fulfillment] Still pending (code: ${lookupInterpretation.code}). Continuing...`)
           }
           catch (pollErr: any) {
             console.error('[fulfillment] Polling iteration error:', pollErr.message)
-            if (pollErr.message && !pollErr.message.includes('fetch')) {
+            // Only re-throw if it's a business-logic failure, not a transient network error
+            if (pollErr.message && !pollErr.message.includes('fetch') && !pollErr.message.includes('timeout')) {
               throw pollErr
             }
           }
@@ -142,39 +161,66 @@ export async function fulfillOrder(
           vendorResponse = pollResult
         }
         else {
-          console.warn('[fulfillment] Polling completed without final status. Leaving order pending.')
+          // Polling exhausted without resolution.
+          // DO NOT AUTO-REVERSE — leave as PENDING_FULFILLMENT for manual reconciliation.
+          console.warn('[fulfillment] ⚠️ Polling exhausted without final status. Leaving order as PENDING_FULFILLMENT for reconciliation.')
           return
         }
       }
       else {
-        throw new Error(cpResponse?.message || `Vendor rejected checkout with code: ${responseCode}`)
+        // action === 'FAIL' (codes: 06, 25, 96)
+        throw new Error(
+          interpretation.customerMessage
+          || interpretation.message
+          || `Vendor rejected with code: ${interpretation.code}`,
+        )
+      }
+
+      // Extract vendor_tx_id and fulfillment_token
+      const vendorTxId = (vendorResponse as any)?.transactionId || null
+      const fulfillmentToken = (vendorResponse as any)?.token || (vendorResponse as any)?.rechargeToken || null
+
+      // Mark order as COMPLETED with enriched data
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          status: 'COMPLETED',
+          vendor_response: vendorResponse,
+          vendor_tx_id: vendorTxId,
+          fulfillment_token: fulfillmentToken,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', orderId)
+
+      if (updateError) {
+        console.error('[fulfillment] Failed to update order to COMPLETED:', updateError.message)
+        throw updateError
       }
     }
     else if (serviceProvider === 'SOCHITEL') {
       console.warn('[fulfillment] Dispatching to Sochitel API...')
       // vendorResponse = await sochitelClient.purchase({ ... })
       vendorResponse = { status: 'simulated_success', provider: 'SOCHITEL' }
+
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({
+          status: 'COMPLETED',
+          vendor_response: vendorResponse,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', orderId)
+
+      if (updateError) {
+        console.error('[fulfillment] Failed to update order to COMPLETED:', updateError.message)
+        throw updateError
+      }
     }
     else {
       throw new Error(`Unknown service provider: ${serviceProvider}`)
     }
 
-    // Step 2: Mark order as COMPLETED
-    const { error: updateError } = await supabase
-      .from('orders')
-      .update({
-        status: 'COMPLETED',
-        vendor_response: vendorResponse,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', orderId)
-
-    if (updateError) {
-      console.error('[fulfillment] Failed to update order to COMPLETED:', updateError.message)
-      throw updateError
-    }
-
-    console.warn('[fulfillment] Order fulfilled successfully:', {
+    console.warn('[fulfillment] ✅ Order fulfilled successfully:', {
       orderId,
       planName,
       target: targetIdentifier,

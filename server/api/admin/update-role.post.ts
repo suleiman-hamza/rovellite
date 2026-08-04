@@ -1,8 +1,8 @@
 import type { Database } from '~~/types/supabase-schema'
 import { getAuth } from 'firebase-admin/auth'
 import { defineEventHandler, readBody } from 'h3'
-import { handleUtilityError } from '~~/server/utils/error-handler'
 import { apiResponse } from '#server/utils/api-response'
+import { handleUtilityError } from '#server/utils/error-handler'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 type UserRole = Database['public']['Enums']['user_role']

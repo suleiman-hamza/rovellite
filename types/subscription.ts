@@ -47,7 +47,7 @@ export interface CartValidationResponse {
   validatedPrice: number
   taxFees: number
   totalAmount: number
-  targetIdentifier: string
+  targetIdentifier: string // customerId(e.g)
   expiresAt: string
 }
 

@@ -1,19 +1,19 @@
-import type { BillerResponse } from '#shared/types/biller-types'
-import Buffer from 'node:buffer'
+import { customerLookup } from '#server/utils/coralpay-service'
+import { handleUtilityError } from '#server/utils/error-handler'
+import { coralPayCustomerLookupPayloadSchema } from '#shared/validations/coralpay.schema'
 
 export default defineEventHandler(async (event) => {
-  const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
-  const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
+  try {
+    const body = await readBody(event)
 
-  const payload = await readBody(event)
-  // const payload = { customerId: 10277062245, billerSlug: 'DSTV', productName: 'COMPACT' }
-  const response = await $fetch<BillerResponse>('https://sandbox1.coralpay.com/coralpay-vas/api/transactions/customer-lookup', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${credentials}`,
-      'Content-Type': 'application/json',
-    },
-    body: payload,
-  })
-  return response
+    // Validate payload with Zod
+    const payload = coralPayCustomerLookupPayloadSchema.parse(body)
+
+    // Delegate to service layer (handles caching + auth)
+    const response = await customerLookup(payload)
+    return response
+  }
+  catch (error) {
+    return handleUtilityError(error, 'Failed to perform customer lookup')
+  }
 })
