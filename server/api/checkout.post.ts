@@ -9,7 +9,6 @@ import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { debitRovelsubCartCheckout, debitRovelsubUserWallet } from '#server/utils/wallet'
 
 // Validation Schemas
-
 // Cart item — represents a single bill/airtime/utility product from the cart
 const cartItemSchema = z.object({
   productId: z.union([z.string(), z.number()]),
@@ -27,8 +26,12 @@ const checkoutSchema = z.object({
   // Option A: Subscription plan checkout (premium digital subscriptions)
   subscriptionPlanId: z.uuid({ message: 'Invalid subscription plan ID' }).optional(),
   targetIdentifier: z.string().min(1, 'Target identifier is required').optional(),
+  amount: z
+    .number({ error: 'Amount must be a valid number' })
+    .min(50, { error: 'Subscription amount must be at least 50 NGN' })
+    .optional(),
 
-  // Option B: General cart items checkout (airtime, bills, utilities)
+  // General cart items checkout (airtime, bills, utilities)
   cartItems: z.array(cartItemSchema).optional(),
   totalAmount: z.number().positive('Total amount must be greater than zero').optional(),
   description: z.string().optional(),
@@ -104,6 +107,7 @@ async function handleSubscriptionCheckout(
     userId,
     planId: payload.subscriptionPlanId,
     idempotencyKey: payload.idempotencyKey,
+    amount: payload.amount,
   })
 
   // Call the consolidated debit utility wrapper
@@ -113,6 +117,7 @@ async function handleSubscriptionCheckout(
     payload.subscriptionPlanId,
     payload.idempotencyKey,
     payload.targetIdentifier,
+    payload.amount,
   )
 
   if (!result.success) {
@@ -121,6 +126,22 @@ async function handleSubscriptionCheckout(
   }
 
   const orderResult = result.data as Record<string, unknown>
+  const rpcAmount = Number(orderResult.amount || 0)
+
+  let finalAmount = rpcAmount
+  if (rpcAmount === 0) {
+    if (payload.amount === undefined || payload.amount === null) {
+      return apiResponse.error(
+        'An amount is required for variable-price subscription plans (minimum 50 NGN)',
+        400,
+      )
+    }
+    finalAmount = Math.round(payload.amount * 100) / 100
+    await supabase
+      .from('orders')
+      .update({ amount: finalAmount })
+      .eq('id', orderResult.order_id as string)
+  }
 
   // If this was a duplicate idempotency key, return the existing order
   if (orderResult.already_processed) {
@@ -128,7 +149,7 @@ async function handleSubscriptionCheckout(
       {
         orderId: orderResult.order_id,
         status: orderResult.status,
-        amount: orderResult.amount,
+        amount: finalAmount,
         alreadyProcessed: true,
       },
       'Order was already processed (idempotency)',
@@ -141,7 +162,7 @@ async function handleSubscriptionCheckout(
     userId,
     planId: payload.subscriptionPlanId,
     targetIdentifier: payload.targetIdentifier,
-    amount: orderResult.amount as number,
+    amount: finalAmount,
     serviceProvider: orderResult.service_provider as string,
     planName: orderResult.plan_name as string,
   })
@@ -162,7 +183,7 @@ async function handleSubscriptionCheckout(
     {
       orderId: orderResult.order_id,
       status: 'PENDING_FULFILLMENT',
-      amount: orderResult.amount,
+      amount: finalAmount,
       planName: orderResult.plan_name,
       serviceProvider: orderResult.service_provider,
       targetIdentifier: payload.targetIdentifier,
@@ -206,7 +227,7 @@ async function handleCartCheckout(
 
   // Zod UUID validation for each item (cheap sanity check)
   for (const item of cartItems) {
-    const isUuid = z.string().uuid().safeParse(String(item.productId)).success
+    const isUuid = z.uuid().safeParse(String(item.productId)).success
     if (!isUuid) {
       console.error('[checkout] Invalid product ID format (not UUID):', item.productId)
       return apiResponse.error(
@@ -221,6 +242,7 @@ async function handleCartCheckout(
     plan_id: String(item.productId),
     idempotency_key: `${payload.idempotencyKey}-${index}-${item.productId}`,
     target: item.customerReference,
+    amount: item.amount,
   }))
 
   // Single atomic debit call — all items debit in one database transaction
@@ -239,7 +261,7 @@ async function handleCartCheckout(
   const checkoutResult = result.data as { orders: any[] }
   const orders = checkoutResult.orders
 
-  //  Dispatch background fulfillments ONLY now that checkout debit has fully succeeded
+  // Dispatch background fulfillments ONLY now that checkout debit has fully succeeded
   const fulfillmentPromises: Promise<void>[] = []
 
   for (const order of orders) {

@@ -1,4 +1,4 @@
-import { defineEventHandler } from 'h3'
+import { defineEventHandler, readBody } from 'h3'
 import { z } from 'zod'
 import { apiResponse } from '#server/utils/api-response'
 import { handleUtilityError } from '#server/utils/error-handler'
@@ -9,6 +9,7 @@ import { createAdminSupabaseClient } from '#server/utils/supabase'
 const cartValidationSchema = z.object({
   subscriptionPlanId: z.uuid('Invalid subscription plan ID format'),
   targetIdentifier: z.string().min(1, 'Target identifier is required (e.g. phone number)'),
+  amount: z.number().finite('Amount must be a valid number').min(50, 'Subscription amount must be at least 50 NGN').optional(),
 })
 
 // Cart Validation Expiry (20 minutes)
@@ -21,11 +22,14 @@ interface CartValidationResult {
   planId: string
   planName: string
   serviceProvider: string
+  billerSlug: string | null
+  isVariableAmount: boolean
   validatedPrice: number
   taxFees: number
   totalAmount: number
   targetIdentifier: string
   expiresAt: string
+  metadata: Record<string, any> | null
 }
 
 // Handler
@@ -33,16 +37,16 @@ interface CartValidationResult {
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const { subscriptionPlanId, targetIdentifier } = cartValidationSchema.parse(body)
+    const { subscriptionPlanId, targetIdentifier, amount } = cartValidationSchema.parse(body)
 
     console.warn('[cart/validate] Validating cart for plan:', subscriptionPlanId)
 
     const adminSupabase = createAdminSupabaseClient()
 
-    // Query the subscription plan from the database
+    // Query the subscription plan joined with biller info
     const { data: plan, error: planError } = await adminSupabase
       .from('subscription_plans')
-      .select('id, name, price, service_provider, is_active')
+      .select('id, name, price, service_provider, is_active, metadata, biller_id, billers(slug)')
       .eq('id', subscriptionPlanId)
       .single()
 
@@ -61,8 +65,25 @@ export default defineEventHandler(async (event) => {
       return apiResponse.error('This subscription plan is currently unavailable', 400)
     }
 
-    // Build the validated cart payload
-    const validatedPrice = Number(plan.price)
+    const metadata = (plan.metadata || {}) as Record<string, any>
+    const billerInfo = Array.isArray(plan.billers) ? plan.billers[0] : plan.billers
+    const billerSlug = billerInfo?.slug || metadata?.coralpay?.billerSlug || null
+    const rawPrice = Number(plan.price)
+    const isVariableAmount = rawPrice === 0 || Boolean(metadata?.coralpay?.isVariableAmount)
+
+    let validatedPrice = rawPrice
+
+    if (isVariableAmount) {
+      if (amount === undefined || amount === null) {
+        return apiResponse.error(
+          'An amount is required for this variable-price subscription plan (minimum 50 NGN)',
+          400,
+        )
+      }
+      // Sanitize floating point numbers to 2 decimal places
+      validatedPrice = Math.round(amount * 100) / 100
+    }
+
     const taxFees = 0 // Digital subscriptions carry zero tax
     const totalAmount = validatedPrice + taxFees
     const expiresAt = new Date(Date.now() + CART_EXPIRY_MS).toISOString()
@@ -71,16 +92,20 @@ export default defineEventHandler(async (event) => {
       planId: plan.id,
       planName: plan.name,
       serviceProvider: plan.service_provider,
+      billerSlug,
+      isVariableAmount,
       validatedPrice,
       taxFees,
       totalAmount,
       targetIdentifier,
       expiresAt,
+      metadata: plan.metadata as Record<string, any> | null,
     }
 
     console.warn('[cart/validate] Validation successful:', {
       plan: plan.name,
       price: validatedPrice,
+      isVariableAmount,
       expiresAt,
     })
 

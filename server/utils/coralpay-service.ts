@@ -53,7 +53,7 @@ async function coralPayFetch<T>(
   } = {},
 ): Promise<CoralPayBaseResponse<T>> {
   const { baseUrl, credentials } = getCoralPayConfig()
-  const { method = 'GET', body, timeout = 15000 } = options
+  const { method = 'GET', body, timeout = 60000 } = options
 
   const contentType = method === 'POST' ? 'application/json' : 'text/plain'
 
