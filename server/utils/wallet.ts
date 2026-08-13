@@ -14,6 +14,7 @@ const walletDebitSchema = z.object({
   planId: z.uuid('Invalid subscription plan ID'),
   idempotencyKey: z.uuid('Idempotency key must be a valid UUID'),
   target: z.string().min(1, 'Target identifier is required'),
+  amount: z.number().positive('Amount must be greater than zero').optional(),
 })
 
 // create user wallet
@@ -100,6 +101,7 @@ export async function debitRovelsubUserWallet(
   planId: string,
   idempotencyKey: string,
   target: string,
+  amount?: number,
 ) {
   try {
     const {
@@ -107,17 +109,20 @@ export async function debitRovelsubUserWallet(
       planId: validatedPlanId,
       idempotencyKey: validatedIdempotencyKey,
       target: validatedTarget,
+      amount: validatedAmount,
     } = walletDebitSchema.parse({
       userId,
       planId,
       idempotencyKey,
       target,
+      amount,
     })
 
     console.warn('[wallet] Debiting wallet via process_subscription_debit RPC:', {
       userId: validatedUserId,
       planId: validatedPlanId,
       idempotencyKey: validatedIdempotencyKey,
+      amount: validatedAmount,
     })
 
     const { data, error: rpcError } = await supabase.rpc(
@@ -127,6 +132,7 @@ export async function debitRovelsubUserWallet(
         p_plan_id: validatedPlanId,
         p_idempotency_key: validatedIdempotencyKey,
         p_target: validatedTarget,
+        p_amount: validatedAmount ?? null,
       },
     )
 
@@ -182,22 +188,25 @@ export async function getRovelsubUserWallet(supabase: SupabaseClient<Database>, 
   }
 }
 
-// ─── Cart Checkout (atomic multi-item debit) ──────────────────────────
-
+// Cart Checkout (atomic multi-item debit)
 export interface CartCheckoutItem {
   plan_id: string
   idempotency_key: string
   target: string
+  amount: number
 }
+
+const cartCheckoutItemSchema = z.object({
+  plan_id: z.string().uuid(),
+  idempotency_key: z.string().min(1),
+  target: z.string().min(1),
+  amount: z.number().positive().optional(),
+})
 
 const cartCheckoutSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
   masterIdempotencyKey: z.uuid('Master idempotency key must be a valid UUID'),
-  items: z.array(z.object({
-    plan_id: z.uuid('Invalid plan ID'),
-    idempotency_key: z.string().min(1, 'Idempotency key is required'),
-    target: z.string().min(1, 'Target identifier is required'),
-  })).min(1, 'At least one cart item is required'),
+  items: z.array(cartCheckoutItemSchema).min(1, 'At least one item is required for cart checkout'),
 })
 
 // debit cart checkout (wraps process_cart_checkout RPC)
@@ -223,6 +232,9 @@ export async function debitRovelsubCartCheckout(
       masterIdempotencyKey: validatedKey,
       itemCount: validatedItems.length,
     })
+
+    // Log the items being sent to the RPC for debugging purposes
+    console.warn('[wallet] Items being sent to RPC:', JSON.stringify(validatedItems, null, 2))
 
     const { data, error: rpcError } = await supabase.rpc(
       'process_cart_checkout',

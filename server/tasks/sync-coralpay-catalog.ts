@@ -17,9 +17,8 @@ const groupsToSyncConfigSchema = z.array(groupConfigSchema)
 const GROUPS_TO_SYNC = [
   { id: 1, slug: 'ELECTRIC_DISCOS', category: 'electricity' },
   { id: 2, slug: 'PAY_TV', category: 'paytv' },
-  // Add more groups later as needed:
-  // { id: 3, slug: 'AIRTIME', category: 'airtime' },
-  // { id: 4, slug: 'DATA', category: 'data' },
+  { id: 3, slug: 'AIRTIME_AND_DATA', category: 'airtime_and_data' },
+  { id: 4, slug: 'BETTING_AND_LOTTERY', category: 'betting_and_lottery' },
 ]
 
 /**
