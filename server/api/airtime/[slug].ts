@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   const slug = (event.context.params?.slug)
 
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
-  // console.log(CORALPAY_PASSWORD);
   const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
 
   // <Response> is used to type the response from the API, ensuring it matches the expected structure

@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
     return billers
   }
   catch (error) {
-    console.error('Error fetching biller group by ID:', error)
     return handleUtilityError(error, 'Failed to fetch biller group by ID')
   }
 })

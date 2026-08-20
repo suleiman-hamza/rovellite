@@ -1,23 +1,37 @@
-import { defineEventHandler, readBody } from 'h3'
+import type { PlanMetadata } from '#server/utils/plan-helpers'
+import { createError, defineEventHandler, readBody } from 'h3'
 import { z } from 'zod'
 import { apiResponse } from '#server/utils/api-response'
+import { verifyAuthToken } from '#server/utils/auth-verifier'
 import { handleUtilityError } from '#server/utils/error-handler'
+import {
+  extractBillerInfo,
+  isVariableAmountPlan,
+  resolveBillerSlug,
+  safePrice,
+} from '#server/utils/plan-helpers'
+import { CACHE_TTL, cacheKeys, getOrSet } from '#server/utils/redis-cache'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 
-// Validation Schema
+// Schema
 
 const cartValidationSchema = z.object({
-  subscriptionPlanId: z.uuid('Invalid subscription plan ID format'),
-  targetIdentifier: z.string().min(1, 'Target identifier is required (e.g. phone number)'),
-  amount: z.number().finite('Amount must be a valid number').min(50, 'Subscription amount must be at least 50 NGN').optional(),
+  subscriptionPlanId: z.string().uuid({ message: 'Invalid subscription plan ID format' }),
+  targetIdentifier: z.string().min(1, { error: 'Target identifier is required (e.g. phone number)' }),
+  amount: z
+    .number()
+    .min(50, { error: 'Subscription amount must be at least 50 NGN' })
+    .optional(),
 })
 
-// Cart Validation Expiry (20 minutes)
+// Constants
 
+/** 20 minutes — matches CACHE_TTL.CART_VALIDATION */
 const CART_EXPIRY_MS = 20 * 60 * 1000
 
 // Response Type
 
+// NOTE: metadata is intentionally excluded — internal vendor config must not reach the client
 interface CartValidationResult {
   planId: string
   planName: string
@@ -28,91 +42,125 @@ interface CartValidationResult {
   taxFees: number
   totalAmount: number
   targetIdentifier: string
-  expiresAt: string
-  metadata: Record<string, any> | null
+  expiresAt: string // computed fresh — NOT cached (see handler)
+}
+
+// Cached shape excludes expiresAt — it's derived fresh per response
+type CachedCartData = Omit<CartValidationResult, 'expiresAt'>
+
+// DB Helper
+
+/**
+ * Fetches and validates a subscription plan.
+ * Throws 500 on DB error, 404 if not found, 400 if inactive.
+ */
+async function fetchValidPlan(
+  adminSupabase: ReturnType<typeof createAdminSupabaseClient>,
+  planId: string,
+) {
+  const { data: plan, error: planError } = await adminSupabase
+    .from('subscription_plans')
+    .select('id, name, price, service_provider, is_active, metadata, biller_id, billers(slug)')
+    .eq('id', planId)
+    .single()
+
+  if (planError) {
+    console.error('[cart-validation] DB Error fetching plan:', planError.message)
+    throw createError({ statusCode: 500, message: 'Failed to retrieve subscription plan' })
+  }
+
+  if (!plan) {
+    throw createError({ statusCode: 404, message: 'Subscription plan not found' })
+  }
+
+  if (!plan.is_active) {
+    throw createError({ statusCode: 400, message: 'This subscription plan is currently unavailable' })
+  }
+
+  return plan
+}
+
+// Pricing Helper
+
+/**
+ * Resolves the validated price for fixed and variable plans.
+ * Throws 400 if variable plan is missing a user-supplied amount.
+ */
+function resolvePrice(rawPrice: number, isVariable: boolean, amount: number | undefined): number {
+  if (!isVariable)
+    return rawPrice
+
+  if (amount === undefined || amount === null) {
+    throw createError({
+      statusCode: 400,
+      message: 'An amount is required for this variable-price subscription plan (minimum 50 NGN)',
+    })
+  }
+
+  // Sanitize floating point to 2 decimal places
+  return Math.round(amount * 100) / 100
 }
 
 // Handler
 
 export default defineEventHandler(async (event) => {
   try {
+    // Authenticate user via session context or Bearer token
+    const userId
+      = event.context.user?.uid
+        || (await verifyAuthToken(event)).decodedToken.uid
+
+    if (!userId) {
+      return apiResponse.error('Authentication is required for cart validation', 401)
+    }
+
     const body = await readBody(event)
     const { subscriptionPlanId, targetIdentifier, amount } = cartValidationSchema.parse(body)
 
-    console.warn('[cart/validate] Validating cart for plan:', subscriptionPlanId)
+    const cacheKey = cacheKeys.cartValidation(subscriptionPlanId, targetIdentifier, amount)
 
-    const adminSupabase = createAdminSupabaseClient()
+    // Cache the computed plan data — but NOT expiresAt (it must be fresh per response)
+    const cached = await getOrSet<CachedCartData>(
+      cacheKey,
+      async () => {
+        const adminSupabase = createAdminSupabaseClient()
+        const plan = await fetchValidPlan(adminSupabase, subscriptionPlanId)
 
-    // Query the subscription plan joined with biller info
-    const { data: plan, error: planError } = await adminSupabase
-      .from('subscription_plans')
-      .select('id, name, price, service_provider, is_active, metadata, biller_id, billers(slug)')
-      .eq('id', subscriptionPlanId)
-      .single()
+        const metadata = (plan.metadata ?? {}) as PlanMetadata
+        const billerInfo = extractBillerInfo(plan.billers as any)
+        const billerSlug = resolveBillerSlug(billerInfo, metadata)
+        const rawPrice = safePrice(plan.price)
+        const isVariableAmount = isVariableAmountPlan(rawPrice, metadata)
+        const validatedPrice = resolvePrice(rawPrice, isVariableAmount, amount)
 
-    if (planError) {
-      console.error('[cart/validate] DB error fetching plan:', planError.message)
-      return apiResponse.error('Failed to retrieve subscription plan', 500)
-    }
+        const taxFees = 0 // Digital subscriptions carry zero tax
+        const totalAmount = validatedPrice + taxFees
 
-    if (!plan) {
-      console.warn('[cart/validate] Plan not found:', subscriptionPlanId)
-      return apiResponse.error('Subscription plan not found', 404)
-    }
+        return {
+          planId: plan.id,
+          planName: plan.name,
+          serviceProvider: plan.service_provider,
+          billerSlug,
+          isVariableAmount,
+          validatedPrice,
+          taxFees,
+          totalAmount,
+          targetIdentifier,
+          // metadata deliberately excluded — internal vendor config not sent to client
+        }
+      },
+      CACHE_TTL.CART_VALIDATION,
+    )
 
-    if (!plan.is_active) {
-      console.warn('[cart/validate] Plan is inactive:', plan.name)
-      return apiResponse.error('This subscription plan is currently unavailable', 400)
-    }
-
-    const metadata = (plan.metadata || {}) as Record<string, any>
-    const billerInfo = Array.isArray(plan.billers) ? plan.billers[0] : plan.billers
-    const billerSlug = billerInfo?.slug || metadata?.coralpay?.billerSlug || null
-    const rawPrice = Number(plan.price)
-    const isVariableAmount = rawPrice === 0 || Boolean(metadata?.coralpay?.isVariableAmount)
-
-    let validatedPrice = rawPrice
-
-    if (isVariableAmount) {
-      if (amount === undefined || amount === null) {
-        return apiResponse.error(
-          'An amount is required for this variable-price subscription plan (minimum 50 NGN)',
-          400,
-        )
-      }
-      // Sanitize floating point numbers to 2 decimal places
-      validatedPrice = Math.round(amount * 100) / 100
-    }
-
-    const taxFees = 0 // Digital subscriptions carry zero tax
-    const totalAmount = validatedPrice + taxFees
-    const expiresAt = new Date(Date.now() + CART_EXPIRY_MS).toISOString()
-
+    // expiresAt computed fresh — NOT from cache (avoids stale expiry timestamp)
     const result: CartValidationResult = {
-      planId: plan.id,
-      planName: plan.name,
-      serviceProvider: plan.service_provider,
-      billerSlug,
-      isVariableAmount,
-      validatedPrice,
-      taxFees,
-      totalAmount,
-      targetIdentifier,
-      expiresAt,
-      metadata: plan.metadata as Record<string, any> | null,
+      ...cached,
+      expiresAt: new Date(Date.now() + CART_EXPIRY_MS).toISOString(),
     }
-
-    console.warn('[cart/validate] Validation successful:', {
-      plan: plan.name,
-      price: validatedPrice,
-      isVariableAmount,
-      expiresAt,
-    })
 
     return apiResponse.success(result, 'Cart validated successfully')
   }
   catch (error: any) {
-    console.error('[cart/validate] Error:', error.message)
     return handleUtilityError(error, 'Failed to validate cart')
   }
 })

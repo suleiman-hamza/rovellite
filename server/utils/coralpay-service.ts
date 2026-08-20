@@ -72,7 +72,6 @@ async function coralPayFetch<T>(
 }
 
 // Biller Group Methods
-
 /**
  * Fetch billers by CoralPay group ID.
  * Cached in Redis for CACHE_TTL.BILLER_GROUP seconds.
@@ -186,28 +185,15 @@ export async function processPayment(
   // Validate payload
   const validated = coralPayProcessPaymentPayloadSchema.parse(payload)
 
-  console.warn('[coralpay-service] Processing payment:', {
-    paymentReference: validated.paymentReference,
-    packageSlug: validated.packageSlug,
-    amount: validated.amount,
-  })
-
   const response = await coralPayFetch<CoralPayTransactionData>(
     '/transactions/process-payment',
     { method: 'POST', body: validated, timeout: 30000 },
   )
 
-  console.warn('[coralpay-service] Payment response:', {
-    responseCode: response.responseCode,
-    error: response.error,
-    message: response.message,
-  })
-
   return response
 }
 
 // Payment Lookup
-
 /**
  * Look up a payment status by reference or transaction ID.
  * NOT cached — used for polling pending transactions.
@@ -231,7 +217,6 @@ export async function paymentLookup(query: {
 }
 
 // ISO 8583 Response Interpretation
-
 /**
  * Interpret a CoralPay response and determine the appropriate action.
  * Used by the fulfillment task to decide: complete, poll, or rollback.

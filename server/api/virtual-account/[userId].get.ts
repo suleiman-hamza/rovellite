@@ -1,16 +1,30 @@
 import { z } from 'zod'
+import { apiResponse, isSuccessResponse } from '#server/utils/api-response'
+import { verifyAuthToken } from '#server/utils/auth-verifier'
 import { handleUtilityError } from '#server/utils/error-handler'
 import { createAdminSupabaseClient } from '#server/utils/supabase'
 import { queryPalmPayVirtualAccount } from '#server/utils/virtual-account/query'
 
 const getVaSchema = z.object({
-  userId: z.string().min(1, 'userId is required'),
+  userId: z.string().min(1, { error: 'userId is required' }),
 })
 
 export default defineEventHandler(async (event) => {
   try {
+    const authUid
+      = event.context.user?.uid
+        || (await verifyAuthToken(event)).decodedToken.uid
+
+    if (!authUid) {
+      return apiResponse.error('Authentication is required to view virtual account', 401)
+    }
+
     const userId = getRouterParam(event, 'userId')
     const { userId: validatedUserId } = getVaSchema.parse({ userId })
+
+    if (validatedUserId !== authUid && event.context.user?.role !== 'admin') {
+      return apiResponse.error('You are not authorized to view this virtual account', 403)
+    }
 
     const adminSupabase = createAdminSupabaseClient()
 
@@ -51,6 +65,7 @@ export default defineEventHandler(async (event) => {
     }
     catch (palmError) {
       console.warn('PalmPay status refresh failed:', palmError)
+      return apiResponse.error('Failed to refresh virtual account status')
     }
 
     // Get transactions for this virtual account

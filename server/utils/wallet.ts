@@ -6,15 +6,15 @@ import { apiResponse } from '#server/utils/api-response'
 import { handleUtilityError } from './error-handler'
 
 const userIdSchema = z.object({
-  userId: z.string().min(1, 'userId is required'),
+  userId: z.string().min(1, { error: 'userId is required' }),
 })
 
 const walletDebitSchema = z.object({
-  userId: z.string().min(1, 'userId is required'),
-  planId: z.uuid('Invalid subscription plan ID'),
-  idempotencyKey: z.uuid('Idempotency key must be a valid UUID'),
-  target: z.string().min(1, 'Target identifier is required'),
-  amount: z.number().positive('Amount must be greater than zero').optional(),
+  userId: z.string().min(1, { error: 'userId is required' }),
+  planId: z.uuid({ error: 'Invalid subscription plan ID' }),
+  idempotencyKey: z.uuid({ error: 'Idempotency key must be a valid UUID' }),
+  target: z.string().min(1, { error: 'Target identifier is required' }),
+  amount: z.number().positive({ error: 'Amount must be greater than zero' }).optional(),
 })
 
 // create user wallet
@@ -118,13 +118,6 @@ export async function debitRovelsubUserWallet(
       amount,
     })
 
-    console.warn('[wallet] Debiting wallet via process_subscription_debit RPC:', {
-      userId: validatedUserId,
-      planId: validatedPlanId,
-      idempotencyKey: validatedIdempotencyKey,
-      amount: validatedAmount,
-    })
-
     const { data, error: rpcError } = await supabase.rpc(
       'process_subscription_debit',
       {
@@ -132,23 +125,15 @@ export async function debitRovelsubUserWallet(
         p_plan_id: validatedPlanId,
         p_idempotency_key: validatedIdempotencyKey,
         p_target: validatedTarget,
-        p_amount: validatedAmount ?? null,
+        p_amount: validatedAmount,
       },
     )
 
     if (rpcError) {
-      console.error('[wallet] Subscription Debit RPC error:', rpcError.message)
       return mapDebitRpcError(rpcError.message, 'Failed to process subscription checkout')
     }
 
     const orderResult = data as Record<string, any>
-
-    console.warn('[wallet] Subscription debit processed successfully:', {
-      orderId: orderResult.order_id,
-      status: orderResult.status,
-      amount: orderResult.amount,
-      alreadyProcessed: orderResult.already_processed,
-    })
 
     return apiResponse.success(
       orderResult,
@@ -158,7 +143,6 @@ export async function debitRovelsubUserWallet(
     )
   }
   catch (error: any) {
-    console.error('[wallet] Error debiting wallet for subscription:', error.message)
     return handleUtilityError(error, 'Failed to process subscription checkout')
   }
 }
@@ -227,15 +211,6 @@ export async function debitRovelsubCartCheckout(
       items,
     })
 
-    console.warn('[wallet] Processing atomic cart checkout via process_cart_checkout RPC:', {
-      userId: validatedUserId,
-      masterIdempotencyKey: validatedKey,
-      itemCount: validatedItems.length,
-    })
-
-    // Log the items being sent to the RPC for debugging purposes
-    console.warn('[wallet] Items being sent to RPC:', JSON.stringify(validatedItems, null, 2))
-
     const { data, error: rpcError } = await supabase.rpc(
       'process_cart_checkout',
       {
@@ -246,15 +221,10 @@ export async function debitRovelsubCartCheckout(
     )
 
     if (rpcError) {
-      console.error('[wallet] Cart checkout RPC error:', rpcError.message)
       return mapDebitRpcError(rpcError.message, 'Failed to process cart checkout')
     }
 
     const orderResult = data as Record<string, any>
-
-    console.warn('[wallet] Cart checkout debit processed successfully:', {
-      orders: orderResult.orders,
-    })
 
     return apiResponse.success(
       orderResult,
@@ -262,7 +232,6 @@ export async function debitRovelsubCartCheckout(
     )
   }
   catch (error: any) {
-    console.error('[wallet] Error debiting wallet for cart checkout:', error.message)
     return handleUtilityError(error, 'Failed to process cart checkout')
   }
 }

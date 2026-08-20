@@ -12,20 +12,20 @@ import { debitRovelsubCartCheckout, debitRovelsubUserWallet } from '#server/util
 // Cart item — represents a single bill/airtime/utility product from the cart
 const cartItemSchema = z.object({
   productId: z.union([z.string(), z.number()]),
-  productName: z.string().min(1, 'Product name is required'),
-  amount: z.number().positive('Item amount must be greater than zero'),
+  productName: z.string().min(1, { error: 'Product name is required' }),
+  amount: z.number().positive({ error: 'Item amount must be greater than zero' }),
   billerId: z.union([z.string(), z.number()]),
-  customerReference: z.string().min(1, 'Customer reference is required'),
+  customerReference: z.string().min(1, { error: 'Customer reference is required' }),
 })
 
 // Unified checkout schema — accepts EITHER a subscription plan OR cart items
 const checkoutSchema = z.object({
-  // Required: idempotency key to prevent double-processing
-  idempotencyKey: z.uuid({ message: 'Idempotency key must be a valid UUID' }),
+  // idempotency key to prevent double-processing
+  idempotencyKey: z.uuid({ error: 'Idempotency key must be a valid UUID' }),
 
-  // Option A: Subscription plan checkout (premium digital subscriptions)
-  subscriptionPlanId: z.uuid({ message: 'Invalid subscription plan ID' }).optional(),
-  targetIdentifier: z.string().min(1, 'Target identifier is required').optional(),
+  // Subscription plan checkout (premium digital subscriptions)
+  subscriptionPlanId: z.uuid({ error: 'Invalid subscription plan ID' }).optional(),
+  targetIdentifier: z.string().min(1, { error: 'Target identifier is required' }).optional(),
   amount: z
     .number({ error: 'Amount must be a valid number' })
     .min(50, { error: 'Subscription amount must be at least 50 NGN' })
@@ -33,7 +33,7 @@ const checkoutSchema = z.object({
 
   // General cart items checkout (airtime, bills, utilities)
   cartItems: z.array(cartItemSchema).optional(),
-  totalAmount: z.number().positive('Total amount must be greater than zero').optional(),
+  totalAmount: z.number().positive({ error: 'Total amount must be greater than zero' }).optional(),
   description: z.string().optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
 }).refine(
@@ -43,7 +43,7 @@ const checkoutSchema = z.object({
     const hasCart = !!data.cartItems && data.cartItems.length > 0
     return hasSubscription || hasCart
   },
-  { message: 'Either subscriptionPlanId or cartItems must be provided' },
+  { error: 'Either subscriptionPlanId or cartItems must be provided' },
 ).refine(
   (data) => {
     // If subscription plan, targetIdentifier is required
@@ -52,7 +52,7 @@ const checkoutSchema = z.object({
     }
     return true
   },
-  { message: 'targetIdentifier is required for subscription checkout', path: ['targetIdentifier'] },
+  { error: 'targetIdentifier is required for subscription checkout', path: ['targetIdentifier'] },
 ).refine(
   (data) => {
     // If cart items, totalAmount is required
@@ -61,11 +61,10 @@ const checkoutSchema = z.object({
     }
     return true
   },
-  { message: 'totalAmount is required for cart checkout', path: ['totalAmount'] },
+  { error: 'totalAmount is required for cart checkout', path: ['totalAmount'] },
 )
 
 // Unified Checkout Handler
-
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
@@ -91,7 +90,6 @@ export default defineEventHandler(async (event) => {
     return await handleCartCheckout(event, adminSupabase, userId, payload)
   }
   catch (error: any) {
-    console.error('[checkout] Error:', error.message)
     return handleUtilityError(error, 'Failed to process checkout')
   }
 })
@@ -103,13 +101,6 @@ async function handleSubscriptionCheckout(
   userId: string,
   payload: any,
 ) {
-  console.warn('[checkout] Processing subscription checkout:', {
-    userId,
-    planId: payload.subscriptionPlanId,
-    idempotencyKey: payload.idempotencyKey,
-    amount: payload.amount,
-  })
-
   // Call the consolidated debit utility wrapper
   const result = await debitRovelsubUserWallet(
     supabase,
@@ -172,7 +163,8 @@ async function handleSubscriptionCheckout(
   }
   else {
     fulfillmentPromise.catch((error: any) => {
-      console.error('[checkout] Background fulfillment error:', error)
+      // console.error('[checkout] Background fulfillment error:', error)
+      handleUtilityError(error, 'Failed to process checkout')
     })
   }
 
@@ -208,12 +200,12 @@ async function handleCartCheckout(
     customerReference: string
   }>
 
-  console.warn('[checkout] Processing cart checkout:', {
-    userId,
-    itemCount: cartItems.length,
-    totalAmount: payload.totalAmount,
-    idempotencyKey: payload.idempotencyKey,
-  })
+  // console.info('[checkout] Processing cart checkout:', {
+  //   userId,
+  //   itemCount: cartItems.length,
+  //   totalAmount: payload.totalAmount,
+  //   idempotencyKey: payload.idempotencyKey,
+  // })
 
   // Server-side total verification
   const totalAmountFromCart = cartItems.reduce(
@@ -229,7 +221,7 @@ async function handleCartCheckout(
   for (const item of cartItems) {
     const isUuid = z.uuid().safeParse(String(item.productId)).success
     if (!isUuid) {
-      console.error('[checkout] Invalid product ID format (not UUID):', item.productId)
+      // console.error('[checkout] Invalid product ID format (not UUID):', item.productId)
       return apiResponse.error(
         `Product ID "${item.productId}" for "${item.productName}" is not a valid UUID format. All digital plans/subscriptions must use valid UUIDs.`,
         400,
@@ -283,7 +275,8 @@ async function handleCartCheckout(
     const batchPromise = Promise.allSettled(fulfillmentPromises).then((results) => {
       const failed = results.filter(r => r.status === 'rejected')
       if (failed.length > 0) {
-        console.error(`[checkout] ${failed.length}/${results.length} fulfillments failed`)
+        // console.error(`[checkout] ${failed.length}/${results.length} fulfillments failed`)
+        return apiResponse.error('Failed to process checkout', 500)
       }
     })
 
@@ -291,8 +284,9 @@ async function handleCartCheckout(
       event.waitUntil(batchPromise)
     }
     else {
-      batchPromise.catch((err: any) => {
-        console.error('[checkout] Batch fulfillment error:', err)
+      batchPromise.catch((error: any) => {
+        // console.error('[checkout] Batch fulfillment error:', err)
+        handleUtilityError(error, 'Failed to process checkout')
       })
     }
   }

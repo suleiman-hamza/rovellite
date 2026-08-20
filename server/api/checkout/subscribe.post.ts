@@ -8,17 +8,16 @@ import { createAdminSupabaseClient } from '#server/utils/supabase'
 
 // Validation Schema
 const subscribeSchema = z.object({
-  subscriptionPlanId: z.uuid({ message: 'Invalid subscription plan ID' }),
-  targetIdentifier: z.string().min(1, { message: 'Target identifier is required' }),
-  idempotencyKey: z.uuid({ message: 'Idempotency key must be a valid UUID' }),
+  subscriptionPlanId: z.uuid({ error: 'Invalid subscription plan ID' }),
+  targetIdentifier: z.string().min(1, { error: 'Target identifier is required' }),
+  idempotencyKey: z.uuid({ error: 'Idempotency key must be a valid UUID' }),
   amount: z
     .number()
-    .min(50, { message: 'Subscription amount must be at least 50 NGN' })
+    .min(50, { error: 'Subscription amount must be at least 50 NGN' })
     .optional(),
 })
 
 // Handler
-
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
@@ -33,13 +32,6 @@ export default defineEventHandler(async (event) => {
       return apiResponse.error('Authentication is required to subscribe', 401)
     }
 
-    console.warn('[checkout/subscribe] Processing subscription:', {
-      userId,
-      planId: payload.subscriptionPlanId,
-      idempotencyKey: payload.idempotencyKey,
-      amount: payload.amount,
-    })
-
     const adminSupabase = createAdminSupabaseClient()
 
     // Call the PL/pgSQL function via Supabase RPC
@@ -50,13 +42,11 @@ export default defineEventHandler(async (event) => {
         p_plan_id: payload.subscriptionPlanId,
         p_idempotency_key: payload.idempotencyKey,
         p_target: payload.targetIdentifier,
-        p_amount: payload.amount ?? null,
+        p_amount: payload.amount,
       },
     )
 
     if (rpcError) {
-      console.error('[checkout/subscribe] RPC error:', rpcError.message)
-
       const msg = rpcError.message || ''
       if (msg.includes('Insufficient balance')) {
         return apiResponse.error('Insufficient wallet balance for this subscription', 400)
@@ -89,12 +79,6 @@ export default defineEventHandler(async (event) => {
         .update({ amount: finalAmount })
         .eq('id', orderResult.order_id as string)
     }
-
-    console.warn('[checkout/subscribe] Debit processed successfully:', {
-      orderId: orderResult.order_id,
-      alreadyProcessed: orderResult.already_processed,
-      amount: finalAmount,
-    })
 
     // If this was a duplicate idempotency key, return the existing order
     if (orderResult.already_processed) {
@@ -145,7 +129,6 @@ export default defineEventHandler(async (event) => {
     )
   }
   catch (error: any) {
-    console.error('[checkout/subscribe] Error:', error.message)
     return handleUtilityError(error, 'Failed to process subscription checkout')
   }
 })

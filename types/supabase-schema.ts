@@ -514,26 +514,16 @@ export interface Database {
         }
         Returns: Json
       }
-      process_subscription_debit:
-        | {
-          Args: {
-            p_idempotency_key: string
-            p_plan_id: string
-            p_target: string
-            p_user_id: string
-          }
-          Returns: Json
+      process_subscription_debit: {
+        Args: {
+          p_amount?: number
+          p_idempotency_key: string
+          p_plan_id: string
+          p_target: string
+          p_user_id: string
         }
-        | {
-          Args: {
-            p_amount?: number
-            p_idempotency_key: string
-            p_plan_id: string
-            p_target: string
-            p_user_id: string
-          }
-          Returns: Json
-        }
+        Returns: Json
+      }
       reverse_subscription_debit: {
         Args: {
           p_amount: number

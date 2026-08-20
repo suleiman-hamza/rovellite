@@ -13,6 +13,10 @@ export const CACHE_TTL = {
   PACKAGES: 1 * 60 * 60,
   /** Customer lookup is transient — cache for 10 minutes */
   CUSTOMER_LOOKUP: 10 * 60,
+  /** Subscription plans catalog — cache for 15 minutes */
+  SUBSCRIPTION_PLANS: 15 * 60,
+  /** Cart validation result — cache for 20 minutes (matches expiresAt) */
+  CART_VALIDATION: 20 * 60,
 } as const
 
 // Cache key prefixes
@@ -22,6 +26,7 @@ const PREFIX = {
   PACKAGES_ID: 'coralpay:packages:id',
   PACKAGES_SLUG: 'coralpay:packages:slug',
   CUSTOMER_LOOKUP: 'coralpay:customer-lookup',
+  CART_VALIDATION: 'cart:validation',
 } as const
 
 /**
@@ -50,28 +55,23 @@ export async function getOrSet<T>(
   try {
     const cached = await storage.getItem<T>(key)
     if (cached !== null && cached !== undefined) {
-      // Log the key and the retrieved cached payload
-      console.warn(`[CACHE HIT] ${key}`)
       return cached
     }
-    console.warn(`[redis-cache] ❌ Cache MISS for key "${key}". Fetching fresh data...`)
   }
-  catch (err) {
+  catch (error) {
     // Cache read failure — proceed to fetch
-    console.warn('[redis-cache] Cache read error, falling back to fetch:', (err as Error).message)
+    console.warn('[redis-cache] Cache read error, falling back to fetch:', (error as Error).message)
   }
 
-  console.warn(`[CACHE MISS] ${key}`)
   const freshData = await fetcher()
 
   if (freshData !== undefined && freshData !== null) {
     try {
       await storage.setItem(key, freshData as any, { ttl: ttlSeconds })
-      console.warn(`[redis-cache] 💾 Cache SET for key "${key}" (TTL: ${ttlSeconds}s)`)
     }
-    catch (err) {
+    catch (error) {
       // Cache write failure — non-fatal, data is still returned
-      console.warn('[redis-cache] Cache write error:', (err as Error).message)
+      console.warn('[redis-cache] Cache write error:', (error as Error).message)
     }
   }
 
@@ -85,10 +85,9 @@ export async function invalidateCache(key: string): Promise<void> {
   try {
     const storage = getCacheStorage()
     await storage.removeItem(key)
-    console.warn(`[redis-cache] 🗑️ Cache INVALIDATED for key "${key}"`)
   }
-  catch (err) {
-    console.warn('[redis-cache] Cache invalidation error:', (err as Error).message)
+  catch (error) {
+    console.warn('[redis-cache] Cache invalidation error:', (error as Error).message)
   }
 }
 
@@ -100,15 +99,13 @@ export async function invalidateCacheByPrefix(prefix: string): Promise<void> {
     const storage = getCacheStorage()
     const keys = await storage.getKeys(prefix)
     await Promise.all(keys.map(k => storage.removeItem(k)))
-    console.warn(`[redis-cache] 🗑️ Cache PREFIX INVALIDATED for "${prefix}" (${keys.length} keys removed)`)
   }
-  catch (err) {
-    console.warn('[redis-cache] Prefix invalidation error:', (err as Error).message)
+  catch (error) {
+    console.warn('[redis-cache] Prefix invalidation error:', (error as Error).message)
   }
 }
 
 // Domain-Specific Cache Keys
-
 export const cacheKeys = {
   billerGroupById: (id: string | number) => `${PREFIX.BILLER_GROUP_ID}:${id}`,
   billerGroupBySlug: (slug: string) => `${PREFIX.BILLER_GROUP_SLUG}:${slug}`,
@@ -116,4 +113,7 @@ export const cacheKeys = {
   packagesBySlug: (slug: string) => `${PREFIX.PACKAGES_SLUG}:${slug}`,
   customerLookup: (billerSlug: string, customerId: string | number) =>
     `${PREFIX.CUSTOMER_LOOKUP}:${billerSlug}:${customerId}`,
+  subscriptionPlans: (queryStr: string) => `subscription-plans:${queryStr}`,
+  cartValidation: (planId: string, targetIdentifier: string, amount?: number) =>
+    `${PREFIX.CART_VALIDATION}:${planId}:${targetIdentifier}${amount !== undefined ? `:${amount}` : ''}`,
 } as const

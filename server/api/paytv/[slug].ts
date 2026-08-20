@@ -1,19 +1,9 @@
 import type { PackagesResponse } from '#shared/types/biller-types'
 import Buffer from 'node:buffer'
-
-// interface payTvresponse {
-//   id: number
-//   name: string
-//   slug: string
-//   amount: number
-//   billerId: number
-//   hasPending: boolean
-//   sequenceNumber: number
-// }
+import { handleUtilityError } from '#server/utils/error-handler'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params?.slug
-  console.warn(slug) // remove this in prod
   const { CORALPAY_USERNAME, CORALPAY_PASSWORD } = useRuntimeConfig()
   const credentials = Buffer.Buffer.from(`${CORALPAY_USERNAME}:${CORALPAY_PASSWORD}`).toString('base64')
 
@@ -34,11 +24,7 @@ export default defineEventHandler(async (event) => {
     })
     return { paytvResponse: [...data.responseData], image: filter?.image, name: filter?.name }
   }
-  catch (error) {
-    console.error('Error fetching TV decoder plans:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Failed to fetch TV decoder plans',
-    })
+  catch (error: any) {
+    handleUtilityError(error, 'Failed to fetch TV decoder plans')
   }
 })
